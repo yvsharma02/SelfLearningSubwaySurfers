@@ -1,0 +1,1 @@
+Everything in generated dir should be safe to delete.
