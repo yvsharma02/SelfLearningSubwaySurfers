@@ -9,4 +9,4 @@ VSCode should automatically give a promt to open the project inside a devcontain
 If you want to use Git while being inside the container, the following things also need to be installed:
 
 4) Git
-5) GitCredentailManager
+5) GitCredentailManager (Make sure to proprely set this up. Good luck with that :) )
