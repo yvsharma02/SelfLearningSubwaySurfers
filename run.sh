@@ -10,7 +10,7 @@ export MSYS_NO_PATHCONV=1
 export DOCKER_BUILDKIT=1
 
 MODE="build_and_run"
-WORKDIR="/home/root/subwaysurfersai/workdir"
+WORKDIR="/home/ubuntu/subwaysurfersai"
 CONTAINER_NAME="subwaysurfersai_container"
 IMAGE_NAME="subwaysurfersai_image"
 BLOCKING="blocking"
@@ -69,8 +69,8 @@ if [[ "$MODE" = "run" || "$MODE" = "build_and_run" ]]; then
        /dev/kvm \
         --name "$CONTAINER_NAME"  \
         --gpus all \
-        -v $(pwd)/src:$SHARED_VOLUME/src \
+        -v $(pwd):$SHARED_VOLUME/workspace \
         $IMAGE_NAME \
         $run_flags  \
-        python3 $SHARED_VOLUME/src/main.py
+        python3 $SHARED_VOLUME/workspace/src/main.py
 fi
