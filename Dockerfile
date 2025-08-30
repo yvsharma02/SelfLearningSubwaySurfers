@@ -2,17 +2,20 @@
 
 FROM nvidia/cuda:12.9.1-base-ubuntu24.04
 
-ARG WORKDIR_VAR
-
-WORKDIR $WORKDIR_VAR
+# Root here means all the data generated created by us in any way.
+ENV ROOT_DIR="/home/ubuntu/subwaysurfersai"
+ENV WORK_DIR=$ROOT_DIR/workspace
+WORKDIR $WORK_DIR
 
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
-ENV PYTHON_ENV_DIR="$WORKDIR_VAR/python_env"
-ENV PATH="$PYTHON_ENV_DIR/bin:$PATH"
-ENV PIP_CACHE_DIR=/root/.cache/pip
+# Virtual Enviroment for python
+ENV VIRTUAL_ENV="$ROOT_DIR/python_env"
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-ENV ANDROID_SDK_ROOT=$WORKDIR_VAR/android-sdk
+ENV PIP_CACHE_DIR="$ROOT_DIR/cache/pip"
+
+ENV ANDROID_SDK_ROOT=$ROOT_DIR/android-sdk
 ENV PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/emulator:$PATH
 
 RUN --mount=type=cache,target=/var/lib/apt/lists \
@@ -53,10 +56,12 @@ RUN --mount=type=cache,target=$ANDROID_SDK_ROOT/.android/cache \
 
 RUN echo "no" | avdmanager create avd -n headlessApi34 -k "system-images;android-34;google_apis;x86_64" --device "pixel_5"
 
-COPY src/requirements.txt .
-
-RUN python3 -m venv $PYTHON_ENV_DIR
+RUN python3 -m venv $VIRTUAL_ENV
 RUN python3 -m pip install --upgrade pip
 
+COPY src/requirements.txt ${ROOT_DIR}/buildtime/copied/requirements.txt
+
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt
+    pip install -r ${ROOT_DIR}/buildtime/copied/requirements.txt
+
+RUN echo "Finished Building Container"

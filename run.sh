@@ -10,7 +10,6 @@ export MSYS_NO_PATHCONV=1
 export DOCKER_BUILDKIT=1
 
 MODE="build_and_run"
-WORKDIR="/home/ubuntu/subwaysurfersai"
 CONTAINER_NAME="subwaysurfersai_container"
 IMAGE_NAME="subwaysurfersai_image"
 BLOCKING="blocking"
@@ -19,10 +18,6 @@ while [[ $# -gt 0 ]]; do
   case $1 in
     --mode)
       MODE="$2"
-      shift 2
-      ;;
-    --workdir)
-      WORKDIR="$2"
       shift 2
       ;;
     --container-name)
@@ -44,12 +39,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-#This is for runtime
-SHARED_VOLUME="${WORKDIR}/shared"
+# These are not parameters.
+DATA_ROOT="/home/ubuntu/subwaysurfersai"
 
 if [[ "$MODE" = "build" || "$MODE" = "build_and_run" ]]; then
     echo "Building Image..."
-    docker build . -t $IMAGE_NAME --build-arg WORKDIR_VAR=$WORKDIR --build-arg SHARED_VOLUME=$SHARED_VOLUME
+    docker build . -t $IMAGE_NAME --progress plain
 fi
 
 if [[ "$MODE" = "run" || "$MODE" = "build_and_run" ]]; then
@@ -65,11 +60,9 @@ if [[ "$MODE" = "run" || "$MODE" = "build_and_run" ]]; then
 
     docker run  \
       --rm      \
-      --device /dev/kvm \
       --name "$CONTAINER_NAME"  \
-      --gpus all \
-      -v $(pwd):$SHARED_VOLUME/workspace \
+      -v $(pwd):$DATA_ROOT/workspace \
       $IMAGE_NAME \
       $run_flags  \
-      python3 $SHARED_VOLUME/workspace/src/main.py
+      python src/main.py
 fi

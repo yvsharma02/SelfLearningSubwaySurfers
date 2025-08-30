@@ -1,18 +1,19 @@
 {
-	"name": "Existing Dockerfile",
-	"build": {
-		"context": "..",
-		"dockerfile": "../Dockerfile"
-	},
-
-	"workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/subwaysurfersai/workspace,type=bind",
-	"workspaceFolder": "/home/ubuntu/subwaysurfersai/workspace",
-
-	"postCreateCommand": "apt-get update && apt-get install -y git && git config --global --add safe.directory /home/ubuntu/subwaysurfersai/workspace",
-
-	"runArgs": [
-    "--gpus", "all",
-	"--device", "/dev/kvm"
+  "name": "SubwaySurfersAI",
+  "build": {
+    "context": "..",
+    "dockerfile": "../Dockerfile",
+    "args": {
+    }
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/subwaysurfersai/workspace,type=bind",
+  "workspaceFolder": "/home/ubuntu/subwaysurfersai/workspace",
+  "postCreateCommand": "apt-get update && apt-get install -y git && git config --global --add safe.directory /home/ubuntu/subwaysurfersai/workspace",
+  "runArgs": [
+    "--gpus",
+    "all",
+    "--device",
+    "/dev/kvm"
   ],
   "customizations": {
     "vscode": {
@@ -21,5 +22,5 @@
         "ms-azuretools.vscode-docker"
       ]
     }
-  },
+  }
 }
