@@ -55,16 +55,6 @@ fi
 if [[ "$MODE" = "run" || "$MODE" = "build_and_run" ]]; then
     echo "Running Container...."
 
-    #TODO: Add check if it is already running.
-    if [ "$(docker container kill $CONTAINER_NAME)" = "$CONTAINER_NAME" ]; then
-        echo "Killed Old Running Container"
-    fi
-
-    if [ "$(docker container rm $CONTAINER_NAME)" = "$CONTAINER_NAME" ]; then
-        echo "Removed Old Container"
-    fi
-    
-
     run_flags=""
     if [ "$BLOCKING" = "non-blocking" ]; then
         run_flags="-d"
@@ -73,5 +63,14 @@ if [[ "$MODE" = "run" || "$MODE" = "build_and_run" ]]; then
         exit 1
     fi
 
-    docker run --rm --device /dev/kvm --name "$CONTAINER_NAME" --gpus all -v "$(pwd):$SHARED_VOLUME" $IMAGE_NAME $run_flags emulator -avd headlessApi34 -no-window -no-audio -no-boot-anim
+    docker run  \
+      --rm      \
+      --device  \
+       /dev/kvm \
+        --name "$CONTAINER_NAME"  \
+        --gpus all \
+        -v $(pwd)/src:$SHARED_VOLUME/src \
+        $IMAGE_NAME \
+        $run_flags  \
+        python3 $SHARED_VOLUME/src/main.py
 fi
