@@ -65,12 +65,11 @@ if [[ "$MODE" = "run" || "$MODE" = "build_and_run" ]]; then
 
     docker run  \
       --rm      \
-      --device  \
-       /dev/kvm \
-        --name "$CONTAINER_NAME"  \
-        --gpus all \
-        -v $(pwd):$SHARED_VOLUME/workspace \
-        $IMAGE_NAME \
-        $run_flags  \
-        python3 $SHARED_VOLUME/workspace/src/main.py
+      --device /dev/kvm \
+      --name "$CONTAINER_NAME"  \
+      --gpus all \
+      -v $(pwd):$SHARED_VOLUME/workspace \
+      $IMAGE_NAME \
+      $run_flags  \
+      python3 $SHARED_VOLUME/workspace/src/main.py
 fi

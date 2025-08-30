@@ -8,5 +8,18 @@
 	"workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/subwaysurfersai/workspace,type=bind",
 	"workspaceFolder": "/home/ubuntu/subwaysurfersai/workspace",
 
-	"postCreateCommand": "apt-get update && apt-get install -y git && git config --global --add safe.directory /home/ubuntu/subwaysurfersai/workspace"
+	"postCreateCommand": "apt-get update && apt-get install -y git && git config --global --add safe.directory /home/ubuntu/subwaysurfersai/workspace",
+
+	"runArgs": [
+    "--gpus", "all",
+	"--device", "/dev/kvm"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
 }
