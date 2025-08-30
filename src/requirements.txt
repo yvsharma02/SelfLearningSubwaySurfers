@@ -1,3 +1,5 @@
 --index-url https://download.pytorch.org/whl/cu129
 torch
 torchvision
+
+pure-python-adb
