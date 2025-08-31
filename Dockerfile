@@ -21,20 +21,16 @@ ENV PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-t
 RUN --mount=type=cache,target=/var/lib/apt/lists \
     --mount=type=cache,target=/var/cache/apt \
     apt-get update && apt-get install -y --no-install-recommends \
+    curl wget unzip git \
     python3 python3-pip python3-venv \
-    libstdc++6 libgcc-s1 zlib1g \
+    gcc pkg-config meson ninja-build \
     openjdk-17-jdk-headless \
-    curl \
-    unzip \
-    libx11-6 \
-    libxrender1 \
-    libxext6 \
-    libxrandr2 \
-    libxi6 \
-    libgl1 \
-    libpulse0 \
-    libgl1-mesa-dri \
-    && rm -rf /var/lib/apt/lists/*
+    ffmpeg \
+    libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev libswresample-dev \
+    libsdl2-2.0-0 libsdl2-dev \
+    libusb-1.0-0 libusb-1.0-0-dev \
+    libx11-6 libxrender1 libxext6 libxrandr2 libxi6 libgl1 libgl1-mesa-dri libpulse0 \
+    libstdc++6 libgcc-s1 zlib1g
 
 RUN --mount=type=cache,target=/tmp/downloads \
     [ -f /tmp/downloads/commandlinetools.zip ] || curl -L https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o /tmp/downloads/commandlinetools.zip && \
@@ -63,5 +59,12 @@ COPY src/requirements.txt ${ROOT_DIR}/buildtime/copied/requirements.txt
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r ${ROOT_DIR}/buildtime/copied/requirements.txt
+
+RUN echo "#!/bin/bash\n\$@" > /usr/bin/sudo
+RUN chmod +x /usr/bin/sudo
+
+COPY src/post_build.sh ${ROOT_DIR}/buildtime/copied/post_build.sh
+RUN chmod +x ${ROOT_DIR}/buildtime/copied/post_build.sh
+RUN ${ROOT_DIR}/buildtime/copied/post_build.sh
 
 RUN echo "Finished Building Container"
