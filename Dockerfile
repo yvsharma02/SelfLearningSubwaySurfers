@@ -50,7 +50,7 @@ RUN --mount=type=cache,target=$ANDROID_SDK_ROOT/.android/cache \
     "platforms;android-34" \
     "system-images;android-34;google_apis;x86_64"
 
-RUN echo "no" | avdmanager create avd -n headlessApi34 -k "system-images;android-34;google_apis;x86_64" --device "pixel_5"
+RUN echo "no" | avdmanager create avd -n default_avd -k "system-images;android-34;google_apis;x86_64" --device "pixel_5"
 
 RUN python3 -m venv $VIRTUAL_ENV
 RUN python3 -m pip install --upgrade pip
