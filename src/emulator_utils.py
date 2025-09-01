@@ -14,16 +14,23 @@ def launch(adb_client : Client, timeout_s : float = 10.0, stdout = None, stderro
     "-no-audio",
     "-no-boot-anim",
     "-grpc", "8554",
-    "-idle-grpc-timeout", "0"
+    "-idle-grpc-timeout", "0",
+    "-gpu", "swiftshader_indirect",
+    # "-accel", "on"
     ]
 
     subprocess.Popen(start_cmd, stdout=stdout, stderr=stderror)
-    print("Emulator Launched")
-
+    print("A")
     while len(adb_client.devices()) == 0:
+        print("B")
         if ((time.time() - start_time) >= timeout_s):
+            print("C")
             raise TimeoutError("Emulator Launch timed out")
+        print((time.time() - start_time) )
         time.sleep(0.1)
+
+    print("Emulator Launched")
+    
     
     return adb_client.devices()[0]
 

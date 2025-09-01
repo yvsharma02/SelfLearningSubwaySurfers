@@ -2,6 +2,8 @@
 
 FROM nvidia/cuda:12.9.1-base-ubuntu24.04
 
+RUN echo "Invalidate Cache"
+
 # Root here means all the data generated created by us in any way.
 ENV ROOT_DIR="/home/ubuntu/subwaysurfersai"
 ENV WORK_DIR=$ROOT_DIR/workspace
@@ -9,7 +11,7 @@ WORKDIR $WORK_DIR
 
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
-# Virtual Enviroment for python
+
 ENV VIRTUAL_ENV="$ROOT_DIR/python_env"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
@@ -17,6 +19,12 @@ ENV PIP_CACHE_DIR="$ROOT_DIR/cache/pip"
 
 ENV ANDROID_SDK_ROOT=$ROOT_DIR/android-sdk
 ENV PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/emulator:$PATH
+
+# Setup cache.
+COPY dev-cache/generated/android-sdk* $ANDROID_SDK_ROOT
+COPY dev-cache/setup-cache-client.sh ${WORK_DIR}/utils/setup-cache-client.sh
+RUN chmod +x ${WORK_DIR}/utils/setup-cache-client.sh
+RUN ${WORK_DIR}/utils/setup-cache-client.sh
 
 RUN --mount=type=cache,target=/var/lib/apt/lists \
     --mount=type=cache,target=/var/cache/apt \

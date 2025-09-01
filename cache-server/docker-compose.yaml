@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  devpi:
+    image: muccg/devpi:latest
+    container_name: devpi-cache
+    volumes:
+      - ./generated/devpi:/srv/devpi
+      - ./devpi-volume:/devpi-volume
+      - ./generated/wheels:/wheels
+    restart: unless-stopped
+    working_dir: /devpi-volume
+    entrypoint: ./setup-devpi-server.sh
+    network_mode: "host"
+
+  apt-cacher:
+    image: sameersbn/apt-cacher-ng:latest
+    container_name: apt-cache
+    ports:
+      - "3142:3142"
+    volumes:
+      - ./generated/apt:/var/cache/apt-cacher-ng
+    restart: unless-stopped

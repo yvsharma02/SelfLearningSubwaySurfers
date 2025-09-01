@@ -13,7 +13,9 @@
     "--gpus",
     "all",
     "--device",
-    "/dev/kvm"
+    "/dev/kvm",
+    "--network=host"
+
   ],
   "customizations": {
     "vscode": {
