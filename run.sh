@@ -44,7 +44,7 @@ DATA_ROOT="/home/ubuntu/subwaysurfersai"
 
 if [[ "$MODE" = "build" || "$MODE" = "build_and_run" ]]; then
     echo "Building Image..."
-    docker build . -t $IMAGE_NAME --progress plain --network=host
+    docker build . -t $IMAGE_NAME --progress plain --add-host=host.docker.internal:host-gateway
 fi
 
 if [[ "$MODE" = "run" || "$MODE" = "build_and_run" ]]; then
