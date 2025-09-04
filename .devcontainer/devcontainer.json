@@ -1,9 +1,10 @@
 {
-  "name": "SubwaySurfersAI-2",
+  "name": "SubwaySurfersAI",
   "build": {
     "context": "..",
     "dockerfile": "../Dockerfile",
     "args": {
+      "DOCKER_BUILDKIT": "1"
     }
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/subwaysurfersai/workspace,type=bind",
