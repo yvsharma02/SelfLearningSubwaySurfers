@@ -1,0 +1,6 @@
+cp -r "$PIP_CACHE_DIR/." "$WORK_DIR/cache/pip"
+cp -r "$ANDROID_SDK_ROOT/." "$WORK_DIR/cache/android-sdk"
+mkdir "$WORK_DIR/cache/apt"
+rm -rf "$APT_CACHE_DIR/archives/partial"
+cp -r "$APT_CACHE_DIR/lists/." "$WORK_DIR/cache/apt/lists"
+cp -r "$APT_CACHE_DIR/archives/." "$WORK_DIR/cache/apt/archives"

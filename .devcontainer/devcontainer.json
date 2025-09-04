@@ -1,5 +1,5 @@
 {
-  "name": "SubwaySurfersAI",
+  "name": "SubwaySurfersAI-2",
   "build": {
     "context": "..",
     "dockerfile": "../Dockerfile",

@@ -3,11 +3,6 @@
 FROM nvidia/cuda:12.9.1-base-ubuntu24.04
 
 ENV USE_CACHE=1
-ARG EXPORT_CACHE=1
-#ENV APT_CACHER_URL=http://host.docker.internal:3142
-
-# Technically that folder only hosts apt-server, and rest all is pre-downloads, which are being copied here. But at this point I really don't care about the name semantics.
-# ARG $CACHE_SERVER_DIR=cache-server
 
 # Root here means all the data generated created by us in any way.
 ENV ROOT_DIR="/home/ubuntu/subwaysurfersai"
@@ -27,22 +22,28 @@ ENV PATH=$JAVA_HOME/bin:$PATH
 ENV PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/emulator:$PATH
 
 # copy all cache, even if we won't use it.
-COPY cache-server/generated* buildtime/preloaded_cache/
-
+COPY cache/ $ROOT_DIR/buildtime/preloaded_cache/
+RUN ls $ROOT_DIR/buildtime/preloaded_cache/
 # mkdir, just in case so we don't face dir does not exist errors.
-RUN [ "$USE_CACHE" = "1" ] && mkdir -p buildtime/preloaded_cache/pip 
-RUN [ "$USE_CACHE" = "1" ] && mkdir -p cache-server/preloaded_cache/android-sdk 
-RUN [ "$USE_CACHE" = "1" ] && mkdir -p preloaded_cache/apt/lists 
-RUN [ "$USE_CACHE" = "1" ] && mkdir -p preloaded_cache/apt/archives 
+RUN if [ "$USE_CACHE" = "1" ]; then \
+      mkdir -p $ROOT_DIR/buildtime/preloaded_cache/pip; \
+      mkdir -p $ROOT_DIR/buildtime/preloaded_cache/android-sdk; \
+      mkdir -p $ROOT_DIR/buildtime/preloaded_cache/apt/lists; \
+      mkdir -p $ROOT_DIR/buildtime/preloaded_cache/apt/archives; \
+      mkdir -p $PIP_CACHE_DIR; \
+      mkdir -p ANDROID_SDK_ROOT; \
+      mkdir -p APT_CACHE_DIR; \
+    fi
 
 # copy cache from within docker env to it's proper location. 
-RUN [ "$USE_CACHE" = "1" ] && cp buildtime/preloaded_cache/pip $PIP_CACHE_DIR
-RUN [ "$USE_CACHE" = "1" ] && cp cache-server/preloaded_cache/android-sdk $ANDROID_SDK_ROOT
-RUN [ "$USE_CACHE" = "1" ] && cp preloaded_cache/apt/lists $APT_CACHE_DIR/lists
-RUN [ "$USE_CACHE" = "1" ] && cp preloaded_cache/apt/archives $APT_CACHE_DIR/archives
+RUN if [ "$USE_CACHE" = "1" ]; then \
+      cp -r $ROOT_DIR/buildtime/preloaded_cache/pip "$PIP_CACHE_DIR" || true && \
+      cp -r $ROOT_DIR/buildtime/preloaded_cache/android-sdk "$ANDROID_SDK_ROOT" || true && \
+      cp -r $ROOT_DIR/buildtime/preloaded_cache/apt/lists "$APT_CACHE_DIR/lists" --no-preserve=ownership || true && \
+      cp -r $ROOT_DIR/buildtime/preloaded_cache/apt/archives "$APT_CACHE_DIR/archives" --no-preserve=ownership || true; \
+    fi
 
-RUN --mount=type=cache,target=$APT_CACHE_DIR/lists \
-    --mount=type=cache,target=$APT_CACHE_DIR/archives \
+RUN rm -f /etc/apt/apt.conf.d/docker-clean && \ 
     apt-get update && apt-get install -y --no-install-recommends \
     curl wget unzip git \
     python3 python3-pip python3-venv \
@@ -53,7 +54,7 @@ RUN --mount=type=cache,target=$APT_CACHE_DIR/lists \
     libsdl2-2.0-0 libsdl2-dev \
     libusb-1.0-0 libusb-1.0-0-dev \
     libx11-6 libxrender1 libxext6 libxrandr2 libxi6 libgl1 libgl1-mesa-dri libpulse0 \
-    libstdc++6 libgcc-s1 zlib1g
+    libstdc++6 libgcc-s1 zlib1g && rm -f /etc/apt/apt.conf.d/docker-clean
 
 RUN if [ "${USE_CACHE}" != "1" ] || [ ! -d "$ANDROID_SDK_ROOT/cmdline-tools/latest" ]; then \
         echo "Downloading command line tools..."; \
@@ -72,8 +73,7 @@ RUN if [ "${USE_CACHE}" != "1" ] || [ ! -d "$ANDROID_SDK_ROOT/cmdline-tools/late
         rm commandlinetools.zip; \
     fi
 
-RUN --mount=type=cache,target=$ANDROID_SDK_ROOT/.android/cache \
-    yes | sdkmanager --licenses && \
+RUN yes | sdkmanager --licenses && \
     if [ "${USE_CACHE}" != "1" ] || [ ! -d "$ANDROID_SDK_ROOT/platform-tools" ]; then \
         yes | sdkmanager "platform-tools"; \
     fi && \
@@ -93,15 +93,8 @@ RUN python3 -m venv $VIRTUAL_ENV
 RUN python3 -m pip install --upgrade pip
 
 COPY src/requirements.txt ${ROOT_DIR}/buildtime/requirements.txt
-
-RUN --mount=type=cache,target=$PIP_CACHE_DIR \
-    pip install -r ${ROOT_DIR}/buildtime/requirements.txt
+RUN pip install -r ${ROOT_DIR}/buildtime/requirements.txt
 
 COPY src/post_build.sh ${ROOT_DIR}/buildtime/post_build.sh
-#RUN chmod +x ${ROOT_DIR}/buildtime/post_build.sh
 RUN ${ROOT_DIR}/buildtime/post_build.sh
-#RUN rm -rf ${ROOT_DIR}/buildtime/
-
-RUN $ [ "$EXPORT_CACHE" = "1" ] && cp $PIP_CACHE_DIR $WORK_DIR/cache_server/generated/pip
-RUN $ [ "$EXPORT_CACHE" = "1" ] && cp $APT_CACHE_DIR/lists $WORK_DIR/cache-server/generated/apt/lists 
-RUN $ [ "$EXPORT_CACHE" = "1" ] && cp $PIP_CACHE_DIR /archives $WORK_DIR/cache-server/generated/apt/archives
+RUN rm -rf ${ROOT_DIR}/buildtime/
