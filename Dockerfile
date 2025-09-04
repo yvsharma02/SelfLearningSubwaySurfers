@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 # All heavy installs go to base so I don't have to manually download everything every single time. Might merge them later.
-FROM nvidia/cuda:12.9.1-base-ubuntu24.04 AS base
+FROM pytorch/pytorch:2.8.0-cuda12.9-cudnn9-devel
 
 ENV ROOT_DIR="/home/ubuntu/subwaysurfersai"
 ENV WORK_DIR=$ROOT_DIR/workspace
