@@ -4,6 +4,9 @@ FROM nvidia/cuda:12.9.1-base-ubuntu24.04
 
 ENV USE_CACHE=1
 
+# I realised midway that the reason that mount-type was not working was probabbly because buildkit was not being used with dev container. But till the point I realised about that, I was too commited to try this anyway.
+# Either way, this sucks as bad. So reverting it.
+
 # Root here means all the data generated created by us in any way.
 ENV ROOT_DIR="/home/ubuntu/subwaysurfersai"
 ENV WORK_DIR=$ROOT_DIR/workspace
