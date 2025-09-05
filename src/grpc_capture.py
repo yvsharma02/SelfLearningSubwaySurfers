@@ -1,8 +1,8 @@
 import grpc
 import cv2
 import numpy as np
-from generated.emulator_controller_pb2 import ImageFormat
-from generated import emulator_controller_pb2_grpc
+from emulator_controller_pb2 import ImageFormat
+import emulator_controller_pb2_grpc
 import time
 
 class Recorder:

@@ -1,4 +1,5 @@
 generated/*
 generated/__pycache__/*
 src/__pycache__/*
-src/emulator_controller/*
+src/emulator_controller_pb2_grpc.py
+src/emulator_controller_pb2.py

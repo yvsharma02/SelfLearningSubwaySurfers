@@ -7,7 +7,7 @@ from ppadb.client import Client as AdbClient
 def main():
     adb_client = AdbClient(host="127.0.0.1", port=5037)
     with open("generated/emulator_log.txt", "w+") as logfile:
-        device = emulator_utils.launch(adb_client, 10,  logfile, logfile)
+        device = emulator_utils.launch(adb_client, 15,  logfile, logfile)
         
         recorder = Recorder()
         done = False

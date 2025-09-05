@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 # All heavy installs go to base so I don't have to manually download everything every single time. Might merge them later.
-FROM pytorch/pytorch:2.8.0-cuda12.9-cudnn9-devel
+FROM pytorch/pytorch:2.8.0-cuda12.9-cudnn9-devel AS base_image
 
 ENV ROOT_DIR="/home/ubuntu/subwaysurfersai"
 ENV WORK_DIR=$ROOT_DIR/workspace
@@ -52,9 +52,30 @@ RUN echo "no" | avdmanager create avd -n default_avd -k "system-images;android-3
 RUN python3 -m venv $VIRTUAL_ENV
 RUN python3 -m pip install --upgrade pip
 
-COPY src/requirements_heavy.txt ${ROOT_DIR}/buildtime/requirements.txt
+COPY setup/requirements_heavy.txt ${ROOT_DIR}/buildtime/requirements.txt
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r ${ROOT_DIR}/buildtime/requirements.txt
 
-COPY src/post_build.sh ${ROOT_DIR}/buildtime/post_build.sh
+COPY setup/post_build_heavy.sh ${ROOT_DIR}/buildtime/post_build.sh
+RUN ${ROOT_DIR}/buildtime/post_build.sh
+RUN rm -rf ${ROOT_DIR}/buildtime/
+
+# The above part does all the heavy lifiting (Most things which won't change regularly while developing would go up).
+
+FROM base_image AS dev_image
+
+COPY . .
+COPY setup/requirements_light.txt ${ROOT_DIR}/buildtime/requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r ${ROOT_DIR}/buildtime/requirements.txt
+
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+    --mount=type=cache,target=/var/cache/apt \
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    xvfb x11-utils mesa-utils libglvnd-dev libgl1-mesa-dev libgles2-mesa-dev
+
+#RUN nvidia-xconfig --use-display-device=None --virtual=1920x1080
+
+# ENV ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
+
+COPY setup/post_build_light.sh ${ROOT_DIR}/buildtime/post_build.sh
 RUN ${ROOT_DIR}/buildtime/post_build.sh
 RUN rm -rf ${ROOT_DIR}/buildtime/

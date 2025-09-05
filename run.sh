@@ -64,5 +64,5 @@ if [[ "$MODE" = "run" || "$MODE" = "build_and_run" ]]; then
       -v $(pwd):$DATA_ROOT/workspace \
       $IMAGE_NAME \
       $run_flags  \
-      python src/main.py
+      bash 
 fi
