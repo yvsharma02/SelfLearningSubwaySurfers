@@ -76,6 +76,8 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
 
 # ENV ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
 
-COPY setup/post_build_light.sh ${ROOT_DIR}/buildtime/post_build.sh
-RUN ${ROOT_DIR}/buildtime/post_build.sh
-RUN rm -rf ${ROOT_DIR}/buildtime/
+# COPY setup/post_build_light.sh ${ROOT_DIR}/buildtime/post_build.sh
+# RUN ${ROOT_DIR}/buildtime/post_build.sh
+# RUN rm -rf ${ROOT_DIR}/buildtime/
+
+ENTRYPOINT [ "setup/entry.sh" ]
