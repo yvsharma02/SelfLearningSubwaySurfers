@@ -10,17 +10,18 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/subwaysurfersai/workspace,type=bind",
   "workspaceFolder": "/home/ubuntu/subwaysurfersai/workspace",
   "runArgs": [
-//    "--gpus",
-//    "all",
-//    "--device",
-//    "/dev/kvm",
+   "--gpus",
+   "all",
+   "--device",
+   "/dev/kvm",
     "--add-host=host.docker.internal:host-gateway"
   ],
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "zxh404.vscode-proto3"
       ]
     }
   }
