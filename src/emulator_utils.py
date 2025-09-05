@@ -15,7 +15,7 @@ def launch(adb_client : Client, timeout_s : float = 10.0, stdout = None, stderro
     start_cmd = [
     "emulator",
     "-avd", "default_avd",
-#    "-no-window",
+    "-no-window",
     "-no-audio",
     "-no-boot-anim",
     "-grpc", "8554",
