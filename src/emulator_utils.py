@@ -1,9 +1,11 @@
 import subprocess
+import cv2
 from ppadb.client import Client
 from ppadb.device import Device
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+import xvfb_capture
 
 from grpc._channel import _InactiveRpcError
 from grpc_capture import Recorder
@@ -21,7 +23,7 @@ def launch(adb_client : Client, timeout_s : float = 10.0, stdout = None, stderro
     "-grpc", "8554",
     "-idle-grpc-timeout", "0",
     "-gpu", ("swiftshader_indirect" if use_cpu_rendering else "host"),
-    "-accel", "on"
+    "-accel", "on",
     ]
 
     subprocess.Popen(start_cmd, stdout=stdout, stderr=stderror)
@@ -49,7 +51,7 @@ def kill(timeout_s = 5, stdout = None, stderror = None):
     subprocess.Popen(cmd_force_kill, stdout=stdout, stderr=stderror)
     
     
-def test_capture_rate(run_duration_s = 60.0, capture_function = None, setup_capture_function = None):
+def test_capture_rate(run_duration_s = 60.0, capture_function = None):
     # Since we want to target 60 fps. We won't ever get 300, so I can safely leave it at 300.
     data_point_count = int(300 * run_duration_s)
     frame_start_times = [time.time()] * data_point_count
@@ -59,32 +61,30 @@ def test_capture_rate(run_duration_s = 60.0, capture_function = None, setup_capt
     fsp_tracker = [0] * data_point_count
     fps_60_tracker = [0] * data_point_count
 
-    if (setup_capture_function != None):
-        setup_capture_function()
-
     while ((time.time() - frame_start_times[0]) <= run_duration_s):
         frame_start_times[capture_count] = time.time()
-        capture_function()
+        res = capture_function()
         capture_count += 1
 
         fps = capture_count / (time.time() - frame_start_times[0])
         last_60_frames_fps = 0 if capture_count < 60 else 60 / (time.time() - frame_start_times[capture_count - 60])
         fsp_tracker[capture_count - 1] = fps
         fps_60_tracker[capture_count - 1] = last_60_frames_fps
+        # cv2.imwrite(f"generated/images/{capture_count}.png", res)
         # print(f"{fps}  ----  {last_60_frames_fps}")
     
     return fsp_tracker[max(min(capture_count - 1, 60), 60):capture_count], fps_60_tracker[max(min(capture_count - 1, 60) - 1, 60):capture_count]
 
 def test_emulator(adb_client, cpu_rendering=False):
     with open(f"generated/emulator_log_{ 'cpu' if cpu_rendering else 'gpu'}.txt", "w+") as logfile:
-        launch(adb_client, 15,  logfile, logfile, cpu_rendering)
+        launch(adb_client, 10,  logfile, logfile, cpu_rendering)
         
-        recorder = Recorder()
+        recorder = xvfb_capture.XvfbCapture()# Recorder()
         done = False
         print("Waiting for emulator to start....")
         while (not done):
             try:
-                fps, fps60 = test_capture_rate(60, recorder.capture, recorder.setup)
+                fps, fps60 = test_capture_rate(15, recorder.capture)
                 plt.figure(1)
                 plt.title(f"{'CPU' if cpu_rendering else 'GPU'} FPS")
                 plt.xlabel("frame #")

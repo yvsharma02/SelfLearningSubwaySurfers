@@ -21,14 +21,8 @@ RUN --mount=type=cache,target=/var/lib/apt/lists \
     apt-get update && apt-get install -y --no-install-recommends \
     curl wget unzip git \
     python3 python3-pip python3-venv \
-    gcc pkg-config meson ninja-build \
     openjdk-17-jdk-headless \
-    ffmpeg \
-    libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev libswresample-dev \
-    libsdl2-2.0-0 libsdl2-dev \
-    libusb-1.0-0 libusb-1.0-0-dev \
-    libx11-6 libxrender1 libxext6 libxrandr2 libxi6 libgl1 libgl1-mesa-dri libpulse0 \
-    libstdc++6 libgcc-s1 zlib1g
+    xvfb x11-utils mesa-utils libglvnd-dev libgl1-mesa-dev libgles2-mesa-dev
 
 RUN --mount=type=cache,target=/tmp/downloads \
     [ -f /tmp/downloads/commandlinetools.zip ] || \
@@ -67,17 +61,16 @@ COPY . .
 COPY setup/requirements_light.txt ${ROOT_DIR}/buildtime/requirements.txt
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r ${ROOT_DIR}/buildtime/requirements.txt
 
-RUN --mount=type=cache,target=/var/lib/apt/lists \
-    --mount=type=cache,target=/var/cache/apt \
-    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    xvfb x11-utils mesa-utils libglvnd-dev libgl1-mesa-dev libgles2-mesa-dev
-
-#RUN nvidia-xconfig --use-display-device=None --virtual=1920x1080
-
-# ENV ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
-
-# COPY setup/post_build_light.sh ${ROOT_DIR}/buildtime/post_build.sh
-# RUN ${ROOT_DIR}/buildtime/post_build.sh
-# RUN rm -rf ${ROOT_DIR}/buildtime/
+# RUN --mount=type=cache,target=/var/lib/apt/lists \
+#     --mount=type=cache,target=/var/cache/apt \
+#     apt-get update && apt-get install -y --no-install-recommends \
+#     libx11-6 \
+#         libxrender1 \
+#         libxext6 \
+#         libxrandr2 \
+#         libxi6 \
+#         libgl1 \
+#         libpulse0 \
+#         libgl1-mesa-dri
 
 ENTRYPOINT [ "setup/entry.sh" ]
