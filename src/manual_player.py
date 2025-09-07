@@ -1,12 +1,15 @@
-from inputs import get_key
+# from inputs import devices
 from save_queue import SaveQue
 from grpc_controller import EmulatorController
 import actions
 from ppadb.client import Client as AdbClient
+from multi_device_reader import MultiDeviceReader
 import time
 import emulator_utils
+import select
 
-NOTHING_SAMPLING_RATE_ONE_IN_X = 5
+NOTHING_SAMPLING_RATE_ONE_IN_X = 30
+# DEFAULT_KB_IDX = -1
 
 keypress_action_map = {
     "NONE": actions.ACTION_NOTHING,
@@ -20,6 +23,7 @@ class ManualPlayer:
     def __init__(self, controller):
         self.started = False
         self.controller = controller
+        self.input_controller = MultiDeviceReader()
 
     def start_recording(self):
         if (self.started):
@@ -27,7 +31,6 @@ class ManualPlayer:
         self.dataset = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime(time.time()))
         print(f"Starting Recording... Dataset: ${self.dataset}\n")
         self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
-        self.started = False
         self.nothing_counter = 0
         self.started = True
         self.save_que.set_run_start_time()
@@ -41,34 +44,43 @@ class ManualPlayer:
         self.started = False
         self.save_que.stop()
 
-    def parse_key(self, event):
+    def is_valid_kb_down_event(self, event):
         if event.ev_type == "Key" and event.state == 1:
-            if event.code == "KEY_UP": return "KEY_UP"
-            elif event.code == "KEY_DOWN": return "KEY_DOWN"
-            elif event.code == "KEY_LEFT": return "KEY_LEFT"
-            elif event.code == "KEY_RIGHT": return "KEY_RIGHT"
-            elif event.code == "KEY_Q": return "Q"
-            elif event.code == "KEY_W": return "W"
-            elif event.code == "KEY_R": return "R"
+            if event.code == "KEY_UP": return True
+            elif event.code == "KEY_DOWN": return True
+            elif event.code == "KEY_LEFT": return True
+            elif event.code == "KEY_RIGHT": return True
+            elif event.code == "KEY_Q": return True
+            elif event.code == "KEY_W": return True
+            elif event.code == "KEY_R": return True
 
-        return "NONE"
+        return False
+    
 
     def update(self):
-        events = get_key()
         keypress = "NONE"
+
+        events = self.input_controller.read()
         for event in events:
-            keypress = self.parse_key(event)
-            print(event.code, event.ev_type, event.state)
-            if (keypress == "Q"): 
+            is_valid = self.is_valid_kb_down_event(event)
+            if (not is_valid):
+                continue
+            
+            keypress = event.code
+
+            if (keypress == "KEY_Q"): 
                 self.stop_recording()
                 return False
-            elif (keypress == "R"):
+            elif (keypress == "KEY_R"):
                 self.stop_recording()
                 return True
-            elif (keypress == "W"): 
+            elif (keypress == "KEY_W"): 
                 self.start_recording() 
                 return True
+            
+            break
 
+        
         if (self.started and keypress in keypress_action_map.keys()):
             action = keypress_action_map[keypress]
             
@@ -94,8 +106,10 @@ class ManualPlayer:
                     break
             except KeyboardInterrupt as e:
                 break
+            except Exception as e:
+                print(e)
         self.stop_recording()
-        emulator_utils.kill()
+        # emulator_utils.kill()
 
 
 def main():
