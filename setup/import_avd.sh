@@ -1,0 +1,1 @@
+# unzip ${ROOT_DIR}/buildtime/avd.zip -d ~/.android/avd/

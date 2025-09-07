@@ -10,6 +10,10 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/subwaysurfersai/workspace,type=bind",
   "workspaceFolder": "/home/ubuntu/subwaysurfersai/workspace",
   "runArgs": [
+  "-it",
+// For Keyboard access.
+  "--privileged",
+  "--volume=/dev/input:/dev/input", 
    "--gpus",
    "all",
    "--device",

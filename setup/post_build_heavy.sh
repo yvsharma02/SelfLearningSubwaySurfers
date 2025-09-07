@@ -1,6 +1,6 @@
 
 # This is only required for development
-apt-get update && apt-get install -y git
+# apt-get update && apt-get install -y git
 git config --global --add safe.directory /home/ubuntu/subwaysurfersai/workspace
 
 # I want to use the latest version as much as possible. This tries to get the latest emulator_controller.proto and then builds it. If it fails, it uses the backup on kept in the repo just in case.
