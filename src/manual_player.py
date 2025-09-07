@@ -22,6 +22,8 @@ class ManualPlayer:
         self.controller = controller
 
     def start_recording(self):
+        if (self.started):
+            return
         self.dataset = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime(time.time()))
         print(f"Starting Recording... Dataset: ${self.dataset}\n")
         self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
