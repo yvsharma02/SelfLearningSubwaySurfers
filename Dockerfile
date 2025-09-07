@@ -80,4 +80,6 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
         libgl1-mesa-dri \
         zip
 
+RUN echo "Built!"
+
 ENTRYPOINT [ "setup/entry.sh" ]

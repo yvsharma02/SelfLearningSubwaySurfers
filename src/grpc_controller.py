@@ -4,6 +4,7 @@ import emulator_controller_pb2 as emu_pb2
 import emulator_controller_pb2_grpc as emu_pb2_grpc
 import numpy as np
 import cv2
+import gc
 
 class EmulatorController:
     def __init__(self, height=800, width=480):
@@ -14,14 +15,18 @@ class EmulatorController:
         self.width = width
         self.channel = grpc.insecure_channel("[::1]:8554", options=options)
         self.stub = emu_pb2_grpc.EmulatorControllerStub(self.channel)
-        self.fmt = emu_pb2.ImageFormat(format=emu_pb2.ImageFormat.RGBA8888)
+        self.fmt = emu_pb2.ImageFormat(format=emu_pb2.ImageFormat.RGB888)
 
 
     def capture(self):
         frame = self.stub.getScreenshot(self.fmt)
         img = np.frombuffer(frame.image, dtype=np.uint8)
-        img = img.reshape((frame.format.height, frame.format.width, 4))
+        img = img.reshape((frame.format.height, frame.format.width, 3))
         img_bgr = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
+        memoryview(frame.image).release()
+
+        del frame
+        del img
         return img_bgr
 
     def stop(self):

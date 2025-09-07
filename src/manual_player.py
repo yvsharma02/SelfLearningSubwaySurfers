@@ -6,6 +6,8 @@ from ppadb.client import Client as AdbClient
 import time
 import emulator_utils
 
+NOTHING_SAMPLING_RATE_ONE_IN_X = 5
+
 keypress_action_map = {
     "NONE": actions.ACTION_NOTHING,
     "KEY_UP": actions.ACTION_UP,
@@ -17,17 +19,26 @@ keypress_action_map = {
 class ManualPlayer:
     def __init__(self, controller):
         self.controller = controller
-        dataset = time.strftime('%Y-%m-%d %H:%M %Z', time.localtime(time.time()))
-        self.save_que = SaveQue(dataset, f"generated/runs/dataset/{dataset}")
+        self.dataset = time.strftime('%Y-%m-%d %H:%M %Z', time.localtime(time.time()))
+        self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
         self.started = False
+        self.nothing_counter = 0
 
-    # Called automatically.
-    def start_internal(self):
+    def reset(self):
+        self.stop_recording()
+        self.dataset = time.strftime('%Y-%m-%d %H:%M %Z', time.localtime(time.time()))
+        self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
+        self.started = False
+        self.nothing_counter = 0
+
+    def start_recording(self):
+        print(f"Starting Recording... Dataset: ${self.dataset}\n")
         self.started = True
         self.save_que.set_run_start_time()
         self.save_que.start()
 
-    def stop_internal(self):
+    def stop_recording(self):
+        print("Stopping Recording...\n")
         if (not self.started): 
             return
         
@@ -42,8 +53,9 @@ class ManualPlayer:
             elif event.code == "KEY_RIGHT": return "KEY_RIGHT"
             elif event.code == "KEY_Q": return "Q"
             elif event.code == "KEY_W": return "W"
+            elif event.code == "KEY_R": return "R"
 
-        return None
+        return "NONE"
 
     def update(self):
         events = get_key()
@@ -52,32 +64,39 @@ class ManualPlayer:
             keypress = self.parse_key(event)
         
             if (keypress == "Q"): 
-                self.stop_internal()
+                self.stop_recording()
                 return False
+            elif (keypress == "R"):
+                self.stop_recording()
+                self.reset()
+                return True
             elif (keypress == "W"): 
-                self.start_internal() 
+                self.start_recording() 
                 return True
 
         if (self.started and keypress in keypress_action_map.keys()):
             action = keypress_action_map[keypress]
-            self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], self.controller.capture())
+            if (action != actions.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
+                self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], self.controller.capture())
             if (action is actions.ACTION_UP): self.controller.swipe_up()
             elif (action is actions.ACTION_DOWN): self.controller.swipe_down()
             elif (action is actions.ACTION_LEFT): self.controller.swipe_left()
             elif (action is actions.ACTION_RIGHT): self.controller.swipe_right()
 
+            self.nothing_counter += 1
+
         time.sleep(0.01)
         return True
 
     def run(self):
-        print("W to start, Q to quit")
+        print("W to start, R to reset, Q to quit\n")
         while True:
             try:
                 if (not self.update()):
                     break
             except KeyboardInterrupt as e:
                 break
-        self.stop_internal()
+        self.stop_recording()
         emulator_utils.kill()
 
 
@@ -85,7 +104,6 @@ def main():
     logfile = open("generated/emu_log.txt", "w+")
     adb_client = AdbClient(host="127.0.0.1", port=5037)
     emulator_utils.launch(adb_client, 15, stderror=logfile, stdout=logfile)
-    # time.sleep(15)
     player = ManualPlayer(EmulatorController())
     player.run()
     logfile.close()
