@@ -1,4 +1,3 @@
-# from inputs import devices
 from save_queue import SaveQue
 from grpc_controller import EmulatorController
 import actions
@@ -6,7 +5,8 @@ from ppadb.client import Client as AdbClient
 from multi_device_reader import MultiDeviceReader
 import time
 import emulator_utils
-import select
+import ssai_model
+import gc
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
 # DEFAULT_KB_IDX = -1
@@ -19,29 +19,33 @@ keypress_action_map = {
     "KEY_RIGHT": actions.ACTION_RIGHT,
 }
 
-class ManualPlayer:
-    def __init__(self, controller):
-        self.started = False
+class Player:
+    def __init__(self, controller, model=None, device=None):
+        self.started_recording = False
         self.controller = controller
         self.input_controller = MultiDeviceReader()
+        self.model = model # If model is null, resort to manual play.
+        self.device = device
+        self.nothing_counter = 0
+
 
     def start_recording(self):
-        if (self.started):
+        if (self.started_recording):
             return
         self.dataset = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime(time.time()))
         print(f"Starting Recording... Dataset: ${self.dataset}\n")
         self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
         self.nothing_counter = 0
-        self.started = True
+        self.started_recording = True
         self.save_que.set_run_start_time()
         self.save_que.start()
 
     def stop_recording(self):
         print("Stopping Recording...\n")
-        if (not self.started): 
+        if (not self.started_recording): 
             return
         
-        self.started = False
+        self.started_recording = False
         self.save_que.stop()
 
     def is_valid_kb_down_event(self, event):
@@ -79,24 +83,41 @@ class ManualPlayer:
                 return True
             
             break
-
         
-        if (self.started and keypress in keypress_action_map.keys()):
-            action = keypress_action_map[keypress]
-            
-            if (action != actions.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
-                self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], self.controller.capture())
-
-            if (action is actions.ACTION_UP): self.controller.swipe_up()
-            elif (action is actions.ACTION_DOWN): self.controller.swipe_down()
-            elif (action is actions.ACTION_LEFT): self.controller.swipe_left()
-            elif (action is actions.ACTION_RIGHT): self.controller.swipe_right()
-
-            if (action == actions.ACTION_NOTHING):
-                self.nothing_counter += 1
+        if (self.model is None):
+            self.manual_play(keypress)
+        else:
+            self.autoplay()
+    
 
         time.sleep(0.01)
         return True
+
+    def take_action(self, action):
+        if (action is actions.ACTION_UP): self.controller.swipe_up()
+        elif (action is actions.ACTION_DOWN): self.controller.swipe_down()
+        elif (action is actions.ACTION_LEFT): self.controller.swipe_left()
+        elif (action is actions.ACTION_RIGHT): self.controller.swipe_right()
+
+        if (action == actions.ACTION_NOTHING):
+            self.nothing_counter += 1
+
+    def autoplay(self):
+        img = self.controller.capture(False)
+        action = self.model.infer(img, self.device)
+        self.take_action(action)
+
+        del img
+        gc.collect()
+        time.sleep(0.3)
+
+    def manual_play(self, keypress):
+        if (self.started_recording and keypress in keypress_action_map.keys()):
+            action = keypress_action_map[keypress]
+            
+            if (action != actions.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
+                self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], self.controller.capture(True))
+            self.take_action(action)
 
     def run(self):
         print("W to start, R to reset, Q to quit\n")
@@ -113,11 +134,15 @@ class ManualPlayer:
 
 
 def main():
+    model = None
+    model = ssai_model.load("generated/models/test.pth")
+
     logfile = open("generated/emu_log.txt", "w+")
     adb_client = AdbClient(host="127.0.0.1", port=5037)
     emulator_utils.launch(adb_client, 15, stderror=logfile, stdout=logfile)
-    player = ManualPlayer(EmulatorController())
+    player = Player(EmulatorController(), model=model)
     player.run()
     logfile.close()
+    
 
 main()
