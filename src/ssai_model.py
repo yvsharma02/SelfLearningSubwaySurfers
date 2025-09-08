@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch
+import torch.nn.functional as F
 from torchvision import transforms
 
 class SSAICNN(nn.Module):
@@ -13,21 +14,23 @@ class SSAICNN(nn.Module):
     def __init__(self, num_classes=5):
         super(SSAICNN, self).__init__()
         self.features = nn.Sequential(
-            nn.Conv2d(3, 32, kernel_size=3, padding=1),
+            nn.Conv2d(3, 12, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.Conv2d(12, 24, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2),
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.Conv2d(24, 36, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2),
         )
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(128*8*8, 256),
+            nn.Linear(2304, 128),
             nn.ReLU(),
-            nn.Linear(256, num_classes)
+            nn.Linear(128, 32),
+            nn.ReLU(),
+            nn.Linear(32, num_classes)
         )
         
     def forward(self, x):
@@ -41,15 +44,20 @@ class SSAICNN(nn.Module):
 
         with torch.no_grad():
             outputs = self(image_tensor)
-            _, predicted_class = outputs.max(1)
+            probabilities = F.softmax(outputs, dim=1)
+            confidence, predicted_class = torch.max(probabilities, 1)
 
-        return predicted_class.item()
-    
+        return confidence.item(), predicted_class.item()
+        
+
+    def save_to_file(self, path):
+        torch.save(self.state_dict(), path)
 
 def load(path):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(device)
     state_dict = torch.load(path, map_location=device)
     model = SSAICNN()
-    model.load_state_dict(state_dict)
+    model.load_state_dict(torch.load(path))
     model.to(device)
-    return model
+    return model, device

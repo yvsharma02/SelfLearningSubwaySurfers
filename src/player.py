@@ -21,32 +21,34 @@ keypress_action_map = {
 
 class Player:
     def __init__(self, controller, model=None, device=None):
-        self.started_recording = False
+        self.started = False
         self.controller = controller
         self.input_controller = MultiDeviceReader()
         self.model = model # If model is null, resort to manual play.
         self.device = device
         self.nothing_counter = 0
+        self.auto_mode = model is None
 
 
-    def start_recording(self):
-        if (self.started_recording):
+    def start(self):
+        if (self.started):
             return
-        self.dataset = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime(time.time()))
-        print(f"Starting Recording... Dataset: ${self.dataset}\n")
-        self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
+        if (not self.auto_mode):
+            self.dataset = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime(time.time()))
+            print(f"Starting Recording... Dataset: ${self.dataset}\n")
+            self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
+            self.save_que.set_run_start_time()
+            self.save_que.start()
         self.nothing_counter = 0
-        self.started_recording = True
-        self.save_que.set_run_start_time()
-        self.save_que.start()
+        self.started = True
 
-    def stop_recording(self):
-        print("Stopping Recording...\n")
-        if (not self.started_recording): 
+    def stop(self):
+        if (not self.started): 
             return
-        
-        self.started_recording = False
-        self.save_que.stop()
+        if (not self.auto_mode):
+            print("Stopping Recording...\n")
+            self.started = False
+            self.save_que.stop()
 
     def is_valid_kb_down_event(self, event):
         if event.ev_type == "Key" and event.state == 1:
@@ -73,13 +75,13 @@ class Player:
             keypress = event.code
 
             if (keypress == "KEY_Q"): 
-                self.stop_recording()
+                self.stop()
                 return False
             elif (keypress == "KEY_R"):
-                self.stop_recording()
+                self.stop()
                 return True
             elif (keypress == "KEY_W"): 
-                self.start_recording() 
+                self.start() 
                 return True
             
             break
@@ -103,16 +105,22 @@ class Player:
             self.nothing_counter += 1
 
     def autoplay(self):
+        if (not self.started):
+            return
         img = self.controller.capture(False)
-        action = self.model.infer(img, self.device)
-        self.take_action(action)
+        confidence, action = self.model.infer(img, self.device)
+        print(action, confidence)
+        if (confidence > .6):
+            self.take_action(action)
 
         del img
         gc.collect()
-        time.sleep(0.3)
+        time.sleep(0.1)
 
     def manual_play(self, keypress):
-        if (self.started_recording and keypress in keypress_action_map.keys()):
+        if (not self.started):
+            return
+        if (keypress in keypress_action_map.keys()):
             action = keypress_action_map[keypress]
             
             if (action != actions.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
@@ -129,18 +137,18 @@ class Player:
                 break
             except Exception as e:
                 print(e)
-        self.stop_recording()
+        self.stop()
         # emulator_utils.kill()
 
 
 def main():
     model = None
-    model = ssai_model.load("generated/models/test.pth")
+    model, device = ssai_model.load("generated/models/test.pth")
 
     logfile = open("generated/emu_log.txt", "w+")
     adb_client = AdbClient(host="127.0.0.1", port=5037)
     emulator_utils.launch(adb_client, 15, stderror=logfile, stdout=logfile)
-    player = Player(EmulatorController(), model=model)
+    player = Player(EmulatorController(), model=model, device=device)
     player.run()
     logfile.close()
     

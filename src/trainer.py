@@ -51,13 +51,15 @@ def undersample_and_unmap(unbiased_data):
     for path, cls in unbiased_data.items():
         class_to_images[cls].append(path)
 
-    non_zero_classes = [cls for cls in class_to_images if cls != 0]
-    min_size = min(len(class_to_images[cls]) for cls in non_zero_classes)
 
-    undersampled_class_0 = random.sample(class_to_images[0], min_size)
+    non_zero_classes = [cls for cls in class_to_images if cls != 0]
+    # print([len(class_to_images[cls]) for cls in class_to_images])
+    target_size = max(sum(len(class_to_images[cls]) for cls in non_zero_classes) / 20, len(class_to_images[0]))
+
+    undersampled_class_0 = random.sample(class_to_images[0], target_size)
 
     balanced_image_paths = undersampled_class_0
-    balanced_labels = [0]*min_size
+    balanced_labels = [0]*target_size
 
     for cls in non_zero_classes:
         balanced_image_paths.extend(class_to_images[cls])
@@ -136,10 +138,11 @@ def main():
     train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*randomize_data(path, classes)), transform=SSAICNN.IMAGE_TRANSFORM)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(device)
     model = SSAICNN(num_classes=5).to(device)
     train(model, train_loader, device)
     test(model, test_loader, device)
-    
-    torch.save(model.state_dict(), "generated/models/test.pth")
+
+    model.save_to_file("generated/models/test.pth")
 
 main()
