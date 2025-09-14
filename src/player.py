@@ -9,8 +9,10 @@ import ssai_model
 import gc
 import game_state_detector
 from PIL import Image
+import trainer
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
+RETRAIN_AFTER_X_RUNS = 3
 # DEFAULT_KB_IDX = -1
 
 keypress_action_map = {
@@ -22,23 +24,26 @@ keypress_action_map = {
 }
 
 class Player:
-    def __init__(self, controller, model=None, device=None):
+    def __init__(self, controller, model=None, device=None, record=False):
         self.gsd = game_state_detector.StateDetector()
         self.started = False
         self.controller = controller
         self.input_controller = MultiDeviceReader()
-        self.model = model # If model is null, resort to manual play.
+        self.model = model
         self.device = device
         self.nothing_counter = 0
+        self.record = record
         self.auto_mode = model is not None
-
+        self.last_state = None
+        self.run_no = 0
 
     def start(self):
         if (self.started):
             return
-        if (not self.auto_mode):
-            self.dataset = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime(time.time()))
-            print(f"Starting Recording... Dataset: ${self.dataset}\n")
+        self.run_no += 1
+        if (self.record):
+            self.dataset = time.strftime('%Y-%m-%d %H:%M:%S %Z' + "-auto" if self.auto_mode else "", time.localtime(time.time()))
+            print(f"Starting Recording... Dataset: ${self.dataset}")
             self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
             self.save_que.set_run_start_time()
             self.save_que.start()
@@ -48,10 +53,14 @@ class Player:
     def stop(self):
         if (not self.started): 
             return
-        if (not self.auto_mode):
-            print("Stopping Recording...\n")
+
+        if (self.record):
+            print("Stopping Recording...")
             self.started = False
             self.save_que.stop()
+
+        if (self.run_no % RETRAIN_AFTER_X_RUNS == 0):
+            trainer.main()
 
     def is_valid_kb_down_event(self, event):
         if event.ev_type == "Key" and event.state == 1:
@@ -108,22 +117,33 @@ class Player:
             self.nothing_counter += 1
 
     def autoplay(self):
-        if (not self.started):
-            return
         img = self.controller.capture(True)
         state = self.gsd.detect_gamestate(img)
 
-        if (state == custom_enums.GAME_STATE_OVER):
-            self.controller.tap(400, 750)
+        if self.last_state == None:
+            self.last_state = state
+        else:
+            self.last_state = state
+            if (state == custom_enums.GAME_STATE_OVER):
+                self.stop()
+            else:
+                self.start()
 
-        confidence, action = self.model.infer(Image.fromarray(img), self.device)
-        print(action, confidence)
-        if (confidence > .6):
-            self.take_action(action)
+        if (state == custom_enums.GAME_STATE_ONGOING):
+            confidence, action = self.model.infer(Image.fromarray(img), self.device)
+            if (confidence > .6):
+                self.take_action(action)
+                self.save_ss(action, img)
+        else:
+            self.controller.tap(400, 750)
 
         del img
         gc.collect()
         time.sleep(0.1)
+
+    def save_ss(self, action, capture):
+        if (action != custom_enums.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
+            self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], capture)
 
     def manual_play(self, keypress):
         if (not self.started):
@@ -132,9 +152,7 @@ class Player:
             action = keypress_action_map[keypress]
             
             capture = self.controller.capture(True)
-            # print(self.gsd.detect_gamestate(capture=capture))
-            if (action != custom_enums.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
-                self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], capture)
+            self.save_ss(action, capture)
             self.take_action(action)
 
     def run(self):
@@ -148,7 +166,6 @@ class Player:
             except Exception as e:
                 print(e)
         self.stop()
-        # emulator_utils.kill()
 
 
 def main():
@@ -158,7 +175,7 @@ def main():
     logfile = open("generated/emu_log.txt", "w+")
     adb_client = AdbClient(host="127.0.0.1", port=5037)
     emulator_utils.launch(adb_client, 15, stderror=logfile, stdout=logfile)
-    player = Player(EmulatorController(), model=model, device=device)
+    player = Player(EmulatorController(), model=model, device=device, record=True)
     player.run()
     logfile.close()
     

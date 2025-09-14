@@ -9,6 +9,7 @@ from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 from dataset import ImageDataset
 from ssai_model import SSAICNN
+import run_validator
 
 def read_data(path, class_no):
     all_classes = set(range(class_no))
@@ -16,6 +17,8 @@ def read_data(path, class_no):
 
     for subdir, _, files in os.walk(path):
         if "metadata.txt" in files:
+            if (not run_validator.is_valid(subdir)):
+                continue
             metadata_path = os.path.join(subdir, "metadata.txt")
             with open(metadata_path, "r") as f:
                 lines = f.readlines()
@@ -135,11 +138,11 @@ def test(model, test_loader, device):
 def main():
     CLASSES = 5
     PATH = "generated/runs/dataset/"
-
+    print("Reading Data...")
     biased_data = read_data(PATH, CLASSES)
     path, classes = undersample_and_unmap(biased_data)
     train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*randomize_data(path, classes)), transform=SSAICNN.IMAGE_TRANSFORM)
-
+    print("Starting Training...")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     model = SSAICNN(num_classes=5).to(device)
@@ -148,4 +151,5 @@ def main():
 
     model.save_to_file("generated/models/test.pth")
 
-main()
+if __name__ == "__main__":
+    main()

@@ -32,7 +32,9 @@ class SaveQue:
 
     def stop(self):
         self.stop_signal_given = True
+        self.stop_internal()
 #        self.put(None, None) # Dummy to close queue.
+
 
     def stop_internal(self):
         self.run_start_time = None
