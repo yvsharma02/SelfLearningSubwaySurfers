@@ -6,7 +6,7 @@ from torchvision import transforms
 class SSAICNN(nn.Module):
 
     IMAGE_TRANSFORM = transforms.Compose([
-        transforms.Resize((64, 64)),
+        transforms.Resize((60, 100)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
     ])
@@ -26,7 +26,7 @@ class SSAICNN(nn.Module):
         )
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(2304, 128),
+            nn.Linear(3024, 128),
             nn.ReLU(),
             nn.Linear(128, 32),
             nn.ReLU(),
@@ -56,7 +56,6 @@ class SSAICNN(nn.Module):
 def load(path):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
-    state_dict = torch.load(path, map_location=device)
     model = SSAICNN()
     model.load_state_dict(torch.load(path))
     model.to(device)

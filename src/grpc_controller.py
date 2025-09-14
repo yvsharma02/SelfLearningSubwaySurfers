@@ -5,7 +5,7 @@ import emulator_controller_pb2_grpc as emu_pb2_grpc
 import numpy as np
 import cv2
 import gc
-from PIL import Image
+#from PIL import Image
 
 class EmulatorController:
     def __init__(self, height=800, width=480):
@@ -25,8 +25,8 @@ class EmulatorController:
         img = img.reshape((frame.format.height, frame.format.width, 3))
         if (return_cv2_img):
             res = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
-        else:
-            res = Image.fromarray(img, mode='RGB')
+        # else:
+        #     res = Image.fromarray(img, mode='RGB')
 
         memoryview(frame.image).release()
 

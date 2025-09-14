@@ -18,7 +18,10 @@ def read_data(path, class_no):
         if "metadata.txt" in files:
             metadata_path = os.path.join(subdir, "metadata.txt")
             with open(metadata_path, "r") as f:
-                for line in f:
+                lines = f.readlines()
+                for idx, line in enumerate(lines):
+                    if (idx >= len(lines) - 10): # Ignore the last 10 images, because they lead to the end of the game (mistakes were probabbly made.)
+                        continue
                     line = line.strip()
                     if not line:
                         continue
@@ -91,7 +94,7 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
 def train(model, train_loader, device):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    num_epochs = 25
+    num_epochs = 10
 
     for epoch in range(num_epochs):
         model.train()

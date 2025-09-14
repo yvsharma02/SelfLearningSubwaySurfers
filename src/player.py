@@ -1,33 +1,36 @@
 from save_queue import SaveQue
 from grpc_controller import EmulatorController
-import actions
+import custom_enums
 from ppadb.client import Client as AdbClient
 from multi_device_reader import MultiDeviceReader
 import time
 import emulator_utils
 import ssai_model
 import gc
+import game_state_detector
+from PIL import Image
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
 # DEFAULT_KB_IDX = -1
 
 keypress_action_map = {
-    "NONE": actions.ACTION_NOTHING,
-    "KEY_UP": actions.ACTION_UP,
-    "KEY_DOWN": actions.ACTION_DOWN,
-    "KEY_LEFT": actions.ACTION_LEFT,
-    "KEY_RIGHT": actions.ACTION_RIGHT,
+    "NONE": custom_enums.ACTION_NOTHING,
+    "KEY_UP": custom_enums.ACTION_UP,
+    "KEY_DOWN": custom_enums.ACTION_DOWN,
+    "KEY_LEFT": custom_enums.ACTION_LEFT,
+    "KEY_RIGHT": custom_enums.ACTION_RIGHT,
 }
 
 class Player:
     def __init__(self, controller, model=None, device=None):
+        self.gsd = game_state_detector.StateDetector()
         self.started = False
         self.controller = controller
         self.input_controller = MultiDeviceReader()
         self.model = model # If model is null, resort to manual play.
         self.device = device
         self.nothing_counter = 0
-        self.auto_mode = model is None
+        self.auto_mode = model is not None
 
 
     def start(self):
@@ -86,7 +89,7 @@ class Player:
             
             break
         
-        if (self.model is None):
+        if (not self.auto_mode):
             self.manual_play(keypress)
         else:
             self.autoplay()
@@ -96,19 +99,24 @@ class Player:
         return True
 
     def take_action(self, action):
-        if (action is actions.ACTION_UP): self.controller.swipe_up()
-        elif (action is actions.ACTION_DOWN): self.controller.swipe_down()
-        elif (action is actions.ACTION_LEFT): self.controller.swipe_left()
-        elif (action is actions.ACTION_RIGHT): self.controller.swipe_right()
+        if (action is custom_enums.ACTION_UP): self.controller.swipe_up()
+        elif (action is custom_enums.ACTION_DOWN): self.controller.swipe_down()
+        elif (action is custom_enums.ACTION_LEFT): self.controller.swipe_left()
+        elif (action is custom_enums.ACTION_RIGHT): self.controller.swipe_right()
 
-        if (action == actions.ACTION_NOTHING):
+        if (action == custom_enums.ACTION_NOTHING):
             self.nothing_counter += 1
 
     def autoplay(self):
         if (not self.started):
             return
-        img = self.controller.capture(False)
-        confidence, action = self.model.infer(img, self.device)
+        img = self.controller.capture(True)
+        state = self.gsd.detect_gamestate(img)
+
+        if (state == custom_enums.GAME_STATE_OVER):
+            self.controller.tap(400, 750)
+
+        confidence, action = self.model.infer(Image.fromarray(img), self.device)
         print(action, confidence)
         if (confidence > .6):
             self.take_action(action)
@@ -123,8 +131,10 @@ class Player:
         if (keypress in keypress_action_map.keys()):
             action = keypress_action_map[keypress]
             
-            if (action != actions.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
-                self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], self.controller.capture(True))
+            capture = self.controller.capture(True)
+            # print(self.gsd.detect_gamestate(capture=capture))
+            if (action != custom_enums.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
+                self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], capture)
             self.take_action(action)
 
     def run(self):
@@ -142,7 +152,7 @@ class Player:
 
 
 def main():
-    model = None
+    model, device = None, None
     model, device = ssai_model.load("generated/models/test.pth")
 
     logfile = open("generated/emu_log.txt", "w+")
