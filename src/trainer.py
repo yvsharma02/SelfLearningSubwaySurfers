@@ -8,7 +8,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 from dataset import ImageDataset
-from ssai_model import SSAICNN
+from ssai_model import SSAIModel
 import run_validator
 
 def read_data(path):
@@ -71,58 +71,77 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
     return train_dataset, train_loader, test_dataset, test_loader
 
 def train(model, train_loader, device):
-    criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    num_epochs = 50
+    num_epochs = 2
 
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
-        correct = 0
+        # correct = 0
         total = 0
         for images, labels in train_loader:
-            images, labels = images.to(device), labels.to(device)
+            images = images.to(device)
+            nothing_labels, action_labels = labels[0], labels[1]
+            # print(type(images))
+
+            nothing_labels = nothing_labels.to(device)
+            action_labels = action_labels.to(device)
             optimizer.zero_grad()
-            outputs = model(images)
-            loss = criterion(outputs, labels)
+            nothing_pred, action_pred = model(images)
+            loss = SSAIModel.calculate_loss(nothing_pred, action_pred, nothing_labels, action_labels)
             loss.backward()
             optimizer.step()
             
             running_loss += loss.item() * images.size(0)
-            _, predicted = outputs.max(1)
-            total += labels.size(0)
-            correct += predicted.eq(labels).sum().item()
+            # _, predicted = outputs.max(1)
+            total += images.size(0)
+            # correct += predicted.eq(labels).sum().item()
         
         train_loss = running_loss / total
-        train_acc = correct / total
-        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}")
+        # train_acc = correct / total
+        # print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}")
+        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}")
 
-def test(model, test_loader, device):
-    model.eval()
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for images, labels in test_loader:
-            images, labels = images.to(device), labels.to(device)
-            outputs = model(images)
-            _, predicted = outputs.max(1)
-            total += labels.size(0)
-            correct += predicted.eq(labels).sum().item()
-    test_acc = correct / total
-    print(f"Test Accuracy: {test_acc:.4f}")
+# def test(model, test_loader, device):
+#     model.eval()
+#     correct = 0
+#     total = 0
+#     with torch.no_grad():
+#         for images, labels in test_loader:
+
+#             nothing_labels, action_labels = labels[0], labels[1]
+
+#             nothing_labels = nothing_labels.to(device)
+#             action_labels = action_labels.to(device)
+#             images = images.to(device)
+
+#             nothing, action = model(images)
+#             _, act_pred = action.max(1)
+#             _, act_label = action_labels.max(1)
+#             total += images.size(0)
+
+#             if (nothing[0, 1].item() > .5 and nothing_labels[0, 1].item() > .5):
+#                 correct += 1
+#             elif (act_pred == act_label):
+#                 correct += 1
+
+
+#             correct += act_pred.eq(labels).sum().item()
+#     test_acc = correct / total
+#     print(f"Test Accuracy: {test_acc:.4f}")
 
 def main():
     PATH = "generated/runs/dataset/"
     print("Reading Data...")
     data = read_data(PATH)
     path, classes = labelify(data)
-    train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*randomize_data(path, classes)), transform=SSAICNN.IMAGE_TRANSFORM)
+    train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*randomize_data(path, classes)), transform=SSAIModel.IMAGE_TRANSFORM)
     print("Starting Training...")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
-    model = SSAICNN(num_classes=5).to(device)
+    model = SSAIModel().to(device)
     train(model, train_loader, device)
-    test(model, test_loader, device)
+    # test(model, test_loader, device)
 
     model.save_to_file("generated/models/test.pth")
 

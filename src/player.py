@@ -130,11 +130,15 @@ class Player:
                 self.start()
 
         if (state == custom_enums.GAME_STATE_ONGOING):
-            confidence, action = self.model.infer(Image.fromarray(img), self.device)
-            print(f"{action} : {confidence}")
+            nothing, confidence, action = self.model.infer(Image.fromarray(img), self.device)
             if (confidence > .75):
-                self.take_action(action)
-                self.save_ss(action, img)
+                action = custom_enums.ACTION_NOTHING
+            else:
+                action += 1 # Reshift due to readdition of nothing.
+            # print(f"{action} : {confidence}")
+            # if (confidence > .75):
+            #     self.take_action(action)
+            #     self.save_ss(action, img)
         else:
             self.controller.tap(400, 750)
 
