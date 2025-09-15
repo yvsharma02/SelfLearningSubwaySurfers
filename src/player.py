@@ -12,7 +12,7 @@ from PIL import Image
 import trainer
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
-RETRAIN_AFTER_X_RUNS = 3
+RETRAIN_AFTER_X_RUNS = 25
 # DEFAULT_KB_IDX = -1
 
 keypress_action_map = {
@@ -131,7 +131,8 @@ class Player:
 
         if (state == custom_enums.GAME_STATE_ONGOING):
             confidence, action = self.model.infer(Image.fromarray(img), self.device)
-            if (confidence > .6):
+            print(f"{action} : {confidence}")
+            if (confidence > .75):
                 self.take_action(action)
                 self.save_ss(action, img)
         else:
@@ -180,4 +181,5 @@ def main():
     logfile.close()
     
 
-main()
+if __name__ == "__main__":
+    main()

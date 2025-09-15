@@ -11,67 +11,43 @@ from dataset import ImageDataset
 from ssai_model import SSAICNN
 import run_validator
 
-def read_data(path, class_no):
-    all_classes = set(range(class_no))
-    image_classes = {}  # {image_path: class_number}
-
+def read_data(path):
+    res = [[], [], [], [], []]
     for subdir, _, files in os.walk(path):
         if "metadata.txt" in files:
             if (not run_validator.is_valid(subdir)):
                 continue
             metadata_path = os.path.join(subdir, "metadata.txt")
             with open(metadata_path, "r") as f:
-                lines = f.readlines()
+                lines = f.readlines()[:-10] # Ignore the last 10 images, because they lead to the end of the game (mistakes were probabbly made.)
                 for idx, line in enumerate(lines):
-                    if (idx >= len(lines) - 10): # Ignore the last 10 images, because they lead to the end of the game (mistakes were probabbly made.)
-                        continue
                     line = line.strip()
-                    if not line:
-                        continue
-                    parts = line.split(";")
-                    if len(parts) != 3:
-                        print(f"Skipping malformed line: {line}")
-                        continue
+                    index, time, eliminations = line.split(';')
+                    index = int(index.strip())
+                    time = float(time.strip())
+                    eliminations = eliminations.strip("[] \n").split(",")
+                    eliminations = [int(x) for x in eliminations]
+                    action = [x for x in range(0, 5) if x not in eliminations][0]
+                    res[action].append(os.path.join(subdir, f"{index}.png"))
 
-                    image_no = parts[0].strip()
-                    int_list_str = parts[2].strip().strip("[]")
-                    if int_list_str:
-                        int_list = set(map(int, int_list_str.split(",")))
-                    else:
-                        int_list = set()
+    # Undersample biased data.
+    nothing_target_size = int(sum(len(res[x]) for x in range(1, 5)) / 3)
+    nothing_target_size = min(nothing_target_size, len(res[0]))
+    rs = random.sample(range(0, len(res[0])), nothing_target_size)
+    res[0] = [res[0][x] for x in rs]
 
-                    img_class = list(all_classes - int_list)
-                    if len(img_class) != 1:
-                        print(f"Warning: ambiguous class for {image_no} in {metadata_path}")
-                        continue
-                    img_class = img_class[0]
+    return res
 
-                    image_path = os.path.join(subdir, f"{image_no}.png")
-                    image_classes[image_path] = img_class
+def labelify(data):
+    images = []
+    labels = []
 
-        
-    return image_classes
+    for c in range(0, len(data)):
+        for img in data[c]:
+            images.append(img)
+            labels.append(c)
 
-def undersample_and_unmap(unbiased_data):
-    class_to_images = defaultdict(list)
-    for path, cls in unbiased_data.items():
-        class_to_images[cls].append(path)
-
-
-    non_zero_classes = [cls for cls in class_to_images if cls != 0]
-    # print([len(class_to_images[cls]) for cls in class_to_images])
-    target_size = max(sum(len(class_to_images[cls]) for cls in non_zero_classes) / 20, len(class_to_images[0]))
-
-    undersampled_class_0 = random.sample(class_to_images[0], target_size)
-
-    balanced_image_paths = undersampled_class_0
-    balanced_labels = [0]*target_size
-
-    for cls in non_zero_classes:
-        balanced_image_paths.extend(class_to_images[cls])
-        balanced_labels.extend([cls]*len(class_to_images[cls]))
-
-    return balanced_image_paths, balanced_labels
+    return images, labels
 
 def randomize_data(balanced_image_paths, balanced_labels):
     combined = list(zip(balanced_image_paths, balanced_labels))
@@ -97,7 +73,7 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
 def train(model, train_loader, device):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    num_epochs = 10
+    num_epochs = 50
 
     for epoch in range(num_epochs):
         model.train()
@@ -136,11 +112,10 @@ def test(model, test_loader, device):
     print(f"Test Accuracy: {test_acc:.4f}")
 
 def main():
-    CLASSES = 5
     PATH = "generated/runs/dataset/"
     print("Reading Data...")
-    biased_data = read_data(PATH, CLASSES)
-    path, classes = undersample_and_unmap(biased_data)
+    data = read_data(PATH)
+    path, classes = labelify(data)
     train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*randomize_data(path, classes)), transform=SSAICNN.IMAGE_TRANSFORM)
     print("Starting Training...")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

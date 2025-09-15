@@ -16,19 +16,24 @@ class SSAICNN(nn.Module):
         self.features = nn.Sequential(
             nn.Conv2d(3, 12, kernel_size=3, padding=1),
             nn.ReLU(),
+            nn.Dropout(p=.1),
             nn.MaxPool2d(2),
             nn.Conv2d(12, 24, kernel_size=3, padding=1),
             nn.ReLU(),
+            nn.Dropout(p=.1),
             nn.MaxPool2d(2),
             nn.Conv2d(24, 36, kernel_size=3, padding=1),
             nn.ReLU(),
+            nn.Dropout(p=.1),
             nn.MaxPool2d(2),
         )
         self.classifier = nn.Sequential(
             nn.Flatten(),
             nn.Linear(3024, 128),
+            nn.Dropout(p=.4),
             nn.ReLU(),
             nn.Linear(128, 32),
+            nn.Dropout(p=.4),
             nn.ReLU(),
             nn.Linear(32, num_classes)
         )
