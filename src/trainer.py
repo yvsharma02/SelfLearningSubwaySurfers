@@ -73,7 +73,7 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
 
 def train(model, train_loader, device):
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    num_epochs = 15
+    num_epochs = 30
 
     for epoch in range(num_epochs):
         model.train()
@@ -116,7 +116,7 @@ def train(model, train_loader, device):
                 # print(nothing_labels[i].item())
                 if ((nothing_pred[i].item() == 1 and nothing_labels[i].item() == 1) or (nothing_pred[i].item() == 0 and nothing_labels[i].item() == 0)):
                     nothing_correct += 1
-                elif (nothing_labels[i].item() == 0 and action_pred[i].item() == action_labels[i].item()):
+                if (nothing_labels[i].item() == 0 and action_pred[i].item() == action_labels[i].item()):
                     action_corrent += 1
 
                 nothing_count += 1
