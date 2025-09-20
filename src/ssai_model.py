@@ -11,7 +11,7 @@ class SSAIModel(nn.Module):
         transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
     ])
 
-    def calculate_loss(pred_nothing_y, pred_action_y, actual_nothing_y, actual_action_y):
+    def calculate_loss_of_batch(pred_nothing_y, pred_action_y, actual_nothing_y, actual_action_y):
         actual_action_y = torch.argmax(actual_action_y, dim=1)
         actual_nothing_y = torch.argmax(actual_nothing_y, dim=1)
 
@@ -21,7 +21,7 @@ class SSAIModel(nn.Module):
         nothing_prob = F.log_softmax(pred_nothing_y, dim=1)
         nothing_loss = F.nll_loss(nothing_prob, actual_nothing_y)
 
-        return action_loss + nothing_loss
+        return action_loss * action_loss + nothing_loss
 
     def __init__(self):
         super(SSAIModel, self).__init__()

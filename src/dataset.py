@@ -22,7 +22,7 @@ class ImageDataset(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        nothing_y = [1.0, 0] if label is not custom_enums.ACTION_NOTHING else [0.0, 1.0]
+        nothing_y = [1.0, 0] if label != custom_enums.ACTION_NOTHING else [0.0, 1.0]
         action_y = [0] * 4
         if (label is not custom_enums.ACTION_NOTHING):
             action_y[label - 1] = 1.0 # Since we removed NOTHING action, we need to shift indices.
