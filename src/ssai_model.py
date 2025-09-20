@@ -37,32 +37,36 @@ class SSAIModel(nn.Module):
         super(SSAIModel, self).__init__()
 
         self.common_stage = nn.Sequential(
-            nn.Conv2d(3, 12, kernel_size=3, padding=1),
+            nn.Conv2d(3, 16, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(12, 24, kernel_size=3, padding=1),
+            nn.Dropout(p=0.5),
+            nn.AvgPool2d(2),
+            nn.Conv2d(16, 64, kernel_size=5, padding=1),
             nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(24, 36, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
+            # nn.Dropout(p=0.5),
+            # nn.AvgPool2d(2),
+            # nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            # nn.ReLU(),
+            nn.MaxPool2d(5),
+            nn.Dropout(p=0.3),
             nn.Flatten(),
+            nn.Linear(2880, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 128),
+            nn.ReLU(),
         )
 
         self.nothing_predictor = nn.Sequential(
-            nn.Linear(3024, 128),
-            nn.ReLU(),
+            nn.Dropout(p=0.5),
             nn.Linear(128, 32),
             nn.ReLU(),
             nn.Linear(32, 2) # (TAKE_ACTION, DO_NOT_TAKE_ACTION)
         )
 
         self.action_predictor = nn.Sequential(
-            nn.Linear(3024, 128),
-            nn.ReLU(),
-            nn.Linear(128, 32),
-            nn.ReLU(),
-            nn.Linear(32, 4) # Up Down Left Right
+            nn.Linear(128, 4),
+#            nn.ReLU(),
+#            nn.Linear(32, 4) # Up Down Left Right
         )
 
     def forward(self, x):
@@ -74,13 +78,14 @@ class SSAIModel(nn.Module):
     def infer(self, img, device):
         image_tensor = SSAIModel.IMAGE_TRANSFORM(img).unsqueeze(0)
         image_tensor = image_tensor.to(device)
-
+        # print(image_tensor.shape)
         with torch.no_grad():
             nothing, action = self(image_tensor)
             nothing = F.softmax(nothing, dim=1)
             action = F.softmax(action, dim=1)
-
-            nothing_confidence = nothing[1]
+            # print(f"nothing shape: {nothing.shape}")
+            # print(f"action shape: {action.shape}")
+            nothing_confidence = nothing[0, 1]
             confidence, predicted_class = torch.max(action, 1)
 
         return nothing_confidence.item(), confidence.item(), predicted_class.item()

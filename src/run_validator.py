@@ -1,6 +1,9 @@
 import os
 
 def is_valid(dir):
+    if (dir.endswith ("-auto")):
+        print(f"rejected {dir}")
+        return False
     try:
         with open(os.path.join(dir, "metadata.txt")) as f:
             lines = f.readlines()

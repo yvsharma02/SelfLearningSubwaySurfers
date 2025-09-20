@@ -116,6 +116,8 @@ class Player:
         if (action == custom_enums.ACTION_NOTHING):
             self.nothing_counter += 1
 
+        print (f"Taking Action: {action}")
+
     def autoplay(self):
         img = self.controller.capture(True)
         state = self.gsd.detect_gamestate(img)
@@ -131,10 +133,15 @@ class Player:
 
         if (state == custom_enums.GAME_STATE_ONGOING):
             nothing, confidence, action = self.model.infer(Image.fromarray(img), self.device)
-            if (confidence > .75):
+            print(f"Nothing confidence: {confidence}")
+            if (confidence > .85):
                 action = custom_enums.ACTION_NOTHING
             else:
                 action += 1 # Reshift due to readdition of nothing.
+            
+            self.take_action(action)
+#            self.save_ss(action, )
+
             # print(f"{action} : {confidence}")
             # if (confidence > .75):
             #     self.take_action(action)
