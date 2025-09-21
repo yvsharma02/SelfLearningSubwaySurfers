@@ -2,82 +2,82 @@ import constants
 import cv2
 import numpy as np
 from collections import deque
-import constants
 
 class StateDetector:
 
-    def __init__(self, track_size=4, detect_bound=0.982, undetect_bound=0.965):
+    def __init__(self, track_size=3, detect_bound=0.98, undetect_bound=0.96):
         self.reference_pause = cv2.imread("data/reference_images/pause_button.png")
-        self.reference_police = cv2.imread("data/reference_images/police4.png", cv2.IMREAD_UNCHANGED) #RGBA
-        # print(self.reference_police.shape)
+        self.reference_police = cv2.imread("data/reference_images/police4.png", cv2.IMREAD_UNCHANGED)  # RGBA
         self.scaled_police = self.build_scaled_templates(self.reference_police)
-        # self.reference_doggo = cv2.imread("data/reference_images/doggo2.png")
 
-        self.detected_for = 0
-        self.last_detected = False
-
-        self.track_size=track_size
+        self.track_size = track_size
         self.detect_bound = detect_bound
         self.undetect_bound = undetect_bound
         self.police_state_queue = deque(maxlen=track_size)
-        self.last_time_detected = None
 
-    def build_scaled_templates(self, reference, scales=np.linspace(.1, 1, 10)):
+        self.last_detected = False
+        self.detected_for = 0
+
+    def build_scaled_templates(self, reference, scales=np.linspace(.05, 1, 20)):
         templates = []
         for scale in scales:
             new_w = int(reference.shape[1] * scale)
             new_h = int(reference.shape[0] * scale)
-            if new_w < 10 or new_h < 10:  # skip too small
+            if new_w < 10 or new_h < 10:
                 continue
             resized = cv2.resize(reference, (new_w, new_h))
             templates.append(resized)
-        
         return templates
 
-    def detect_gamestate(self,  capture):
-        x1, y1, x2, y2 = constants.scale_dimensions(11, 10, 66, 67)
-        result = cv2.matchTemplate(capture[x1:x2, y1:y2, :], self.reference_pause, cv2.TM_CCOEFF_NORMED)
-        _, max_val, _, _ = cv2.minMaxLoc(result)
-        if (max_val > .4):
-            return constants.GAME_STATE_ONGOING
-        
-        return constants.GAME_STATE_OVER
-    
     def detector(self, capture, scaled_references):
         x1, y1, x2, y2 = constants.scale_dimensions(0, 360, 480, 800)
         patch = capture[y1:y2, x1:x2]
-        cv2.imwrite("patch.png", patch)
         true_max = 0
-        for i, scaled in enumerate(scaled_references):
-            if (scaled.shape[0] > patch.shape[0] or scaled.shape[1] > patch.shape[1]):
+
+        for scaled in scaled_references:
+            if scaled.shape[0] > patch.shape[0] or scaled.shape[1] > patch.shape[1]:
                 continue
-            # cv2.imwrite(f"ref-{i}.png", scaled)
             mask = cv2.threshold(scaled[:, :, 3], 0, 255, cv2.THRESH_BINARY)[1]
-            result = cv2.matchTemplate(patch, scaled[:,:, 0:3], cv2.TM_CCORR_NORMED, mask=mask)
-            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+            result = cv2.matchTemplate(patch, scaled[:, :, :3], cv2.TM_CCORR_NORMED, mask=mask)
+            _, max_val, _, _ = cv2.minMaxLoc(result)
             true_max = max(max_val, true_max)
 
         return true_max
 
+    def weighted_average(self, queue, alpha=0.6):
+        avg = 0
+        total_weight = 0
+        for i, val in enumerate(queue):
+            weight = alpha * (1 - alpha) ** (len(queue) - 1 - i)
+            avg += val * weight
+            total_weight += weight
+        return avg / total_weight if total_weight > 0 else 0
+
     def detect_police(self, capture):
         confidence = self.detector(capture, self.scaled_police)
-        # print(confidence)
         self.police_state_queue.append(confidence)
+        # print(confidence)
 
-        if (len(self.police_state_queue) < self.track_size):
+        if len(self.police_state_queue) < self.track_size:
             return False
-        
-        avg_confidence = sum(self.police_state_queue) / len(self.police_state_queue)
 
-        new_detection = None
-        if (avg_confidence > self.detect_bound):
-            new_detection = True
-        if (avg_confidence < self.undetect_bound):
-            new_detection = False
+        avg_confidence = self.weighted_average(self.police_state_queue)
 
-        if (new_detection is None):
-            new_detection = self.last_detected
-        
+        new_detection = self.last_detected
+        if avg_confidence > self.detect_bound:
+            if not self.last_detected:
+                self.detected_for += 1
+                if self.detected_for >= self.track_size:
+                    new_detection = True
+                    self.detected_for = 0
+        elif avg_confidence < self.undetect_bound:
+            if self.last_detected:
+                self.detected_for += 1
+                if self.detected_for >= self.track_size:
+                    new_detection = False
+                    self.detected_for = 0
+        else:
+            self.detected_for = 0
+
         self.last_detected = new_detection
-
         return new_detection
