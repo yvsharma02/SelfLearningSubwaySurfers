@@ -71,7 +71,6 @@ class SSAIModel(nn.Module):
         )
 
     def forward(self, x):
-        print(x.shape)
         x = self.common_stage(x)
         do_something = self.nothing_predictor(x)
         action = self.action_predictor(x)

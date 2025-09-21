@@ -73,7 +73,7 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
 
 def train(model, train_loader, device):
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    num_epochs = 30
+    num_epochs = 1
 
     for epoch in range(num_epochs):
         model.train()
