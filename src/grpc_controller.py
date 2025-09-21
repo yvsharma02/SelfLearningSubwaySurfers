@@ -8,7 +8,7 @@ import gc
 #from PIL import Image
 
 class EmulatorController:
-    def __init__(self, height=800, width=480):
+    def __init__(self, height=200, width=120):
         options = [
             ('grpc.max_receive_message_length', 20 * 1024 * 1024)
         ]
@@ -22,9 +22,9 @@ class EmulatorController:
     def capture(self, return_cv2_img):
         frame = self.stub.getScreenshot(self.fmt)
         img = np.frombuffer(frame.image, dtype=np.uint8)
-        img = img.reshape((frame.format.height, frame.format.width, 3))
+        img_scaled = cv2.resize (img.reshape((frame.format.height, frame.format.width, 3)), (self.width, self.height), interpolation=cv2.INTER_AREA)
         if (return_cv2_img):
-            res = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
+            res = cv2.cvtColor(img_scaled, cv2.COLOR_RGBA2BGR)
         # else:
         #     res = Image.fromarray(img, mode='RGB')
 
