@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from dataset import ImageDataset
 from ssai_model import SSAIModel
 import run_validator
-import custom_enums
+import constants
 
 def read_data(path):
     res = [[], [], [], [], []]

@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 import cv2
-import custom_enums
+import constants
 from PIL import Image
 import torch
 
@@ -22,9 +22,9 @@ class ImageDataset(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        nothing_y = [1.0, 0] if label != custom_enums.ACTION_NOTHING else [0.0, 1.0]
+        nothing_y = [1.0, 0] if label != constants.ACTION_NOTHING else [0.0, 1.0]
         action_y = [0] * 4
-        if (label is not custom_enums.ACTION_NOTHING):
+        if (label is not constants.ACTION_NOTHING):
             action_y[label - 1] = 1.0 # Since we removed NOTHING action, we need to shift indices.
         
         return image, (torch.tensor(nothing_y), torch.tensor(action_y))

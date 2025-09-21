@@ -1,6 +1,6 @@
 from save_queue import SaveQue
 from grpc_controller import EmulatorController
-import custom_enums
+import constants
 from ppadb.client import Client as AdbClient
 from multi_device_reader import MultiDeviceReader
 import time
@@ -16,11 +16,11 @@ RETRAIN_AFTER_X_RUNS = 25
 # DEFAULT_KB_IDX = -1
 
 keypress_action_map = {
-    "NONE": custom_enums.ACTION_NOTHING,
-    "KEY_UP": custom_enums.ACTION_UP,
-    "KEY_DOWN": custom_enums.ACTION_DOWN,
-    "KEY_LEFT": custom_enums.ACTION_LEFT,
-    "KEY_RIGHT": custom_enums.ACTION_RIGHT,
+    "NONE": constants.ACTION_NOTHING,
+    "KEY_UP": constants.ACTION_UP,
+    "KEY_DOWN": constants.ACTION_DOWN,
+    "KEY_LEFT": constants.ACTION_LEFT,
+    "KEY_RIGHT": constants.ACTION_RIGHT,
 }
 
 class Player:
@@ -109,12 +109,12 @@ class Player:
         return True
 
     def take_action(self, action):
-        if (action is custom_enums.ACTION_UP): self.controller.swipe_up()
-        elif (action is custom_enums.ACTION_DOWN): self.controller.swipe_down()
-        elif (action is custom_enums.ACTION_LEFT): self.controller.swipe_left()
-        elif (action is custom_enums.ACTION_RIGHT): self.controller.swipe_right()
+        if (action is constants.ACTION_UP): self.controller.swipe_up()
+        elif (action is constants.ACTION_DOWN): self.controller.swipe_down()
+        elif (action is constants.ACTION_LEFT): self.controller.swipe_left()
+        elif (action is constants.ACTION_RIGHT): self.controller.swipe_right()
 
-        if (action == custom_enums.ACTION_NOTHING):
+        if (action == constants.ACTION_NOTHING):
             self.nothing_counter += 1
 
         # print (f"Taking Action: {action}")
@@ -127,16 +127,16 @@ class Player:
             self.last_state = state
         else:
             self.last_state = state
-            if (state == custom_enums.GAME_STATE_OVER):
+            if (state == constants.GAME_STATE_OVER):
                 self.stop()
             else:
                 self.start()
 
-        if (state == custom_enums.GAME_STATE_ONGOING):
+        if (state == constants.GAME_STATE_ONGOING):
             nothing, confidence, action = self.model.infer(Image.fromarray(img), self.device)
             # print(f"Nothing confidence: {confidence}")
             if (confidence > .9):
-                action = custom_enums.ACTION_NOTHING
+                action = constants.ACTION_NOTHING
             else:
                 action += 1 # Reshift due to readdition of nothing.
             self.take_action(action)
@@ -154,7 +154,7 @@ class Player:
         # time.sleep(0.1)
 
     def save_ss(self, action, capture):
-        if (action != custom_enums.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
+        if (action != constants.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
             self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], capture)
 
     def manual_play(self, keypress):
