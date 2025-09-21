@@ -6,7 +6,7 @@ from torchvision import transforms
 class SSAIModel(nn.Module):
 
     IMAGE_TRANSFORM = transforms.Compose([
-        transforms.Resize((60, 100)),
+        transforms.Resize((100, 60)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
     ])
@@ -41,18 +41,19 @@ class SSAIModel(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=0.5),
             nn.AvgPool2d(2),
-            nn.Conv2d(16, 64, kernel_size=5, padding=1),
+            nn.Conv2d(16, 48, kernel_size=3, padding=1),
             nn.ReLU(),
+            nn.AvgPool2d(3),
             # nn.Dropout(p=0.5),
             # nn.AvgPool2d(2),
-            # nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.Conv2d(48, 54, kernel_size=5, padding=1),
             # nn.ReLU(),
-            nn.MaxPool2d(5),
+            nn.MaxPool2d(3),
             nn.Dropout(p=0.3),
             nn.Flatten(),
-            nn.Linear(2880, 1024),
+            nn.Linear(432, 216),
             nn.ReLU(),
-            nn.Linear(1024, 128),
+            nn.Linear(216, 128),
             nn.ReLU(),
         )
 
@@ -70,6 +71,7 @@ class SSAIModel(nn.Module):
         )
 
     def forward(self, x):
+        print(x.shape)
         x = self.common_stage(x)
         do_something = self.nothing_predictor(x)
         action = self.action_predictor(x)

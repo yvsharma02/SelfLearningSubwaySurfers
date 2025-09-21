@@ -58,7 +58,7 @@ class SaveQue:
         cv2.imwrite(os.path.join(self.dataset_dir, f"{item.im_no}.png"), item.img)
         eliminated_actions_str = f"[{','.join([str(act) for act in item.elimiated_choices])}]"
         self.metadata_file.write(f"{item.im_no}; {item.time_sec}; {eliminated_actions_str}\n")
-        print(f"Frame: ${item.im_no}")
+        # print(f"Frame: ${item.im_no}")
         del item
         gc.collect()
         return True

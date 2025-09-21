@@ -32,7 +32,7 @@ def read_data(path):
                     res[action].append(os.path.join(subdir, f"{index}.png"))
 
     # Undersample biased data.
-    nothing_target_size = int(sum(len(res[x]) for x in range(1, 5)) / 3)
+    nothing_target_size = sum(len(res[x]) for x in range(1, 5))
     nothing_target_size = min(nothing_target_size, len(res[0]))
     rs = random.sample(range(0, len(res[0])), nothing_target_size)
     res[0] = [res[0][x] for x in rs]

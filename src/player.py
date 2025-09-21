@@ -36,13 +36,14 @@ class Player:
         self.auto_mode = model is not None
         self.last_state = None
         self.run_no = 0
+        self.last_detected = False
 
     def start(self):
         if (self.started):
             return
         self.run_no += 1
         if (self.record):
-            self.dataset = time.strftime('%Y-%m-%d %H:%M:%S %Z' + "-auto" if self.auto_mode else "", time.localtime(time.time()))
+            self.dataset = time.strftime(('%Y-%m-%d %H:%M:%S %Z' + ("-auto" if self.auto_mode else "")), time.localtime(time.time()))
             print(f"Starting Recording... Dataset: ${self.dataset}")
             self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
             self.save_que.set_run_start_time()
@@ -116,7 +117,7 @@ class Player:
         if (action == custom_enums.ACTION_NOTHING):
             self.nothing_counter += 1
 
-        print (f"Taking Action: {action}")
+        # print (f"Taking Action: {action}")
 
     def autoplay(self):
         img = self.controller.capture(True)
@@ -133,12 +134,11 @@ class Player:
 
         if (state == custom_enums.GAME_STATE_ONGOING):
             nothing, confidence, action = self.model.infer(Image.fromarray(img), self.device)
-            print(f"Nothing confidence: {confidence}")
-            if (confidence > .85):
+            # print(f"Nothing confidence: {confidence}")
+            if (confidence > .9):
                 action = custom_enums.ACTION_NOTHING
             else:
                 action += 1 # Reshift due to readdition of nothing.
-            
             self.take_action(action)
 #            self.save_ss(action, )
 
@@ -151,7 +151,7 @@ class Player:
 
         del img
         gc.collect()
-        time.sleep(0.1)
+        # time.sleep(0.1)
 
     def save_ss(self, action, capture):
         if (action != custom_enums.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
@@ -160,10 +160,17 @@ class Player:
     def manual_play(self, keypress):
         if (not self.started):
             return
+
+        capture = self.controller.capture(True)
+        det = self.gsd.detect_police(capture)
+        if (self.last_detected is None or self.last_detected != det):
+            self.last_detected = det
+            print(f"Currently: {det}")
+        self.save_ss(0, capture)   
+        
         if (keypress in keypress_action_map.keys()):
             action = keypress_action_map[keypress]
             
-            capture = self.controller.capture(True)
             self.save_ss(action, capture)
             self.take_action(action)
 
@@ -182,7 +189,7 @@ class Player:
 
 def main():
     model, device = None, None
-    model, device = ssai_model.load("generated/models/test.pth")
+    # model, device = ssai_model.load("generated/models/test.pth")
 
     logfile = open("generated/emu_log.txt", "w+")
     adb_client = AdbClient(host="127.0.0.1", port=5037)
