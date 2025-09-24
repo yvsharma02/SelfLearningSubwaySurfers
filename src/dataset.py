@@ -16,16 +16,15 @@ class ImageDataset(Dataset):
     def __getitem__(self, idx):
         img_path = self.image_paths[idx]
         label = self.labels[idx]
+        
         image = cv2.imread(img_path)
-#        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = Image.open(img_path).convert("RGB")
+        
         print(image.shape)
         if self.transform:
             image = self.transform(image)
 
-        nothing_y = [1.0, 0] if label != constants.ACTION_NOTHING else [0.0, 1.0]
-        action_y = [0] * 4
-        if (label is not constants.ACTION_NOTHING):
-            action_y[label - 1] = 1.0 # Since we removed NOTHING action, we need to shift indices.
-        
-        return image, (torch.tensor(nothing_y), torch.tensor(action_y))
+        elimination_confidence = [0] * 5
+        elimination_confidence[label] = 1.0
+
+        return image, elimination_confidence

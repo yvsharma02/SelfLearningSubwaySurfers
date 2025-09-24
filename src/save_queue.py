@@ -16,6 +16,8 @@ class SaveQue:
         self.dataset_dir = dataset_dir
         self.dataset_name = dataset_name
         self.counter = 0
+        os.makedirs(self.dataset_dir, exist_ok=True)
+        self.metadata_file = open(os.path.join(self.dataset_dir, "metadata.txt"), "w+")
 
     def put(self, eliminated_choices, img, time_s):
         item = SaveItem(self.counter, eliminated_choices, time_s, img)
@@ -29,3 +31,6 @@ class SaveQue:
         del item
         gc.collect()
         return True
+    
+    def close(self):
+        self.metadata_file.close()

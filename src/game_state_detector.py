@@ -30,7 +30,7 @@ class StateDetector:
             (11, 10, 66, 67))
 
     def detect_gamestate(self, capture):
-        if self.pause_button_detector.detect(capture):
+        if not self.pause_button_detector.detect(capture):
             return constants.GAME_STATE_OVER
         
         if self.police_detector.detect(capture):

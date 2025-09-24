@@ -20,7 +20,7 @@ def read_data(path):
                 continue
             metadata_path = os.path.join(subdir, "metadata.txt")
             with open(metadata_path, "r") as f:
-                lines = f.readlines()[:-10] # Ignore the last 10 images, because they lead to the end of the game (mistakes were probabbly made.)
+                lines = f.readlines()
                 for idx, line in enumerate(lines):
                     line = line.strip()
                     index, time, eliminations = line.split(';')
@@ -28,15 +28,17 @@ def read_data(path):
                     time = float(time.strip())
                     eliminations = eliminations.strip("[] \n").split(",")
                     eliminations = [int(x) for x in eliminations]
-                    action = [x for x in range(0, 5) if x not in eliminations][0]
-                    res[action].append(os.path.join(subdir, f"{index}.png"))
+#                    action = [x for x in range(0, 5) if x not in eliminations][0]
+                    eliminated = eliminations[0]
+                    res[eliminated].append(os.path.join(subdir, f"{index}.png"))
 
     # Undersample biased data.
-    nothing_target_size = sum(len(res[x]) for x in range(1, 5))
-    nothing_target_size = min(nothing_target_size, len(res[0]))
-    rs = random.sample(range(0, len(res[0])), nothing_target_size)
-    res[0] = [res[0][x] for x in rs]
-
+    # nothing_target_size = sum(len(res[x]) for x in range(1, 5))
+    # nothing_target_size = min(nothing_target_size, len(res[0]))
+    # rs = random.sample(range(0, len(res[0])), nothing_target_size)
+    # res[0] = [res[0][x] for x in rs]
+    print(res)
+    # res[x] contains images where action_x was eliminated.
     return res
 
 def labelify(data):
@@ -136,33 +138,6 @@ def train(model, train_loader, device):
         print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}, Nothing Accuracy: {nothing_acc}, Action Accuracy: {action_acc}")
         # print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}")
 
-# def test(model, test_loader, device):
-#     model.eval()
-#     correct = 0
-#     total = 0
-#     with torch.no_grad():
-#         for images, labels in test_loader:
-
-#             nothing_labels, action_labels = labels[0], labels[1]
-
-#             nothing_labels = nothing_labels.to(device)
-#             action_labels = action_labels.to(device)
-#             images = images.to(device)
-
-#             nothing, action = model(images)
-#             _, act_pred = action.max(1)
-#             _, act_label = action_labels.max(1)
-#             total += images.size(0)
-
-#             if (nothing[0, 1].item() > .5 and nothing_labels[0, 1].item() > .5):
-#                 correct += 1
-#             elif (act_pred == act_label):
-#                 correct += 1
-
-
-#             correct += act_pred.eq(labels).sum().item()
-#     test_acc = correct / total
-#     print(f"Test Accuracy: {test_acc:.4f}")
 
 def main():
     PATH = "generated/runs/dataset/"

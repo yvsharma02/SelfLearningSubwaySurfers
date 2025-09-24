@@ -14,17 +14,11 @@ class SSAIModel(nn.Module):
         transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
     ])
 
-    def calculate_loss_of_batch(pred_nothing, pred_action, actual_nothing_y, actual_action_y):
-        actual_action_y = torch.argmax(actual_action_y, dim=1)
-        actual_nothing_y = torch.argmax(actual_nothing_y, dim=1)
+    def calculate_loss_of_batch(pred, required):
+        prob = F.log_softmax(pred, dim=1)
+        loss = F.nll_loss(prob, required)
 
-        action_prob = F.log_softmax(pred_action, dim=1)
-        action_loss = F.nll_loss(action_prob, actual_action_y)
-
-        nothing_prob = F.log_softmax(pred_nothing, dim=1)
-        nothing_loss = F.nll_loss(nothing_prob, actual_nothing_y)
-
-        return action_loss + nothing_loss
+        return loss
 
     def __init__(self):
         super(SSAIModel, self).__init__()
@@ -47,46 +41,39 @@ class SSAIModel(nn.Module):
             nn.ReLU(),
             nn.Linear(216, 128),
             nn.ReLU(),
-        )
-
-        self.nothing_predictor = nn.Sequential(
-            nn.Dropout(p=0.5),
-            nn.Linear(128, 32),
+            nn.Dropout(p=0.4),
+            nn.Linear(128, 64),
             nn.ReLU(),
-            nn.Linear(32, 2) # (TAKE_ACTION, DO_NOT_TAKE_ACTION)
-        )
-
-        self.action_predictor = nn.Sequential(
-            nn.Dropout(p=0.25),
-            nn.Linear(128, 48), # Up Down Left Right
+            nn.Dropout(p=0.4),
+            nn.Linear(64, 32), # NOTHING UP DOWN LEFT RIGHT
             nn.ReLU(),
-            nn.Linear(48, 4)
+            nn.Linear(32, 5)
         )
 
     def forward(self, img, time):
         flattened = self.cnn_stage(img)
-        flattened_with_velocity = torch.cat(flattened, torch.tensor([time]), dim=0)
+        flattened_with_velocity = torch.cat((flattened, time), dim=1)
+        action = self.fully_connected_stage(flattened_with_velocity)
+        return action
 
-        stage1res = self.fully_connected_stage(flattened_with_velocity)
-        
-        do_something = self.nothing_predictor(stage1res)
-        action = self.action_predictor(stage1res)
-        return do_something, action
+    # Returns the action to take.
+    def infer(self, img, time, device):
+        if type(time) is float:
+            time_tensor = torch.tensor([time])
 
-    def infer(self, img, device):
         image_tensor = SSAIModel.IMAGE_TRANSFORM(img).unsqueeze(0)
         image_tensor = image_tensor.to(device)
+        time_tensor = time_tensor.unsqueeze(0)
+        time_tensor = time_tensor.to(device)
         # print(image_tensor.shape)
         with torch.no_grad():
-            nothing, action = self(image_tensor)
-            nothing = F.softmax(nothing, dim=1)
+            action = self(image_tensor, time_tensor)
             action = F.softmax(action, dim=1)
             # print(f"nothing shape: {nothing.shape}")
             # print(f"action shape: {action.shape}")
-            nothing_confidence = nothing[0, 1]
-            confidence, predicted_class = torch.max(action, 1)
+            confidence, predicted_class = torch.min(action, 1)
 
-        return nothing_confidence.item(), confidence.item(), predicted_class.item()
+        return predicted_class.item()
         
 
     def save_to_file(self, path):
