@@ -10,6 +10,8 @@ import gc
 import game_state_detector
 from PIL import Image
 import trainer
+from ingame_run import InGameRun
+
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
 RETRAIN_AFTER_X_RUNS = 25
@@ -23,42 +25,46 @@ keypress_action_map = {
     "KEY_RIGHT": constants.ACTION_RIGHT,
 }
 
+
 class Player:
-    def __init__(self, controller, model=None, device=None, record=False):
+    def __init__(self, model=None, device=None):
         self.gsd = game_state_detector.StateDetector()
-        self.started = False
-        self.controller = controller
-        self.input_controller = MultiDeviceReader()
+        self.controller = EmulatorController()
         self.model = model
         self.device = device
-        self.nothing_counter = 0
-        self.record = record
-        self.auto_mode = model is not None
-        self.last_state = None
+        self.current_run = None
         self.run_no = 0
-        self.last_detected = False
+        # self.started = False
+        # self.controller = controller
+        self.input_controller = MultiDeviceReader()
+        # self.model = model
+        # self.device = device
+        # self.nothing_counter = 0
+        # self.record = record
+        # self.auto_mode = model is not None
+        # self.last_state = None
+        # self.run_no = 0
+        # self.last_detected = False
+        # self.current_run = None
+        # # (Action, Action Time, Game State when Action was took)
+        # self.last_action_data = (None, None, None)
 
     def start(self):
-        if (self.started):
+        if (self.current_run != None):
             return
+
+        self.dataset = time.strftime(('%Y-%m-%d %H:%M:%S %Z' + ("-auto" if self.auto_mode else "")), time.localtime(time.time()))
+        print(f"Starting Recording... Dataset: ${self.dataset}")
+        self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
+        self.current_run = InGameRun(self.gsd, self.controller, self.save_que)
         self.run_no += 1
-        if (self.record):
-            self.dataset = time.strftime(('%Y-%m-%d %H:%M:%S %Z' + ("-auto" if self.auto_mode else "")), time.localtime(time.time()))
-            print(f"Starting Recording... Dataset: ${self.dataset}")
-            self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
-            self.save_que.set_run_start_time()
-            self.save_que.start()
-        self.nothing_counter = 0
-        self.started = True
 
     def stop(self):
-        if (not self.started): 
+        if (self.current_run == None): 
             return
 
-        if (self.record):
-            print("Stopping Recording...")
-            self.started = False
-            self.save_que.stop()
+        print("Stopping Recording...")
+        self.current_run = None
 
         if (self.run_no % RETRAIN_AFTER_X_RUNS == 0):
             trainer.main()
@@ -98,14 +104,11 @@ class Player:
                 return True
             
             break
-        
-        if (not self.auto_mode):
-            self.manual_play(keypress)
-        else:
-            self.autoplay()
-    
 
-        time.sleep(0.01)
+        if (self.current_run == None):
+            return True
+
+        self.autoplay()
         return True
 
     def take_action(self, action):
@@ -120,61 +123,75 @@ class Player:
         # print (f"Taking Action: {action}")
 
     def autoplay(self):
+        if(not self.current_run.tick()):
+            self.current_run = None
+            return
+        
+        if (self.current_run.last_action_time is not None or time.time() and self.current_run.last_action_time < self.current_run.next_action_delay()):
+            return 
+
         img = self.controller.capture(True)
-        state = self.gsd.detect_gamestate(img)
+    
+        action = self.model.infer(Image.fromarray(img), self.device)
+        self.current_run.take_action(action, img)
 
-        if self.last_state == None:
-            self.last_state = state
-        else:
-            self.last_state = state
-            if (state == constants.GAME_STATE_OVER):
-                self.stop()
-            else:
-                self.start()
+        # img = self.controller.capture(True)
 
-        if (state == constants.GAME_STATE_ONGOING):
-            nothing, confidence, action = self.model.infer(Image.fromarray(img), self.device)
-            # print(f"Nothing confidence: {confidence}")
-            if (confidence > .9):
-                action = constants.ACTION_NOTHING
-            else:
-                action += 1 # Reshift due to readdition of nothing.
-            self.take_action(action)
-#            self.save_ss(action, )
+#         img = self.controller.capture(True)
+#         state = self.gsd.detect_gamestate(img)
 
-            # print(f"{action} : {confidence}")
-            # if (confidence > .75):
-            #     self.take_action(action)
-            #     self.save_ss(action, img)
-        else:
-            self.controller.tap(400, 750)
+#         if self.last_state == None:
+#             self.last_state = state
+#         else:
+#             self.last_state = state
+#             if (state == constants.GAME_STATE_OVER):
+#                 self.stop()
+#             else:
+#                 self.start()
 
-        del img
-        gc.collect()
+#         if (state == constants.GAME_STATE_ONGOING):
+#             nothing, confidence, action = self.model.infer(Image.fromarray(img), self.device)
+#             # print(f"Nothing confidence: {confidence}")
+#             if (confidence > .9):
+#                 action = constants.ACTION_NOTHING
+#             else:
+#                 action += 1 # Reshift due to readdition of nothing.
+#             self.take_action(action)
+# #            self.save_ss(action, )
+
+#             # print(f"{action} : {confidence}")
+#             # if (confidence > .75):
+#             #     self.take_action(action)
+#             #     self.save_ss(action, img)
+#         else:
+#             self.controller.tap(400, 750)
+
+#         del img
+#         gc.collect()
         # time.sleep(0.1)
 
-    def save_ss(self, action, capture):
-        if (action != constants.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
-            self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], capture)
+    # def save_ss(self, action, capture):
+    #     if (action != constants.ACTION_NOTHING or self.nothing_counter % NOTHING_SAMPLING_RATE_ONE_IN_X == 0):
+    #         self.save_que.put([x for x in range(0, len(keypress_action_map.keys())) if x is not action], capture)
 
-    def manual_play(self, keypress):
-        if (not self.started):
-            return
+    # def manual_play(self, keypress):
+    #     if (not self.started):
+    #         return
 
-        capture = self.controller.capture(True)
-        det = self.gsd.detect_police(capture)
-        if (self.last_detected is None or self.last_detected != det):
-            self.last_detected = det
-            print(f"Currently: {det}")
-        self.save_ss(0, capture)   
+    #     capture = self.controller.capture(True)
+    #     det = self.gsd.detect_police(capture)
+    #     if (self.last_detected is None or self.last_detected != det):
+    #         self.last_detected = det
+    #         print(f"Currently: {det}")
+    #     self.save_ss(0, capture)   
         
-        if (keypress in keypress_action_map.keys()):
-            action = keypress_action_map[keypress]
+    #     if (keypress in keypress_action_map.keys()):
+    #         action = keypress_action_map[keypress]
             
-            self.save_ss(action, capture)
-            self.take_action(action)
+    #         self.save_ss(action, capture)
+    #         self.take_action(action)
 
-    def run(self):
+    def start_mainloop(self):
         print("W to start, R to reset, Q to quit\n")
         while True:
             try:
@@ -195,7 +212,7 @@ def main():
     adb_client = AdbClient(host="127.0.0.1", port=5037)
     emulator_utils.launch(adb_client, 15, stderror=logfile, stdout=logfile)
     player = Player(EmulatorController(), model=model, device=device, record=True)
-    player.run()
+    player.start_mainloop()
     logfile.close()
     
 

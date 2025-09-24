@@ -30,8 +30,15 @@ class StateDetector:
             (11, 10, 66, 67))
 
     def detect_gamestate(self, capture):
-        pause_button_detected = self.pause_button_detector.detect(capture)
-        return constants.GAME_STATE_ONGOING if pause_button_detected else constants.GAME_STATE_OVER        
+        if self.pause_button_detector.detect(capture):
+            return constants.GAME_STATE_OVER
+        
+        if self.police_detector.detect(capture):
+            return constants.GAME_STATE_NON_FATAL_MISTAKE
+        
+        return constants.GAME_STATE_ONGOING
+        
+    #     # return constants.GAME_STATE_ONGOING if pause_button_detected else constants.GAME_STATE_OVER        
 
-    def detect_police(self, capture):
-        return self.police_detector.detect(capture)
+    # def detect_police(self, capture):
+    #     return self.police_detector.detect(capture)
