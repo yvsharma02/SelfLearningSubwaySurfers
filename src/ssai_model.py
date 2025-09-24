@@ -3,10 +3,13 @@ import torch
 import torch.nn.functional as F
 from torchvision import transforms
 
+# Instead of predicting which choice to make, predict which choices to elimiate.
+# (The choice least likely to be elimiated is our result.)
+
 class SSAIModel(nn.Module):
 
     IMAGE_TRANSFORM = transforms.Compose([
-        transforms.Resize((100, 60)),
+        transforms.Resize((60, 100)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
     ])
@@ -21,22 +24,12 @@ class SSAIModel(nn.Module):
         nothing_prob = F.log_softmax(pred_nothing, dim=1)
         nothing_loss = F.nll_loss(nothing_prob, actual_nothing_y)
 
-        # print("Nothing:")
-        # print ("Labl: [" + ",".join([str(x.item()) for x in actual_nothing_y]) + "]")
-        # print ("Pred: [" + ",".join([str(x.item()) for x in pred_nothing.argmax(dim=1)]) + "]")
-
-        # print("Action:")
-        # print ("Labl: [" + ",".join([str(x.item()) for x in actual_action_y]) + "]")
-        # print ("Pred: [" + ",".join([str(x.item()) for x in pred_action.argmax(dim=1)]) + "]")
-        # print("_____________________________________________________________________")
-
-        # print(f"Action Loss: {action_loss:.4f}, Nothing Loss: {nothing_loss:.4f}")
         return action_loss + nothing_loss
 
     def __init__(self):
         super(SSAIModel, self).__init__()
 
-        self.common_stage = nn.Sequential(
+        self.cnn_stage = nn.Sequential(
             nn.Conv2d(3, 16, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.Dropout(p=0.5),
@@ -44,14 +37,13 @@ class SSAIModel(nn.Module):
             nn.Conv2d(16, 48, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.AvgPool2d(3),
-            # nn.Dropout(p=0.5),
-            # nn.AvgPool2d(2),
             nn.Conv2d(48, 54, kernel_size=5, padding=1),
-            # nn.ReLU(),
             nn.MaxPool2d(3),
             nn.Dropout(p=0.3),
             nn.Flatten(),
-            nn.Linear(432, 216),
+        )
+        self.fully_connected_stage = nn.Sequential(
+            nn.Linear(432 + 1, 216),
             nn.ReLU(),
             nn.Linear(216, 128),
             nn.ReLU(),
@@ -65,15 +57,20 @@ class SSAIModel(nn.Module):
         )
 
         self.action_predictor = nn.Sequential(
-            nn.Linear(128, 4),
-#            nn.ReLU(),
-#            nn.Linear(32, 4) # Up Down Left Right
+            nn.Dropout(p=0.25),
+            nn.Linear(128, 48), # Up Down Left Right
+            nn.ReLU(),
+            nn.Linear(48, 4)
         )
 
-    def forward(self, x):
-        x = self.common_stage(x)
-        do_something = self.nothing_predictor(x)
-        action = self.action_predictor(x)
+    def forward(self, img, time):
+        flattened = self.cnn_stage(img)
+        flattened_with_velocity = torch.cat(flattened, torch.tensor([time]), dim=0)
+
+        stage1res = self.fully_connected_stage(flattened_with_velocity)
+        
+        do_something = self.nothing_predictor(stage1res)
+        action = self.action_predictor(stage1res)
         return do_something, action
 
     def infer(self, img, device):

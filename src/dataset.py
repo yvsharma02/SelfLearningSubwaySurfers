@@ -19,6 +19,7 @@ class ImageDataset(Dataset):
         image = cv2.imread(img_path)
 #        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = Image.open(img_path).convert("RGB")
+        print(image.shape)
         if self.transform:
             image = self.transform(image)
 

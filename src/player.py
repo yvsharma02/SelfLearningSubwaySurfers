@@ -189,7 +189,7 @@ class Player:
 
 def main():
     model, device = None, None
-    model, device = ssai_model.load("generated/models/test.pth")
+    # model, device = ssai_model.load("generated/models/test.pth")
 
     logfile = open("generated/emu_log.txt", "w+")
     adb_client = AdbClient(host="127.0.0.1", port=5037)
