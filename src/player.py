@@ -57,6 +57,7 @@ class Player:
 
         if (self.run_no % RETRAIN_AFTER_X_RUNS == 0):
             trainer.main()
+            self.model, self.device = ssai_model.load("generated/models/test.pth")
 
     def is_valid_kb_down_event(self, event):
         if event.ev_type == "Key" and event.state == 1:
@@ -109,6 +110,7 @@ class Player:
     def autoplay(self, img, gamestate):
         self.current_run.tick(gamestate)
         if (self.current_run.can_perform_action_now()):
+            print("Taking Action...")
             action = self.model.infer(Image.fromarray(img), self.current_run.run_secs(), self.device)
             self.current_run.take_action(action, img, gamestate)
 
@@ -128,8 +130,8 @@ class Player:
 
 def main():
     model, device = None, None
-#    model, device = ssai_model.load("generated/models/test.pth")
-    model, device = ssai_model.SSAIModel(), torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model, device = ssai_model.load("generated/models/test.pth")
+    # model, device = ssai_model.SSAIModel(), torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
     logfile = open("generated/emu_log.txt", "w+")

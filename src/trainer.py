@@ -75,7 +75,7 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
 
 def train(model, train_loader, device):
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    num_epochs = 1
+    num_epochs = 10
 
     for epoch in range(num_epochs):
         model.train()
@@ -88,21 +88,15 @@ def train(model, train_loader, device):
         # total = 0
         for images, labels in train_loader:
             images = images.to(device)
-            nothing_labels, action_labels = labels[0], labels[1]
-            # print(type(images))
 
-            nothing_labels = nothing_labels.to(device)
-            action_labels = action_labels.to(device)
+            action_labels = labels.to(device)
             optimizer.zero_grad()
-            nothing_pred, action_pred = model(images)
-            loss = SSAIModel.calculate_loss_of_batch(nothing_pred, action_pred, nothing_labels, action_labels)
+            action_pred = model(images)
+            loss = SSAIModel.calculate_loss_of_batch(action_pred, action_labels)
             loss.backward()
             optimizer.step()
 
-            nothing_labels = nothing_labels.argmax(dim = 1)
             action_labels = action_labels.argmax(dim = 1)
-
-            nothing_pred = nothing_pred.argmax(dim = 1)
             action_pred = action_pred.argmax(dim = 1)
 
             # print("Nothing:")
@@ -114,28 +108,21 @@ def train(model, train_loader, device):
             # print ("Pred: [" + ",".join([str(x.item()) for x in action_pred]) + "]")
             # print("_____________________________________________________________________")
 
-            for i in range(0, len(nothing_pred)):
+            for i in range(0, len(action_pred)):
                 # print(nothing_labels[i].item())
-                if ((nothing_pred[i].item() == 1 and nothing_labels[i].item() == 1) or (nothing_pred[i].item() == 0 and nothing_labels[i].item() == 0)):
-                    nothing_correct += 1
-                if (nothing_labels[i].item() == 0 and action_pred[i].item() == action_labels[i].item()):
+                if (action_pred[i].item() == action_labels[i].item()):
                     action_corrent += 1
-
-                nothing_count += 1
-
-                if (nothing_labels[i].item() == 0):
-                    action_count += 1
-            
+                action_count += 1
             running_loss += loss.item() * images.size(0)
             # _, predicted = outputs.max(1)
             # total += images.size(0)
             # correct += predicted.eq(labels).sum().item()
         
-        train_loss = running_loss / (nothing_count + action_count)
-        train_acc = (nothing_correct + action_corrent) / (nothing_count + action_count)
-        nothing_acc = "NA" if nothing_count == 0 else f"{(nothing_correct / nothing_count):.4f}"
+        train_loss = running_loss / (action_count)
+        train_acc = (action_corrent) / (action_count)
+        # nothing_acc = "NA" if nothing_count == 0 else f"{(nothing_correct / nothing_count):.4f}"
         action_acc = "NA" if action_count == 0 else f"{(action_corrent / action_count):.4f}"
-        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}, Nothing Accuracy: {nothing_acc}, Action Accuracy: {action_acc}")
+        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}, Action Accuracy: {action_acc}")
         # print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}")
 
 

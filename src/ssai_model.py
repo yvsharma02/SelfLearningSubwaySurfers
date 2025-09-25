@@ -15,6 +15,8 @@ class SSAIModel(nn.Module):
     ])
 
     def calculate_loss_of_batch(pred, required):
+        required = required.argmax(dim=1)
+
         prob = F.log_softmax(pred, dim=1)
         loss = F.nll_loss(prob, required)
 
@@ -37,7 +39,8 @@ class SSAIModel(nn.Module):
             nn.Flatten(),
         )
         self.fully_connected_stage = nn.Sequential(
-            nn.Linear(432 + 1, 216),
+#            nn.Linear(432 + 1, 216),
+            nn.Linear(432, 216),
             nn.ReLU(),
             nn.Linear(216, 128),
             nn.ReLU(),
@@ -50,10 +53,10 @@ class SSAIModel(nn.Module):
             nn.Linear(32, 5)
         )
 
-    def forward(self, img, time):
+    def forward(self, img):
         flattened = self.cnn_stage(img)
-        flattened_with_velocity = torch.cat((flattened, time), dim=1)
-        action = self.fully_connected_stage(flattened_with_velocity)
+        # flattened_with_velocity = torch.cat((flattened, time), dim=1)
+        action = self.fully_connected_stage(flattened)
         return action
 
     # Returns the action to take.
@@ -67,7 +70,7 @@ class SSAIModel(nn.Module):
         time_tensor = time_tensor.to(device)
         # print(image_tensor.shape)
         with torch.no_grad():
-            action = self(image_tensor, time_tensor)
+            action = self(image_tensor)
             action = F.softmax(action, dim=1)
             # print(f"nothing shape: {nothing.shape}")
             # print(f"action shape: {action.shape}")
