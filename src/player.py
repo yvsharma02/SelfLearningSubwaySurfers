@@ -91,26 +91,23 @@ class Player:
         img = self.controller.capture(True)
         gamestate = self.gsd.detect_gamestate(img)
 
-        if (self.current_run == None and gamestate == constants.GAME_STATE_OVER):
-            self.controller.tap(400, 750)
-        else:
-            self.start()
+        if (self.current_run != None and gamestate == constants.GAME_STATE_OVER):
+            self.stop()
+
+        if (self.current_run == None):
+            if (gamestate == constants.GAME_STATE_OVER):
+                self.controller.tap(400, 750)
+            else:
+                self.start()
 
         if (self.current_run != None):
             self.autoplay(img, gamestate)
         
+        time.sleep(0.05)
         return True
 
     def autoplay(self, img, gamestate):
-        if not self.current_run.tick(gamestate):
-            if (gamestate == constants.GAME_STATE_OVER):
-                self.stop()
-
-#        if(not self.current_run.tick(gamestate)):
-#            self.current_run = None
-#            return
-#        if (self.current_run.last_action_time is not None and (time.time() - self.current_run.last_action_time) < self.current_run.next_action_delay()):
-#            return 
+        self.current_run.tick(gamestate)
         if (self.current_run.can_perform_action_now()):
             action = self.model.infer(Image.fromarray(img), self.current_run.run_secs(), self.device)
             self.current_run.take_action(action, img, gamestate)
