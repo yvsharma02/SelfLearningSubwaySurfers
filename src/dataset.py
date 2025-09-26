@@ -24,7 +24,7 @@ class ImageDataset(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        elimination_confidence = [0] * 5
-        elimination_confidence[label] = 1.0
+        elimination_confidence = [1] * 5
+        elimination_confidence[label] = 0
 
         return image, torch.tensor(elimination_confidence)

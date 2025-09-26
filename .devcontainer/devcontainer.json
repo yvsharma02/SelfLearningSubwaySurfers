@@ -14,10 +14,10 @@
 // For Keyboard access.
   "--privileged",
   "--volume=/dev/input:/dev/input", 
-   "--gpus",
-   "all",
-   "--device",
-   "/dev/kvm",
+  //  "--gpus",
+  //  "all",
+  //  "--device",
+  //  "/dev/kvm",
     "--add-host=host.docker.internal:host-gateway"
   ],
   "postStartCommand": "./setup/entry.sh",

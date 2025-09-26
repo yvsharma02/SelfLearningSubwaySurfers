@@ -74,6 +74,7 @@ class SSAIModel(nn.Module):
             action = F.softmax(action, dim=1)
             # print(f"nothing shape: {nothing.shape}")
             # print(f"action shape: {action.shape}")
+            print(confidence)
             confidence, predicted_class = torch.min(action, 1)
 
         return predicted_class.item()

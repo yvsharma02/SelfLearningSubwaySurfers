@@ -20,7 +20,7 @@ class InGameRun:
         return time.time() - self.start_time
 
     def reaction_time(self):
-        return 0.5 # Scale this with run_secs
+        return 0.385 # Scale this with run_secs
     
     # def next_action_delay(self):
         # return 0.4 # Scale this with run_secs as well.

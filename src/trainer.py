@@ -28,17 +28,17 @@ def read_data(path):
                     time = float(time.strip())
                     eliminations = eliminations.strip("[] \n").split(",")
                     eliminations = [int(x) for x in eliminations]
-#                    action = [x for x in range(0, 5) if x not in eliminations][0]
-                    eliminated = eliminations[0]
-                    res[eliminated].append(os.path.join(subdir, f"{index}.png"))
+                    action = [x for x in range(0, 5) if x not in eliminations][0]
+                    res[action].append(os.path.join(subdir, f"{index}.png"))
 
     # Undersample biased data.
     # nothing_target_size = sum(len(res[x]) for x in range(1, 5))
     # nothing_target_size = min(nothing_target_size, len(res[0]))
     # rs = random.sample(range(0, len(res[0])), nothing_target_size)
     # res[0] = [res[0][x] for x in rs]
-    print(res)
+    # print(res)
     # res[x] contains images where action_x was eliminated.
+    # print([len(s) for s in res])
     return res
 
 def labelify(data):
