@@ -63,7 +63,7 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
     return train_dataset, train_loader, test_dataset, test_loader
 
 def train(model, train_loader, device):
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.005)
     num_epochs = 50
 
     for epoch in range(num_epochs):

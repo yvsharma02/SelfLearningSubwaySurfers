@@ -23,5 +23,5 @@ class ImageDataset(Dataset):
         if self.transform:
             image = self.transform(image)
 
-
+        # print(label)
         return image, torch.tensor(label)

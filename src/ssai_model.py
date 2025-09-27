@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 from torchvision import transforms
+import constants
 
 # Instead of predicting which choice to make, predict which choices to elimiate.
 # (The choice least likely to be elimiated is our result.)
@@ -24,27 +25,38 @@ class SSAIModel(nn.Module):
 
         self.cnn_stage = nn.Sequential(
             nn.Conv2d(3, 16, kernel_size=3, padding=1),
-            nn.ReLU(),
+            nn.BatchNorm2d(16),
+            nn.LeakyReLU(),
             nn.Dropout(p=0.1),
             nn.AvgPool2d(2),
+
             nn.Conv2d(16, 32, kernel_size=3, padding=1),
-            nn.ReLU(),
+            nn.BatchNorm2d(32),
+            nn.LeakyReLU(),
             nn.Dropout(p=0.1),
             nn.AvgPool2d(2),
+
             nn.Conv2d(32, 64, kernel_size=5, padding=1),
-            nn.ReLU(),
+            nn.BatchNorm2d(64),
+            nn.LeakyReLU(),
             nn.MaxPool2d(2),
-            nn.Dropout(p=0.1),
+            nn.Dropout(p=0.05),
+
             nn.Flatten(),
         )
+
         self.fully_connected_stage = nn.Sequential(
             nn.Linear(4224, 1024),
-            nn.ReLU(),
-            nn.Dropout(p=0.45),
+            nn.BatchNorm1d(1024),
+            nn.LeakyReLU(),
+            nn.Dropout(p=0.35),
+
             nn.Linear(1024, 128),
-            nn.ReLU(),
-            nn.Dropout(p=0.33),
-            nn.Linear(128, 5), # NOTHING UP DOWN LEFT RIGHT
+            nn.BatchNorm1d(128),
+            nn.LeakyReLU(),
+            nn.Dropout(p=0.25),
+
+            nn.Linear(128, 5),
         )
 
     def forward(self, img):
@@ -63,6 +75,7 @@ class SSAIModel(nn.Module):
         time_tensor = time_tensor.unsqueeze(0)
         time_tensor = time_tensor.to(device)
         # print(image_tensor.shape)
+        self.eval()
         with torch.no_grad():
             eliminations_logits = self(image_tensor)
             eliminations = F.softmax(eliminations_logits, dim=1)
@@ -70,10 +83,14 @@ class SSAIModel(nn.Module):
             if (not randomize):
                 confidence, predicted_class = torch.min(eliminations, 1)
             else:
-                inv = 1.0 / (eliminations + 1e-9)
-                actions = F.softmax(inv, dim=1)
-                predicted_class = torch.multinomial(actions, 1)
-                confidence = actions[0, predicted_class.item()]
+                for i in range(0, 4):
+                    elim = torch.multinomial(eliminations, 1)
+                    eliminations[0, elim] = 0
+                
+                # print(eliminations)
+                confidence, predicted_class = torch.max(eliminations, 1)
+                # print(constants.action_to_name(predicted_class))
+
 
         return predicted_class.item(), eliminations_logits[0, :]
         

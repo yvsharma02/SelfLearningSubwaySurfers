@@ -129,8 +129,8 @@ class Player:
 
 def main():
     # model, device = None, None
-    model, device = ssai_model.load("generated/models/test.pth")
-    # model, device = ssai_model.SSAIModel(), torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # model, device = ssai_model.load("generated/models/test.pth")
+    model, device = ssai_model.SSAIModel(), torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
     logfile = open("generated/emu_log.txt", "w+")

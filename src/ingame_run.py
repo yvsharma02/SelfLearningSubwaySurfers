@@ -109,7 +109,7 @@ class InGameRun:
             _, act_min_idx = torch.min(self.last_logits, dim=0)
             act_max = constants.action_to_name(act_max_idx.item())
             act_min = constants.action_to_name(act_min_idx.item())
-            print(("Eliminated: " if eliminate else "Validated: ") + constants.action_to_name(self.last_action) + " ; Logits: [" + ", ".join([f'{x:.4f}' for x in self.last_logits]) + "]; " + "ACTION_MAX: " + act_max + "; ACTION_MIN: " + act_min)
+            print(("Eliminated: " if eliminate else "Validated: ") + constants.action_to_name(self.last_action) + " ; Logits: [" + ", ".join([f'{x:.4f}' for x in self.last_logits]) + "]; " + "ELIM_MAX: " + act_max + "; ELIM_MIN: " + act_min)
             if (eliminate):
                 # print(f"Eliminated!: {self.last_action}")
                 self.save_que.put([self.last_action], self.last_capture, self.run_secs(), self.last_logits)
