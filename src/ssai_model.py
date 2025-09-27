@@ -60,7 +60,7 @@ class SSAIModel(nn.Module):
         return action
 
     # Returns the action to take.
-    def infer(self, img, time, device):
+    def infer(self, img, time, device, randomize = True):
         if type(time) is float:
             time_tensor = torch.tensor([time])
 
@@ -74,10 +74,14 @@ class SSAIModel(nn.Module):
             action = F.softmax(action, dim=1)
             # print(f"nothing shape: {nothing.shape}")
             # print(f"action shape: {action.shape}")
-            confidence, predicted_class = torch.min(action, 1)
-            print(confidence)
+            if (not randomize):
+                confidence, predicted_class = torch.min(action, 1)
+            else:
+                predicted_class = torch.multinomial(action, 1)
+                confidence = action[0, predicted_class.item()]
 
-        return predicted_class.item()
+
+        return predicted_class.item(), confidence
         
 
     def save_to_file(self, path):

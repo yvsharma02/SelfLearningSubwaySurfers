@@ -1,8 +1,20 @@
 import time
 import constants
+import cv2
+
+c = 0
 
 class InGameRun:
     
+    ACTIONS_WAIT_TIME = [
+        1, 1, 1, 1, 1
+        # 0.075,
+        # 0.4125,
+        # 0.35,
+        # 0.3,
+        # 0.3
+    ]
+
     def __init__(self, gsd, emulator_controller, save_que):
         self.start_time = time.time()
         self.emulator_controller = emulator_controller
@@ -10,7 +22,7 @@ class InGameRun:
         # self.first_normal_state_detected = False
 
         self.last_capture = None
-        self.last_action = None,
+        self.last_action = None
         self.last_action_time = None
         self.last_action_state = None
 
@@ -20,7 +32,10 @@ class InGameRun:
         return time.time() - self.start_time
 
     def reaction_time(self):
-        return 0.385 # Scale this with run_secs
+        if (self.last_action == None):
+            return 0.25 # Scale this with run_secs
+        else:
+            return InGameRun.ACTIONS_WAIT_TIME[self.last_action]
     
     # def next_action_delay(self):
         # return 0.4 # Scale this with run_secs as well.
@@ -29,11 +44,14 @@ class InGameRun:
         return 1
 
     def take_action(self, action, capture, gamestate):
+        global c
         self.last_action_time = time.time()
         self.last_action = action
         self.last_capture = capture
         self.last_action_state = gamestate
-        print("Taking action: " + str(action))
+        print(f"Taking Action: {action}")
+        cv2.imwrite(f"{c}.png", self.last_capture)
+        c += 1
         self.command_emulator(action)
 
     def time_since_last_action(self):
@@ -71,7 +89,7 @@ class InGameRun:
 
     def flush(self, save):
         if (save):
-            print("Eliminated!")
+            print(f"Eliminated!: {self.last_action}")
             self.save_que.put([i for i in range(0, 5) if i != self.last_action], self.last_capture, self.run_secs())
 
         # self.last_action_time = 

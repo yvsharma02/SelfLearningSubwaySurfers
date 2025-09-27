@@ -110,7 +110,7 @@ class Player:
     def autoplay(self, img, gamestate):
         self.current_run.tick(gamestate)
         if (self.current_run.can_perform_action_now()):
-            action = self.model.infer(Image.fromarray(img), self.current_run.run_secs(), self.device)
+            action, confidence = self.model.infer(Image.fromarray(img), self.current_run.run_secs(), self.device)
             self.current_run.take_action(action, img, gamestate)
 
 
