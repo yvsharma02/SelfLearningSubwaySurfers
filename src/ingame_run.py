@@ -2,12 +2,10 @@ import time
 import constants
 import cv2
 
-c = 0
-
 class InGameRun:
     
     ACTIONS_WAIT_TIME = [
-        1, 1, 1, 1, 1
+        0.1, 0.75, 0.5, 0.5, 0.5
         # 0.075,
         # 0.4125,
         # 0.35,
@@ -44,14 +42,11 @@ class InGameRun:
         return 1
 
     def take_action(self, action, capture, gamestate):
-        global c
         self.last_action_time = time.time()
         self.last_action = action
         self.last_capture = capture
         self.last_action_state = gamestate
-        print(f"Taking Action: {action}")
-        cv2.imwrite(f"{c}.png", self.last_capture)
-        c += 1
+        # print(f"Taking Action: {action}")
         self.command_emulator(action)
 
     def time_since_last_action(self):
@@ -87,12 +82,15 @@ class InGameRun:
             self.flush(False)
 
 
-    def flush(self, save):
-        if (save):
-            print(f"Eliminated!: {self.last_action}")
-            self.save_que.put([i for i in range(0, 5) if i != self.last_action], self.last_capture, self.run_secs())
+    def flush(self, eliminate):
+        if (self.last_action != None):
+            if (eliminate):
+                # print(f"Eliminated!: {self.last_action}")
+                self.save_que.put([self.last_action], self.last_capture, self.run_secs())
+            else:
+                # print(f"Did Not Eliminate!: {self.last_action}")
+                self.save_que.put([i for i in range(0, 5) if i != self.last_action], self.last_capture, self.run_secs())
 
-        # self.last_action_time = 
         self.last_action = None
         self.last_action_state = None
         self.last_capture = None

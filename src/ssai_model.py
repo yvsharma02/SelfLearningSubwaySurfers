@@ -15,11 +15,8 @@ class SSAIModel(nn.Module):
     ])
 
     def calculate_loss_of_batch(pred, required):
-        required = required.argmax(dim=1)
-
         prob = F.log_softmax(pred, dim=1)
-        loss = F.nll_loss(prob, required)
-
+        loss = F.kl_div(prob, required, reduction="batchmean")
         return loss
 
     def __init__(self):
@@ -70,18 +67,22 @@ class SSAIModel(nn.Module):
         time_tensor = time_tensor.to(device)
         # print(image_tensor.shape)
         with torch.no_grad():
-            action = self(image_tensor)
-            action = F.softmax(action, dim=1)
+            eliminations = self(image_tensor)
+            eliminations = F.softmax(eliminations, dim=1)
+
             # print(f"nothing shape: {nothing.shape}")
             # print(f"action shape: {action.shape}")
             if (not randomize):
-                confidence, predicted_class = torch.min(action, 1)
+                confidence, predicted_class = torch.min(eliminations, 1)
             else:
-                predicted_class = torch.multinomial(action, 1)
-                confidence = action[0, predicted_class.item()]
+                inv = 1.0 / (eliminations + 1e-9)
+                actions = F.softmax(inv)
+                print(actions)
+                predicted_class = torch.multinomial(actions, 1)
+                confidence = actions[0, predicted_class.item()]
 
 
-        return predicted_class.item(), confidence
+        return predicted_class.item()
         
 
     def save_to_file(self, path):

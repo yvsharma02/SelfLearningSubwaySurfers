@@ -12,12 +12,16 @@ from ssai_model import SSAIModel
 import run_validator
 import constants
 
+# Returns (img_path, label (tensor with length 5 denoting elimination confidence.))
 def read_data(path):
-    res = [[], [], [], [], []]
+    res_mp = {
+
+    }
     for subdir, _, files in os.walk(path):
         if "metadata.txt" in files:
             if (not run_validator.is_valid(subdir)):
                 continue
+
             metadata_path = os.path.join(subdir, "metadata.txt")
             with open(metadata_path, "r") as f:
                 lines = f.readlines()
@@ -28,38 +32,14 @@ def read_data(path):
                     time = float(time.strip())
                     eliminations = eliminations.strip("[] \n").split(",")
                     eliminations = [int(x) for x in eliminations]
-                    action = [x for x in range(0, 5) if x not in eliminations][0]
-                    res[action].append(os.path.join(subdir, f"{index}.png"))
+                    label = [(1.0 / len(eliminations) if i in eliminations else 0.0) for i in range(0, 5)]
+                    res_mp[os.path.join(subdir, f"{index}.png")] = label
 
-    # Undersample biased data.
-    # nothing_target_size = sum(len(res[x]) for x in range(1, 5))
-    # nothing_target_size = min(nothing_target_size, len(res[0]))
-    # rs = random.sample(range(0, len(res[0])), nothing_target_size)
-    # res[0] = [res[0][x] for x in rs]
-    # print(res)
-    # res[x] contains images where action_x was eliminated.
-    # print([len(s) for s in res])
-    return res
+    return res_mp
 
-def labelify(data):
-    images = []
-    labels = []
-
-    for c in range(0, len(data)):
-        for img in data[c]:
-            images.append(img)
-            labels.append(c)
-
-    return images, labels
-
-def randomize_data(balanced_image_paths, balanced_labels):
-    combined = list(zip(balanced_image_paths, balanced_labels))
-    random.shuffle(combined)
-    return zip(*combined)
-
-def create_train_test_split(balanced_image_paths, balanced_labels):
+def create_train_test_split(data):
     train_paths, test_paths, train_labels, test_labels = train_test_split(
-        balanced_image_paths, balanced_labels, test_size=0.2, random_state=42, stratify=balanced_labels
+        list(data.keys()), list(data.values()), test_size=0.2, random_state=42
     )
 
     return train_paths, test_paths, train_labels, test_labels
@@ -68,76 +48,114 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
     train_dataset = ImageDataset(train_paths, train_labels, transform=transform)
     test_dataset = ImageDataset(test_paths, test_labels, transform=transform)
 
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
 
     return train_dataset, train_loader, test_dataset, test_loader
 
 def train(model, train_loader, device):
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    num_epochs = 10
+    num_epochs = 50
 
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
-        nothing_correct = 0
-        action_corrent = 0
-        nothing_count = 0
-        action_count = 0
-        # correct = 0
-        # total = 0
+
+        single_elim_correct = 0
+        single_elim_total = 0
+        multi_elim_correct = 0
+        multi_elim_total = 0
+
         for images, labels in train_loader:
             images = images.to(device)
 
-            action_labels = labels.to(device)
+            eliminations = labels.to(device)
             optimizer.zero_grad()
-            action_pred = model(images)
-            loss = SSAIModel.calculate_loss_of_batch(action_pred, action_labels)
+            elim_pred = model(images)
+            loss = SSAIModel.calculate_loss_of_batch(elim_pred, eliminations)
             loss.backward()
             optimizer.step()
+            for i in range(0, elim_pred.shape[0]):
+                # print(elim_pred[i, :])
+                # print(eliminations[i, :])
+                # print("_________________________-")
+                label_confidence, label_choice = torch.max(eliminations[i, :], 0)
+                if (label_confidence > 0.99):
+                    pred_confidence, pred_choice = torch.max(elim_pred[i, :], 0)
+                    if (pred_choice == label_choice):
+                        single_elim_correct += 1
+                    single_elim_total += 1
+                else:
+                    label_confidence, label_choice = torch.min(eliminations[i, :], 0)
+                    pred_confidence, pred_choice = torch.min(elim_pred[i, :], 0)
+                    if (pred_choice == label_choice):
+                        multi_elim_correct += 1
+                    multi_elim_total += 1
 
-            action_labels = action_labels.argmax(dim = 1)
-            action_pred = action_pred.argmax(dim = 1)
 
-            # print("Nothing:")
-            # print ("Labl: [" + ",".join([str(x.item()) for x in nothing_labels]) + "]")
-            # print ("Pred: [" + ",".join([str(x.item()) for x in nothing_pred]) + "]")
-
-            # print("Action:")
-            # print ("Labl: [" + ",".join([str(x.item()) for x in action_labels]) + "]")
-            # print ("Pred: [" + ",".join([str(x.item()) for x in action_pred]) + "]")
-            # print("_____________________________________________________________________")
-
-            for i in range(0, len(action_pred)):
-                # print(nothing_labels[i].item())
-                if (action_pred[i].item() == action_labels[i].item()):
-                    action_corrent += 1
-                action_count += 1
             running_loss += loss.item() * images.size(0)
-            # _, predicted = outputs.max(1)
-            # total += images.size(0)
-            # correct += predicted.eq(labels).sum().item()
-        
-        train_loss = running_loss / (action_count)
-        train_acc = (action_corrent) / (action_count)
-        # nothing_acc = "NA" if nothing_count == 0 else f"{(nothing_correct / nothing_count):.4f}"
-        action_acc = "NA" if action_count == 0 else f"{(action_corrent / action_count):.4f}"
-        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}, Action Accuracy: {action_acc}")
-        # print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}")
+
+        train_loss = running_loss / (single_elim_total + multi_elim_total)
+        single_elim_acc = f"{((single_elim_correct) / (single_elim_total)):.4f}" if single_elim_total > 0 else "NA"
+        multi_elim_acc = f"{((multi_elim_correct) / (multi_elim_total)):.4f}" if multi_elim_total > 0 else "NA"
+        total_acc = (single_elim_correct + multi_elim_correct) / (single_elim_total + multi_elim_total)
+        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {train_loss:.4f}, Accuracy: {total_acc:.4f}, Single Elim Accuracy: {single_elim_acc}, Multi Elim Accuracy: {multi_elim_acc}")
+
+def test(model, test_loader, device):
+    model.eval()
+    running_loss = 0.0
+
+    single_elim_correct = 0
+    single_elim_total = 0
+    multi_elim_correct = 0
+    multi_elim_total = 0
+
+    with torch.no_grad():
+        for images, labels in test_loader:
+            images = images.to(device)
+            eliminations = labels.to(device)
+
+            elim_pred = model(images)
+            loss = SSAIModel.calculate_loss_of_batch(elim_pred, eliminations)
+            running_loss += loss.item() * images.size(0)
+
+            for i in range(0, elim_pred.shape[0]):
+                label_confidence, label_choice = torch.max(eliminations[i, :], 0)
+                if label_confidence > 0.99:
+                    pred_confidence, pred_choice = torch.max(elim_pred[i, :], 0)
+                    if pred_choice == label_choice:
+                        single_elim_correct += 1
+                    single_elim_total += 1
+                else:
+                    label_confidence, label_choice = torch.min(eliminations[i, :], 0)
+                    pred_confidence, pred_choice = torch.min(elim_pred[i, :], 0)
+                    if pred_choice == label_choice:
+                        multi_elim_correct += 1
+                    multi_elim_total += 1
+
+    total_samples = single_elim_total + multi_elim_total
+    test_loss = running_loss / total_samples if total_samples > 0 else 0
+    single_elim_acc = f"{(single_elim_correct / single_elim_total):.4f}" if single_elim_total > 0 else "NA"
+    multi_elim_acc = f"{(multi_elim_correct / multi_elim_total):.4f}" if multi_elim_total > 0 else "NA"
+    total_acc = (single_elim_correct + multi_elim_correct) / total_samples if total_samples > 0 else 0
+
+    print(f"Test Loss: {test_loss:.4f}, Accuracy: {total_acc:.4f}, "
+          f"Single Elim Accuracy: {single_elim_acc}, Multi Elim Accuracy: {multi_elim_acc}")
+
+    return test_loss, total_acc, single_elim_acc, multi_elim_acc
 
 
 def main():
     PATH = "generated/runs/dataset/"
     print("Reading Data...")
     data = read_data(PATH)
-    path, classes = labelify(data)
-    train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*randomize_data(path, classes)), transform=SSAIModel.IMAGE_TRANSFORM)
+    train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(read_data(PATH)), transform=SSAIModel.IMAGE_TRANSFORM)
     print("Starting Training...")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     model = SSAIModel().to(device)
     train(model, train_loader, device)
-    # test(model, test_loader, device)
+    test(model, test_loader, device)
 
     model.save_to_file("generated/models/test.pth")
 

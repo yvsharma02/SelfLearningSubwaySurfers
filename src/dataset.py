@@ -17,14 +17,11 @@ class ImageDataset(Dataset):
         img_path = self.image_paths[idx]
         label = self.labels[idx]
         
-        # image = cv2.imread(img_path)
         image = Image.open(img_path).convert("RGB")
         
         # print(image.shape)
         if self.transform:
             image = self.transform(image)
 
-        elimination_confidence = [1] * 5
-        elimination_confidence[label] = 0
 
-        return image, torch.tensor(elimination_confidence)
+        return image, torch.tensor(label)
