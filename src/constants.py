@@ -24,3 +24,12 @@ SCALED_WIDTH = int(CAPTURE_WIDTH / CAPTURE_SCALE_FACTOR)
 
 def scale_dimensions(x1, y1, x2, y2):
     return int(x1 / CAPTURE_SCALE_FACTOR), int(y1 / CAPTURE_SCALE_FACTOR), int(x2 / CAPTURE_SCALE_FACTOR), int(y2 / CAPTURE_SCALE_FACTOR)
+
+def action_to_name(action):
+    if (action == ACTION_NOTHING): return "NOTHING"
+    if (action == ACTION_UP): return "UP"
+    if (action == ACTION_DOWN): return "DOWN"
+    if (action == ACTION_LEFT): return "LEFT"
+    if (action == ACTION_RIGHT): return "RIGHT"
+    
+    return "N/A"

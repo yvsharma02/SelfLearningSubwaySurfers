@@ -51,7 +51,7 @@ class EmulatorController:
             pressure=0
         )]))
 
-    def swipe(self, x_offset, y_offset, x_start=None, y_start=None, steps=50):
+    def swipe(self, x_offset, y_offset, x_start=None, y_start=None, steps=10):
         if x_start is None:
             x_start = 300
         if y_start is None:

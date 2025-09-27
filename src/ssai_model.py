@@ -25,29 +25,26 @@ class SSAIModel(nn.Module):
         self.cnn_stage = nn.Sequential(
             nn.Conv2d(3, 16, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Dropout(p=0.5),
+            nn.Dropout(p=0.1),
             nn.AvgPool2d(2),
-            nn.Conv2d(16, 48, kernel_size=3, padding=1),
+            nn.Conv2d(16, 32, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.AvgPool2d(3),
-            nn.Conv2d(48, 54, kernel_size=5, padding=1),
-            nn.MaxPool2d(3),
-            nn.Dropout(p=0.3),
+            nn.Dropout(p=0.1),
+            nn.AvgPool2d(2),
+            nn.Conv2d(32, 64, kernel_size=5, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Dropout(p=0.1),
             nn.Flatten(),
         )
         self.fully_connected_stage = nn.Sequential(
-#            nn.Linear(432 + 1, 216),
-            nn.Linear(432, 216),
+            nn.Linear(4224, 1024),
             nn.ReLU(),
-            nn.Linear(216, 128),
+            nn.Dropout(p=0.45),
+            nn.Linear(1024, 128),
             nn.ReLU(),
-            nn.Dropout(p=0.4),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Dropout(p=0.4),
-            nn.Linear(64, 32), # NOTHING UP DOWN LEFT RIGHT
-            nn.ReLU(),
-            nn.Linear(32, 5)
+            nn.Dropout(p=0.33),
+            nn.Linear(128, 5), # NOTHING UP DOWN LEFT RIGHT
         )
 
     def forward(self, img):
@@ -67,22 +64,18 @@ class SSAIModel(nn.Module):
         time_tensor = time_tensor.to(device)
         # print(image_tensor.shape)
         with torch.no_grad():
-            eliminations = self(image_tensor)
-            eliminations = F.softmax(eliminations, dim=1)
+            eliminations_logits = self(image_tensor)
+            eliminations = F.softmax(eliminations_logits, dim=1)
 
-            # print(f"nothing shape: {nothing.shape}")
-            # print(f"action shape: {action.shape}")
             if (not randomize):
                 confidence, predicted_class = torch.min(eliminations, 1)
             else:
                 inv = 1.0 / (eliminations + 1e-9)
-                actions = F.softmax(inv)
-                print(actions)
+                actions = F.softmax(inv, dim=1)
                 predicted_class = torch.multinomial(actions, 1)
                 confidence = actions[0, predicted_class.item()]
 
-
-        return predicted_class.item()
+        return predicted_class.item(), eliminations_logits[0, :]
         
 
     def save_to_file(self, path):

@@ -12,6 +12,9 @@ from ssai_model import SSAIModel
 import run_validator
 import constants
 
+# One in X
+MULTI_ELIM_SAMPLE_CHANCE = 0.33
+
 # Returns (img_path, label (tensor with length 5 denoting elimination confidence.))
 def read_data(path):
     res_mp = {
@@ -27,11 +30,17 @@ def read_data(path):
                 lines = f.readlines()
                 for idx, line in enumerate(lines):
                     line = line.strip()
-                    index, time, eliminations = line.split(';')
+                    index, time, eliminations, logits = line.split(';')
                     index = int(index.strip())
                     time = float(time.strip())
                     eliminations = eliminations.strip("[] \n").split(",")
+                    # logits = logits.strip("[] \n").split(",")
                     eliminations = [int(x) for x in eliminations]
+                    
+                    if (len(eliminations) > 1):
+                        if (random.random() > MULTI_ELIM_SAMPLE_CHANCE):
+                            continue
+
                     label = [(1.0 / len(eliminations) if i in eliminations else 0.0) for i in range(0, 5)]
                     res_mp[os.path.join(subdir, f"{index}.png")] = label
 
@@ -76,9 +85,6 @@ def train(model, train_loader, device):
             loss.backward()
             optimizer.step()
             for i in range(0, elim_pred.shape[0]):
-                # print(elim_pred[i, :])
-                # print(eliminations[i, :])
-                # print("_________________________-")
                 label_confidence, label_choice = torch.max(eliminations[i, :], 0)
                 if (label_confidence > 0.99):
                     pred_confidence, pred_choice = torch.max(elim_pred[i, :], 0)
