@@ -18,14 +18,14 @@ def launch(adb_client : Client, timeout_s : float = 10.0, stdout = None, stderro
     start_cmd = [
     "emulator",
     "-avd", "default_avd",
-#    "-no-window",
+    # "-no-window",
     "-no-audio",
     "-no-boot-anim",
     "-grpc", "8554",
     "-idle-grpc-timeout", "0",
-    # "-no-snapshot-load"
-#    "-gpu", ("swiftshader_indirect" if use_cpu_rendering else "host"),
-#    "-accel", "on",
+    "-no-snapshot-load"
+    # "-gpu", ("swiftshader_indirect" if use_cpu_rendering else "host"),
+    # "-accel", "on",
     ]
 
     subprocess.Popen(start_cmd, stdout=stdout, stderr=stderror)

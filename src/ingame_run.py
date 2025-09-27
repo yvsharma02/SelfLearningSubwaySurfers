@@ -33,6 +33,7 @@ class InGameRun:
         self.last_action = action
         self.last_capture = capture
         self.last_action_state = gamestate
+        print("Taking action: " + str(action))
         self.command_emulator(action)
 
     def time_since_last_action(self):
@@ -79,10 +80,10 @@ class InGameRun:
         self.last_capture = None
 
     def command_emulator(self, action):
-        if (action is constants.ACTION_UP): self.emulator_controller.swipe_up()
-        elif (action is constants.ACTION_DOWN): self.emulator_controller.swipe_down()
-        elif (action is constants.ACTION_LEFT): self.emulator_controller.swipe_left()
-        elif (action is constants.ACTION_RIGHT): self.emulator_controller.swipe_right()
+        if (action == constants.ACTION_UP): self.emulator_controller.swipe_up()
+        elif (action == constants.ACTION_DOWN): self.emulator_controller.swipe_down()
+        elif (action == constants.ACTION_LEFT): self.emulator_controller.swipe_left()
+        elif (action == constants.ACTION_RIGHT): self.emulator_controller.swipe_right()
     
     def close(self):
         if ((self.last_action is not None) and (self.last_capture is not None)):
