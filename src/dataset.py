@@ -1,6 +1,4 @@
 from torch.utils.data import Dataset
-import cv2
-import constants
 from PIL import Image
 import torch
 
@@ -18,10 +16,7 @@ class ImageDataset(Dataset):
         label = self.labels[idx]
         
         image = Image.open(img_path).convert("RGB")
-        
-        # print(image.shape)
         if self.transform:
             image = self.transform(image)
 
-        # print(label)
         return image, torch.tensor(label)

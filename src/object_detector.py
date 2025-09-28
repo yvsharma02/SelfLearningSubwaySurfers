@@ -6,7 +6,7 @@ from collections import deque
 
 class ObjDetector:
     def __init__(self, unscaled_reference, frame_window_size, detect_bound, undetect_bound, debounce_window, lowest_scale, highest_scale, scale_samples, unscaled_patch_area, log_confidence):
-        self.reference = cv2.imread(unscaled_reference, cv2.IMREAD_UNCHANGED)
+        self.reference = cv2.imread(unscaled_reference)
         self.scaled_references = ObjDetector.build_scaled_templates(self.reference, scales=np.linspace(lowest_scale, highest_scale, scale_samples))
 
         self.frame_window_size = frame_window_size

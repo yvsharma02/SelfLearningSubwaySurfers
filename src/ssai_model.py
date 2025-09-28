@@ -3,6 +3,7 @@ import torch
 import torch.nn.functional as F
 from torchvision import transforms
 import constants
+import time
 
 # Instead of predicting which choice to make, predict which choices to elimiate.
 # (The choice least likely to be elimiated is our result.)
@@ -66,9 +67,9 @@ class SSAIModel(nn.Module):
         return action
 
     # Returns the action to take.
-    def infer(self, img, time, device, randomize = True):
-        if type(time) is float:
-            time_tensor = torch.tensor([time])
+    def infer(self, img, run_time, device, randomize = False):
+        if type(run_time) is float:
+            time_tensor = torch.tensor([run_time])
 
         image_tensor = SSAIModel.IMAGE_TRANSFORM(img).unsqueeze(0)
         image_tensor = image_tensor.to(device)

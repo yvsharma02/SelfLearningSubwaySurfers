@@ -123,6 +123,7 @@ class InGameRun:
         self.last_logits = None
 
     def command_emulator(self, action):
+        start_time = time.time()
         if (action == constants.ACTION_UP): self.emulator_controller.swipe_up()
         elif (action == constants.ACTION_DOWN): self.emulator_controller.swipe_down()
         elif (action == constants.ACTION_LEFT): self.emulator_controller.swipe_left()

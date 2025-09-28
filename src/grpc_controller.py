@@ -6,32 +6,23 @@ import numpy as np
 import cv2
 import gc
 import constants
-#from PIL import Image
+from PIL import Image
 
 class EmulatorController:
     def __init__(self):
         options = [
-            ('grpc.max_receive_message_length', 20 * 1024 * 1024)
+            ('grpc.max_receive_message_length', 480 * 800 * 3 * 1.25)
         ]
         self.channel = grpc.insecure_channel("[::1]:8554", options=options)
         self.stub = emu_pb2_grpc.EmulatorControllerStub(self.channel)
         self.fmt = emu_pb2.ImageFormat(format=emu_pb2.ImageFormat.RGB888)
 
 
-    def capture(self, return_cv2_img):
+    def capture(self):
         frame = self.stub.getScreenshot(self.fmt)
         img = np.frombuffer(frame.image, dtype=np.uint8)
         img_scaled = cv2.resize (img.reshape((frame.format.height, frame.format.width, 3)), (constants.SCALED_WIDTH, constants.SCALED_HEIGHT), interpolation=cv2.INTER_NEAREST)
-        if (return_cv2_img):
-            res = cv2.cvtColor(img_scaled, cv2.COLOR_RGBA2BGR)
-        # else:
-        #     res = Image.fromarray(img, mode='RGB')
-
-        memoryview(frame.image).release()
-
-        del frame
-        del img
-        return res
+        return img_scaled
 
     def stop(self):
         self.channel.close()

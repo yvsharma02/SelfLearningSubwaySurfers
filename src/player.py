@@ -12,10 +12,11 @@ from PIL import Image
 import trainer
 import torch
 from ingame_run import InGameRun
+import cv2
 
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
-RETRAIN_AFTER_X_RUNS = 10
+RETRAIN_AFTER_X_RUNS = 1
 # DEFAULT_KB_IDX = -1
 
 keypress_action_map = {
@@ -86,12 +87,13 @@ class Player:
             if (keypress == "KEY_Q"): 
                 self.stop()
                 return False
-
+            
             break
         
-        img = self.controller.capture(True)
-        gamestate = self.gsd.detect_gamestate(img)
-
+        img_rgb = self.controller.capture()
+        img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
+        # cv2.imwrite("capture.png", img)
+        gamestate = self.gsd.detect_gamestate(img_bgr)
         if (self.current_run != None and gamestate == constants.GAME_STATE_OVER):
             self.stop()
 
@@ -102,16 +104,15 @@ class Player:
                 self.start()
 
         if (self.current_run != None):
-            self.autoplay(img, gamestate)
+            self.autoplay(img_rgb, img_bgr, gamestate)
         
-        time.sleep(0.05)
         return True
 
-    def autoplay(self, img, gamestate):
+    def autoplay(self, img_rgb, img_bgr, gamestate):
         self.current_run.tick(gamestate)
         if (self.current_run.can_perform_action_now()):
-            action, logits = self.model.infer(Image.fromarray(img), self.current_run.run_secs(), self.device)
-            self.current_run.take_action(action, img, gamestate, logits)
+            action, logits = self.model.infer(Image.fromarray(img_rgb), self.current_run.run_secs(), self.device)
+            self.current_run.take_action(action, img_bgr, gamestate, logits)
 
 
     def start_mainloop(self):
