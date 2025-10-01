@@ -11,7 +11,7 @@ import time
 class SSAIModel(nn.Module):
 
     IMAGE_TRANSFORM = transforms.Compose([
-        transforms.Resize((150, 90)),
+        transforms.Resize((75, 45)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
     ])
@@ -38,7 +38,7 @@ class SSAIModel(nn.Module):
             nn.Dropout(p=0.025),
             nn.AvgPool2d(2),
 
-            nn.Conv2d(32, 64, kernel_size=5, padding=1),
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(2),
@@ -48,17 +48,17 @@ class SSAIModel(nn.Module):
         )
 
         self.fully_connected_stage = nn.Sequential(
-            nn.Linear(10880, 2048),
-            nn.BatchNorm1d(2048),
+            nn.Linear(2880, 512),
+            nn.BatchNorm1d(512),
             nn.LeakyReLU(),
             nn.Dropout(p=0.5),
 
-            nn.Linear(2048, 256),
-            nn.BatchNorm1d(256),
+            nn.Linear(512, 64),
+            nn.BatchNorm1d(64),
             nn.LeakyReLU(),
-            nn.Dropout(p=0.4),
+            nn.Dropout(p=0.25),
 
-            nn.Linear(256, 5),
+            nn.Linear(64, 5),
         )
 
     def forward(self, img):

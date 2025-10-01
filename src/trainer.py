@@ -138,8 +138,7 @@ def train(model, train_loader, device):
         else:
             print(f"Empty Empoch: {epoch+1}/{num_epochs}")
 
-        # if (epoch % 10 == 0):
-            # model.save_to_file("generated/models/test.pth")
+    model.save_to_file("generated/models/test.pth")
 
 def test(model, test_loader, device):
     model.eval()
