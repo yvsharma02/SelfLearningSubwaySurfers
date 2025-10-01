@@ -21,13 +21,13 @@ class StateDetector:
         self.pause_button_detector = ObjDetector(
             "data/reference_images/pause_button.png",
             1,
-            0.85,
-            0.85,
+            0.86,
+            0.86,
             0,
             0.05,
             1,
             20,
-            (11, 10, 66, 67), log_confidence=False)
+            (16, 12, 68, 64), log_confidence=False, detect_bound_upper_limit=0.866)
 
     def detect_gamestate(self, capture):
         if not self.pause_button_detector.detect(capture):

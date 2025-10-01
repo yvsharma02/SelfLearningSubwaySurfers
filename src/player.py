@@ -13,6 +13,7 @@ import trainer
 import torch
 from ingame_run import InGameRun
 import cv2
+import os
 
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
@@ -130,8 +131,7 @@ class Player:
 
 def main():
     # model, device = None, None
-    model, device = ssai_model.load("generated/models/test.pth")
-    # model, device = ssai_model.SSAIModel(), torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model, device = ssai_model.load("generated/models/test.pth") if os.path.exists("generated/models/test.pth") else (ssai_model.SSAIModel(), torch.device("cuda" if torch.cuda.is_available() else "cpu"))
     model = model.to(device)
 
     logfile = open("generated/emu_log.txt", "w+")

@@ -5,10 +5,11 @@ import constants
 from collections import deque
 
 class ObjDetector:
-    def __init__(self, unscaled_reference, frame_window_size, detect_bound, undetect_bound, debounce_window, lowest_scale, highest_scale, scale_samples, unscaled_patch_area, log_confidence):
+    def __init__(self, unscaled_reference, frame_window_size, detect_bound, undetect_bound, debounce_window, lowest_scale, highest_scale, scale_samples, unscaled_patch_area, log_confidence, detect_bound_upper_limit = 1.0):
         self.reference = cv2.imread(unscaled_reference)
         self.scaled_references = ObjDetector.build_scaled_templates(self.reference, scales=np.linspace(lowest_scale, highest_scale, scale_samples))
 
+        self.detect_bound_upper_limit = detect_bound_upper_limit
         self.frame_window_size = frame_window_size
         self.detect_bound = detect_bound
         self.undetect_bound = undetect_bound
@@ -56,7 +57,7 @@ class ObjDetector:
         avg_confidence = ObjDetector.weighted_average(self.police_state_queue)
 
         new_detection = self.last_detected
-        if avg_confidence > self.detect_bound:
+        if avg_confidence > self.detect_bound and avg_confidence < self.detect_bound_upper_limit:
             if not self.last_detected:
                 self.detected_for += 1
                 if self.detected_for >= self.debounce_window:

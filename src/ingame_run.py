@@ -16,13 +16,13 @@ class InGameRun:
 
     def wait_time_for_action(action):
         if (action == constants.ACTION_NOTHING):
-            return torch.normal(0.2, 0.05, size=(1,)).item()
+            return 0.1 # torch.normal(0.75, size=(1,)).item()
         
         if (action == constants.ACTION_UP):
-            return torch.normal(1, .33, size=(1,)).item()
+            return torch.normal(1.3, .1, size=(1,)).item()
         
         if (action == constants.ACTION_DOWN):
-            return torch.normal(.7, .1, size=(1,)).item()
+            return torch.normal(1, .1, size=(1,)).item()
         
         if (action == constants.ACTION_LEFT):
             return torch.normal(.75, .1, size=(1,)).item()
@@ -30,6 +30,22 @@ class InGameRun:
         if (action == constants.ACTION_RIGHT):
             return torch.normal(.75, .1, size=(1,)).item()
 
+
+    def min_time_to_be_considered_for_elimination(action):
+        if (action == constants.ACTION_NOTHING):
+            return 0 # torch.normal(0.05, 0, size=(1,)).item()
+        
+        if (action == constants.ACTION_UP):
+            return 0.15 # torch.normal(0.15, 0, size=(1,)).item()
+        
+        if (action == constants.ACTION_DOWN):
+            return 0.15 # torch.normal(0.15, 0, size=(1,)).item()
+        
+        if (action == constants.ACTION_LEFT):
+            return 0.15 # torch.normal(0.15, 0, size=(1,)).item()
+        
+        if (action == constants.ACTION_RIGHT):
+            return 0.15 # torch.normal(.15, 0, size=(1,)).item()
 
     def __init__(self, gsd, emulator_controller, save_que):
         self.start_time = time.time()
@@ -103,19 +119,20 @@ class InGameRun:
             self.flush(False)
 
 
-    def flush(self, eliminate):
+    def flush(self, eliminate, consider_min_time=True):
         if (self.last_action != None):
-            _, act_max_idx = torch.max(self.last_logits, dim=0)
-            _, act_min_idx = torch.min(self.last_logits, dim=0)
-            act_max = constants.action_to_name(act_max_idx.item())
-            act_min = constants.action_to_name(act_min_idx.item())
-            print(("Eliminated: " if eliminate else "Validated: ") + constants.action_to_name(self.last_action) + " ; Logits: [" + ", ".join([f'{x:.4f}' for x in self.last_logits]) + "]; " + "ELIM_MAX: " + act_max + "; ELIM_MIN: " + act_min)
-            if (eliminate):
-                # print(f"Eliminated!: {self.last_action}")
-                self.save_que.put([self.last_action], self.last_capture, self.run_secs(), self.last_logits)
-            else:
-                # print(f"Did Not Eliminate!: {self.last_action}")
-                self.save_que.put([i for i in range(0, 5) if i != self.last_action], self.last_capture, self.run_secs(), self.last_logits)
+            if (not consider_min_time or (self.time_since_last_action() >= InGameRun.min_time_to_be_considered_for_elimination(self.last_action))):
+                _, act_max_idx = torch.max(self.last_logits, dim=0)
+                _, act_min_idx = torch.min(self.last_logits, dim=0)
+                act_max = constants.action_to_name(act_max_idx.item())
+                act_min = constants.action_to_name(act_min_idx.item())
+                print(("Eliminated: " if eliminate else "Validated: ") + constants.action_to_name(self.last_action) + " ; Logits: [" + ", ".join([f'{x:.4f}' for x in self.last_logits]) + "]; " + "ELIM_MAX: " + act_max + "; ELIM_MIN: " + act_min)
+                if (eliminate):
+                    # print(f"Eliminated!: {self.last_action}")
+                    self.save_que.put([self.last_action], self.last_capture, self.run_secs(), self.last_logits)
+                else:
+                    # print(f"Did Not Eliminate!: {self.last_action}")
+                    self.save_que.put([i for i in range(0, 5) if i != self.last_action], self.last_capture, self.run_secs(), self.last_logits)
 
         self.last_action = None
         self.last_action_state = None
@@ -123,7 +140,6 @@ class InGameRun:
         self.last_logits = None
 
     def command_emulator(self, action):
-        start_time = time.time()
         if (action == constants.ACTION_UP): self.emulator_controller.swipe_up()
         elif (action == constants.ACTION_DOWN): self.emulator_controller.swipe_down()
         elif (action == constants.ACTION_LEFT): self.emulator_controller.swipe_left()
