@@ -18,5 +18,5 @@ class ImageDataset(Dataset):
         image = Image.open(img_path).convert("RGB")
         if self.transform:
             image = self.transform(image)
-
+        # print(image.shape)
         return image, torch.tensor(label)

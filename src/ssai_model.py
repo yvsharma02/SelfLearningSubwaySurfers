@@ -11,15 +11,16 @@ import time
 class SSAIModel(nn.Module):
 
     IMAGE_TRANSFORM = transforms.Compose([
-        transforms.Resize((60, 100)),
+        transforms.Resize((150, 90)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
     ])
 
     def calculate_loss_of_batch(pred, required):
-        prob = F.log_softmax(pred, dim=1)
-        loss = F.kl_div(prob, required, reduction="batchmean")
-        return loss
+        return F.mse_loss(pred, required)        
+        # prob = F.log_softmax(pred, dim=1)
+        # loss = F.kl_div(prob, required, reduction="batchmean")
+        # return loss
 
     def __init__(self):
         super(SSAIModel, self).__init__()
@@ -27,19 +28,19 @@ class SSAIModel(nn.Module):
         self.cnn_stage = nn.Sequential(
             nn.Conv2d(3, 16, kernel_size=3, padding=1),
             nn.BatchNorm2d(16),
-            nn.LeakyReLU(),
-            nn.Dropout(p=0.1),
+            nn.ReLU(),
+            nn.Dropout(p=0.025),
             nn.AvgPool2d(2),
 
             nn.Conv2d(16, 32, kernel_size=3, padding=1),
             nn.BatchNorm2d(32),
-            nn.LeakyReLU(),
-            nn.Dropout(p=0.1),
+            nn.ReLU(),
+            nn.Dropout(p=0.025),
             nn.AvgPool2d(2),
 
             nn.Conv2d(32, 64, kernel_size=5, padding=1),
             nn.BatchNorm2d(64),
-            nn.LeakyReLU(),
+            nn.ReLU(),
             nn.MaxPool2d(2),
             nn.Dropout(p=0.05),
 
@@ -47,17 +48,17 @@ class SSAIModel(nn.Module):
         )
 
         self.fully_connected_stage = nn.Sequential(
-            nn.Linear(4224, 1024),
-            nn.BatchNorm1d(1024),
+            nn.Linear(10880, 2048),
+            nn.BatchNorm1d(2048),
             nn.LeakyReLU(),
-            nn.Dropout(p=0.35),
+            nn.Dropout(p=0.5),
 
-            nn.Linear(1024, 128),
-            nn.BatchNorm1d(128),
+            nn.Linear(2048, 256),
+            nn.BatchNorm1d(256),
             nn.LeakyReLU(),
-            nn.Dropout(p=0.25),
+            nn.Dropout(p=0.4),
 
-            nn.Linear(128, 5),
+            nn.Linear(256, 5),
         )
 
     def forward(self, img):

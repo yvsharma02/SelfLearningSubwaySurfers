@@ -13,9 +13,11 @@ import run_validator
 import constants
 import numpy as np
 import shutil
+from PIL import Image
 
 # One in X
-MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 0.33
+MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 0.65
+MULTI_ELIM_NOTHING_LIMIT = 0.4 # This percent of single elim can be nothing multi elims
 
 # Returns (img_path, label (tensor with length 5 denoting elimination confidence.))
 def read_data(path):
@@ -41,7 +43,6 @@ def read_data(path):
                     eliminations = eliminations.strip("[] \n").split(",")
                     if (len(eliminations) == 0 or not eliminations[0]):
                         continue
-                    # logits = logits.strip("[] \n").split(",")
                     eliminations = [int(x) for x in eliminations]
                     label = [(1.0 / len(eliminations) if i in eliminations else 0.0) for i in range(0, 5)]
                     imname = os.path.join(subdir, f"{index}.png")
@@ -51,9 +52,16 @@ def read_data(path):
                     else: 
                         res_mp[imname] = label
 
-    sampled = np.random.choice([x for x in multi_elim.keys()], size=min(int(len(res_mp.keys()) * MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM), len(multi_elim.keys())), replace=False)
-    for k in sampled:
+    no_action_multi_elims = [k for k in multi_elim.keys() if multi_elim[k][0] < 0.25]
+    action_multi_elims = [k for k in multi_elim.keys() if k not in no_action_multi_elims]
+    sampled_no_actions = np.random.choice(no_action_multi_elims, size=min(int(len(res_mp.keys()) * MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM * MULTI_ELIM_NOTHING_LIMIT), len(no_action_multi_elims)), replace=False)
+    sampled_actions = np.random.choice(action_multi_elims, size=min(int(len(res_mp.keys()) * MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM) - len(sampled_no_actions), len(multi_elim.keys())), replace=False)
+
+    for k in sampled_actions:
         res_mp[k] = multi_elim[k]
+    for k in sampled_no_actions:
+        res_mp[k] = multi_elim[k]
+
     return res_mp
 
 def write_data(data, output):
@@ -75,8 +83,8 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
     train_dataset = ImageDataset(train_paths, train_labels, transform=transform)
     test_dataset = ImageDataset(test_paths, test_labels, transform=transform)
 
-    train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, drop_last=True)
-    test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False, drop_last=True)
+    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, drop_last=True)
+    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False, drop_last=True)
 
     return train_dataset, train_loader, test_dataset, test_loader
 
@@ -104,8 +112,9 @@ def train(model, train_loader, device):
             optimizer.step()
             for i in range(0, elim_pred.shape[0]):
                 # print(eliminations[i, :])
+                elim_count = sum(1 if eliminations[i, x].item() > 0.9 else 0 for x in range(0, 5))
                 label_confidence, label_choice = torch.max(eliminations[i, :], 0)
-                if (label_confidence > 0.99):
+                if (elim_count == 1):
                     pred_confidence, pred_choice = torch.max(elim_pred[i, :], 0)
                     if (pred_choice == label_choice):
                         single_elim_correct += 1
@@ -129,6 +138,9 @@ def train(model, train_loader, device):
         else:
             print(f"Empty Empoch: {epoch+1}/{num_epochs}")
 
+        # if (epoch % 10 == 0):
+            # model.save_to_file("generated/models/test.pth")
+
 def test(model, test_loader, device):
     model.eval()
     running_loss = 0.0
@@ -137,6 +149,8 @@ def test(model, test_loader, device):
     single_elim_total = 0
     multi_elim_correct = 0
     multi_elim_total = 0
+
+    c = 0
 
     with torch.no_grad():
         for images, labels in test_loader:
@@ -148,8 +162,22 @@ def test(model, test_loader, device):
             running_loss += loss.item() * images.size(0)
 
             for i in range(0, elim_pred.shape[0]):
+                elim_count = sum(1 if eliminations[i, x].item() > 0.05 else 0 for x in range(0, 5))
+                # img_tensor = images[i, :, :, :].cpu()
+                # unnorm = img_tensor * 0.5 + 0.5
+
+                # Convert to numpy (HWC) and uint8
+                # np_img = (unnorm.permute(1, 2, 0).numpy() * 255).astype(np.uint8)
+
+                # Back to PIL
+                # pil_img = Image.fromarray(np_img, mode="RGB")
+
+                # pred_str = "[" + ",".join([f"{x.item():.3f}" for x in elim_pred[i, :]]) + "]"
+                # label_str = "[" +  ",".join([f"{x.item():.3f}" for x in eliminations[i, :]]) + "]"
+                # pil_img.save(f"generated/test/{c}_{label_str}_{pred_str}.png")
+                c += 1
                 label_confidence, label_choice = torch.max(eliminations[i, :], 0)
-                if label_confidence > 0.99:
+                if elim_count == 1:
                     pred_confidence, pred_choice = torch.max(elim_pred[i, :], 0)
                     if pred_choice == label_choice:
                         single_elim_correct += 1
@@ -188,7 +216,6 @@ def main():
     train(model, train_loader, device)
     test(model, test_loader, device)
 
-    model.save_to_file("generated/models/test.pth")
 
 if __name__ == "__main__":
     main()

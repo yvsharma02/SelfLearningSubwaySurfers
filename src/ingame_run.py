@@ -16,19 +16,19 @@ class InGameRun:
 
     def wait_time_for_action(action):
         if (action == constants.ACTION_NOTHING):
-            return torch.normal(0.15, 0.05, size=(1,)).item()
+            return torch.normal(0.2, 0.05, size=(1,)).item()
         
         if (action == constants.ACTION_UP):
-            return torch.normal(.75, .33, size=(1,)).item()
+            return torch.normal(1, .33, size=(1,)).item()
         
         if (action == constants.ACTION_DOWN):
-            return torch.normal(.55, .1, size=(1,)).item()
+            return torch.normal(.7, .1, size=(1,)).item()
         
         if (action == constants.ACTION_LEFT):
-            return torch.normal(.55, .1, size=(1,)).item()
+            return torch.normal(.75, .1, size=(1,)).item()
         
         if (action == constants.ACTION_RIGHT):
-            return torch.normal(.55, .1, size=(1,)).item()
+            return torch.normal(.75, .1, size=(1,)).item()
 
 
     def __init__(self, gsd, emulator_controller, save_que):
