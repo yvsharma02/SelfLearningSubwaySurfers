@@ -5,12 +5,13 @@ import cv2
 import gc
 
 class SaveItem:
-    def __init__(self, im_no, eliminated_choices, time_sec, img, logits):
+    def __init__(self, im_no, eliminated_choices, time_sec, img, logits, debug_log):
         self.im_no = im_no
         self.elimiated_choices = eliminated_choices
         self.time_sec = time_sec
         self.img = img
         self.logits = logits
+        self.debug_log = debug_log
 
 class SaveQue:
     def __init__(self, dataset_name, dataset_dir):
@@ -20,8 +21,8 @@ class SaveQue:
         os.makedirs(self.dataset_dir, exist_ok=True)
         self.metadata_file = open(os.path.join(self.dataset_dir, "metadata.txt"), "w+")
 
-    def put(self, eliminated_choices, img, time_s, logits):
-        item = SaveItem(self.counter, eliminated_choices, time_s, img, logits)
+    def put(self, eliminated_choices, img, time_s, logits, debug_log):
+        item = SaveItem(self.counter, eliminated_choices, time_s, img, logits, debug_log)
         self.process(item)
         self.counter += 1
 
@@ -29,7 +30,7 @@ class SaveQue:
         cv2.imwrite(os.path.join(self.dataset_dir, f"{item.im_no}.png"), item.img)
         eliminated_actions_str = f"[{','.join([str(act) for act in item.elimiated_choices])}]"
         logits_str = f"({",".join(str(l.item()) for l in item.logits)})"
-        self.metadata_file.write(f"{item.im_no}; {item.time_sec}; {eliminated_actions_str}; {logits_str}\n")
+        self.metadata_file.write(f"{item.im_no}; {item.time_sec}; {eliminated_actions_str}; {logits_str}; {item.debug_log}\n")
         del item
         gc.collect()
         return True

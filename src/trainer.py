@@ -37,7 +37,7 @@ def read_data(path):
                 lines = f.readlines()
                 for idx, line in enumerate(lines):
                     line = line.strip()
-                    index, time, eliminations, logits = line.split(';')
+                    index, time, eliminations, logits, debug_log = line.split(';')
                     index = int(index.strip())
                     time = float(time.strip())
                     eliminations = eliminations.strip("[] \n").split(",")
