@@ -2,150 +2,165 @@ import time
 import constants
 import cv2
 import torch
+from collections import deque
 
 class InGameRun:
     
-    ACTIONS_WAIT_TIME = [
-        0.1, 0.75, 0.5, 0.5, 0.5
-        # 0.075,
-        # 0.4125,
-        # 0.35,
-        # 0.3,
-        # 0.3
-    ]
+    class Command:
+        def __init__(self, capture, pred_action, state, elimination_window_min, elimination_window_max, logits):
+            self.capture = capture
+            self.action = pred_action
+            self.game_state = state
+            self.command_time = time.time()
+            self.elim_win_low = elimination_window_min
+            self.elim_win_high = elimination_window_max
+            self.execute_time = None
+            self.logits = logits
+            self.saved = False
 
-    def wait_time_for_action(action):
-        if (action == constants.ACTION_NOTHING):
-            return torch.normal(0.75, 0.5, size=(1,)).item()
+        def time_since_given(self):
+            return time.time() - self.command_time
         
-        if (action == constants.ACTION_UP):
-            return torch.normal(1.3, .1, size=(1,)).item()
+        def time_since_execution(self):
+            if self.execute_time is None:
+                return -1
+            return time.time() - self.execute_time
         
-        if (action == constants.ACTION_DOWN):
-            return torch.normal(1, .1, size=(1,)).item()
-        
-        if (action == constants.ACTION_LEFT):
-            return torch.normal(.75, .1, size=(1,)).item()
-        
-        if (action == constants.ACTION_RIGHT):
-            return torch.normal(.75, .1, size=(1,)).item()
+        def mark_as_executed(self):
+            self.execute_time = time.time()
 
+        def is_saved(self):
+            return self.saved
+        
+        def mark_as_saved(self):
+            self.saved = True
 
-    def min_time_to_be_considered_for_elimination(action):
-        if (action == constants.ACTION_NOTHING):
-            return 0 # torch.normal(0.05, 0, size=(1,)).item()
-        
-        if (action == constants.ACTION_UP):
-            return 0.15 # torch.normal(0.15, 0, size=(1,)).item()
-        
-        if (action == constants.ACTION_DOWN):
-            return 0.15 # torch.normal(0.15, 0, size=(1,)).item()
-        
-        if (action == constants.ACTION_LEFT):
-            return 0.15 # torch.normal(0.15, 0, size=(1,)).item()
-        
-        if (action == constants.ACTION_RIGHT):
-            return 0.15 # torch.normal(.15, 0, size=(1,)).item()
+        def is_complete(self):
+            return self.saved and self.time_since_execution() > self.elim_win_high
 
-    def __init__(self, gsd, emulator_controller, save_que):
+    def get_command_elim_window(self, action):
+        if action == constants.ACTION_NOTHING:
+            return 0, 0
+        if action == constants.ACTION_UP:
+            return 0.1, torch.normal(1.1, .15, size=(1,)).item()
+        if action == constants.ACTION_DOWN:
+            return 0.1, torch.normal(1, .125, size=(1,)).item()
+        if action == constants.ACTION_LEFT:
+            return 0.1, torch.normal(.85, .1, size=(1,)).item()
+        if action == constants.ACTION_RIGHT:
+            return 0.1, torch.normal(.85, .1, size=(1,)).item()
+    
+    def __init__(self, emulator_controller, save_que):
         self.start_time = time.time()
         self.emulator_controller = emulator_controller
         self.save_que = save_que
-        # self.first_normal_state_detected = False
-
-        self.last_capture = None
-        self.last_action = None
-        self.last_action_time = None
-        self.last_action_state = None
-        self.last_logits = None
-
-        self.first_tick = False
+        self.nothing_buffer = []
+        self.executing_cmd = None
+        self.queued_cmd = None
+        self.finished = False
 
     def run_secs(self):
         return time.time() - self.start_time
 
-
-    def reaction_time(self):
-        if (self.last_action == None):
-            return 0
-        else:
-            return InGameRun.wait_time_for_action(self.last_action)
-    
-    # def next_action_delay(self):
-        # return 0.4 # Scale this with run_secs as well.
-
     def start_delay(self):
         return 2
 
-    def take_action(self, action, capture, gamestate, logits):
-        self.last_action_time = time.time()
-        self.last_action = action
-        self.last_capture = capture
-        self.last_action_state = gamestate
-        self.last_logits = logits
-        # print(f"Taking Action: {action}")
-        self.command_emulator(action)
-
-    def time_since_last_action(self):
-        return time.time() - (self.last_action_time if self.last_action_time is not None else self.start_time)
-
-    def can_perform_action_now(self):
-        return self.last_action is None and self.run_secs() >= self.start_delay()
-        # return self.time_since_last_action() >= self.next_action_delay()
-
-    def can_flush_last_action_now(self):
-        return self.time_since_last_action() >= self.reaction_time()
-
-    def tick(self, new_state):
+    def give_command(self, action, capture, gamestate, logits):
         if (self.run_secs() < self.start_delay()):
             return
+
+        now = time.time()
+
+        if (action == constants.ACTION_NOTHING):
+            self.nothing_buffer.append((action, capture, gamestate, logits, now))
+            return
         
-        if (not self.first_tick):
-            self.first_tick = True
-            print("Truly Started!")
+        win_low, win_high = self.get_command_elim_window(action)
+        if (self.queued_cmd == None or self.queued_cmd.action != action):
+            self.queued_cmd = InGameRun.Command(capture, action, gamestate, win_low, win_high, logits)
 
+        pass
+
+    def record_nothing_buffer(self, eliminate, criteria):
+        to_flush = [i for i in range(0, len(self.nothing_buffer)) if criteria(self.nothing_buffer[i])]
+        for idx in to_flush:
+            elim = [0] if eliminate else [i for i in range(1, 5)]
+            self.record(elim, self.nothing_buffer[idx][1], self.nothing_buffer[idx][4], self.nothing_buffer[idx][3])
+        self.nothing_buffer = [self.nothing_buffer[i] for i in range(0, len(self.nothing_buffer)) if i not in to_flush]
+
+    # def record_stale_nothing(self, eliminate):
+    #     now = time.time()
+    #     self.record_nothing_buffer(eliminate, lambda x : (now - x[4]) >= 1)
+
+    def tick(self, new_state):
+        if (self.run_secs() < self.start_delay() or self.finished):
+            return
         
-        # if (not self.first_normal_state_detected):
-        #     if (new_state == constants.GAME_STATE_NON_FATAL_MISTAKE):
-        #         return
-        #     print(f"First Normal: ", float(self.run_secs() ))
-        #     self.first_normal_state_detected = True
+        if (self.executing_cmd == None and self.queued_cmd != None):
+            self.execute_command(self.queued_cmd)
+            self.queued_cmd = None
 
-        if (self.last_action_state != None):
-            if (new_state > self.last_action_state):
-                self.flush(True)
+        if (self.executing_cmd != None):
+            now = time.time()
+            self.record_nothing_buffer(False, lambda x : (now - x[4]) >= 1 and x[4] <= self.executing_cmd.command_time)
+            if (self.executing_cmd.time_since_execution() >= self.executing_cmd.elim_win_high and new_state <= self.executing_cmd.game_state):
+                self.record_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time)) # TODO: Make sure this eliminates only nothings that happened before the command executed.
+                self.record_cmd(self.executing_cmd, False)
+                self.executing_cmd = None
+            elif (new_state > self.executing_cmd.game_state):
+                if (self.executing_cmd.time_since_execution() < self.executing_cmd.elim_win_low):
+                    print("All prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                    self.record_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time)) # Elimninate last few seconds of noting.
+                    self.record_cmd(self.executing_cmd, True)
+                elif (self.executing_cmd.elim_win_low <= self.executing_cmd.time_since_execution() and self.executing_cmd.time_since_execution() <= self.executing_cmd.elim_win_high):
+                    print("None prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                    self.record_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time))
+                    self.record_cmd(self.executing_cmd, True)
+                
+                self.executing_cmd = None
+        else:
+            now = time.time()
+            self.record_nothing_buffer(False, lambda x : (now - x[4]) >= 1)
 
-        if (self.can_flush_last_action_now()):
-            self.flush(False)
+
+        if (new_state == constants.GAME_STATE_OVER):
+            # self.record_nothing_buffer(True, lambda x : True)
+            self.finished = True
 
 
-    def flush(self, eliminate, consider_min_time=True):
-        if (self.last_action != None):
-            if (not consider_min_time or (self.time_since_last_action() >= InGameRun.min_time_to_be_considered_for_elimination(self.last_action))):
-                _, act_max_idx = torch.max(self.last_logits, dim=0)
-                _, act_min_idx = torch.min(self.last_logits, dim=0)
-                act_max = constants.action_to_name(act_max_idx.item())
-                act_min = constants.action_to_name(act_min_idx.item())
-                print(("Eliminated: " if eliminate else "Validated: ") + constants.action_to_name(self.last_action) + " ; Logits: [" + ", ".join([f'{x:.4f}' for x in self.last_logits]) + "]; " + "ELIM_MAX: " + act_max + "; ELIM_MIN: " + act_min)
-                if (eliminate):
-                    # print(f"Eliminated!: {self.last_action}")
-                    self.save_que.put([self.last_action], self.last_capture, self.run_secs(), self.last_logits)
-                else:
-                    # print(f"Did Not Eliminate!: {self.last_action}")
-                    self.save_que.put([i for i in range(0, 5) if i != self.last_action], self.last_capture, self.run_secs(), self.last_logits)
+    def is_finished(self):
+        return self.finished
+    
+    def record_cmd(self, cmd : Command, eliminate):
+        if (cmd.saved): raise "Command already saved"
 
-        self.last_action = None
-        self.last_action_state = None
-        self.last_capture = None
-        self.last_logits = None
+        cmd.mark_as_saved()
 
-    def command_emulator(self, action):
-        if (action == constants.ACTION_UP): self.emulator_controller.swipe_up()
-        elif (action == constants.ACTION_DOWN): self.emulator_controller.swipe_down()
-        elif (action == constants.ACTION_LEFT): self.emulator_controller.swipe_left()
-        elif (action == constants.ACTION_RIGHT): self.emulator_controller.swipe_right()
+        capture = cmd.capture
+        logits = cmd.logits
+        ts = cmd.command_time
+        elim = [cmd.action] if eliminate else [i for i in range(0, 5) if i != cmd.action]
+
+        self.record(elim, capture, ts, logits)
+
+    def record(self, eliminations, capture, cmd_time, logits):
+        _, act_max_idx = torch.max(logits, dim=0)
+        _, act_min_idx = torch.min(logits, dim=0)
+        act_max = constants.action_to_name(act_max_idx.item())
+        act_min = constants.action_to_name(act_min_idx.item())
+        print("Eliminated: [" + ",".join([constants.action_to_name(x) for x in eliminations]) + "] ; Logits: [" + ", ".join([f'{x:.4f}' for x in logits]) + "]; " + "ELIM_MAX: " + act_max + "; ELIM_MIN: " + act_min)
+        self.save_que.put(eliminations, capture, cmd_time, logits)
+
+    def execute_command(self, cmd : Command):
+        if (cmd.time_since_execution() >= 0): raise "Command Already Executed."
+
+        action = cmd.action
+        if action == constants.ACTION_UP: self.emulator_controller.swipe_up()
+        elif action == constants.ACTION_DOWN: self.emulator_controller.swipe_down()
+        elif action == constants.ACTION_LEFT: self.emulator_controller.swipe_left()
+        elif action == constants.ACTION_RIGHT: self.emulator_controller.swipe_right()
+        cmd.mark_as_executed()
+        self.executing_cmd = cmd
     
     def close(self):
-        if ((self.last_action is not None) and (self.last_capture is not None)):
-            self.flush(True)
         self.save_que.close()

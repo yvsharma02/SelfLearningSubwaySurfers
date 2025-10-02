@@ -18,9 +18,6 @@ class SSAIModel(nn.Module):
 
     def calculate_loss_of_batch(pred, required):
         return F.mse_loss(pred, required)        
-        # prob = F.log_softmax(pred, dim=1)
-        # loss = F.kl_div(prob, required, reduction="batchmean")
-        # return loss
 
     def __init__(self):
         super(SSAIModel, self).__init__()

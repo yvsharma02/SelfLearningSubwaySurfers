@@ -33,8 +33,8 @@ class StateDetector:
         if not self.pause_button_detector.detect(capture):
             return constants.GAME_STATE_OVER
         
-        if self.police_detector.detect(capture):
-            return constants.GAME_STATE_NON_FATAL_MISTAKE
+        # if self.police_detector.detect(capture):
+        #     return constants.GAME_STATE_NON_FATAL_MISTAKE
         
         return constants.GAME_STATE_ONGOING
         

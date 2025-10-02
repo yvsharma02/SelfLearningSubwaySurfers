@@ -6,7 +6,6 @@ from multi_device_reader import MultiDeviceReader
 import time
 import emulator_utils
 import ssai_model
-import gc
 import game_state_detector
 from PIL import Image
 import trainer
@@ -15,10 +14,8 @@ from ingame_run import InGameRun
 import cv2
 import os
 
-
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
 RETRAIN_AFTER_X_RUNS = 20
-# DEFAULT_KB_IDX = -1
 
 keypress_action_map = {
     "NONE": constants.ACTION_NOTHING,
@@ -27,7 +24,6 @@ keypress_action_map = {
     "KEY_LEFT": constants.ACTION_LEFT,
     "KEY_RIGHT": constants.ACTION_RIGHT,
 }
-
 
 class Player:
     def __init__(self, model=None, device=None):
@@ -46,7 +42,7 @@ class Player:
         self.dataset = time.strftime(('%Y-%m-%d %H:%M:%S %Z'), time.localtime(time.time()))
         print(f"Starting Recording... Dataset: ${self.dataset}")
         self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
-        self.current_run = InGameRun(self.gsd, self.controller, self.save_que)
+        self.current_run = InGameRun(self.controller, self.save_que)
         self.run_no += 1
 
     def stop(self):
@@ -73,7 +69,6 @@ class Player:
 
         return False
     
-
     def tick(self):
         keypress = "NONE"
 
@@ -93,28 +88,25 @@ class Player:
         
         img_rgb = self.controller.capture()
         img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
-        # cv2.imwrite("capture.png", img)
         gamestate = self.gsd.detect_gamestate(img_bgr)
-        if (self.current_run != None and gamestate == constants.GAME_STATE_OVER):
-            self.stop()
 
-        if (self.current_run == None):
-            if (gamestate == constants.GAME_STATE_OVER):
-                self.controller.tap(400, 750)
-            else:
-                self.start()
+        if (self.current_run == None and gamestate == constants.GAME_STATE_OVER):
+            self.controller.tap(400, 750)
+
+        if (self.current_run == None and gamestate < constants.GAME_STATE_OVER):
+            self.start()
 
         if (self.current_run != None):
-            self.autoplay(img_rgb, img_bgr, gamestate)
-        
-        return True
-
-    def autoplay(self, img_rgb, img_bgr, gamestate):
-        self.current_run.tick(gamestate)
-        if (self.current_run.can_perform_action_now()):
             action, logits = self.model.infer(Image.fromarray(img_rgb), self.current_run.run_secs(), self.device)
-            self.current_run.take_action(action, img_bgr, gamestate, logits)
+            self.current_run.give_command(action, img_bgr, gamestate, logits)
+            self.current_run.tick(gamestate)
 
+            if (self.current_run.is_finished()):
+                self.stop()
+                self.current_run = None
+
+        time.sleep(0.075)
+        return True
 
     def start_mainloop(self):
         print("Press Q to quit\n")
