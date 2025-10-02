@@ -43,13 +43,13 @@ class InGameRun:
         if action == constants.ACTION_NOTHING:
             return 0, 0
         if action == constants.ACTION_UP:
-            return 0.1, 1.1 + (random.random() - 0.5) * 2 * .25
+            return 0.1, 0.8 + (random.random() - 0.5) * 2 * .45
         if action == constants.ACTION_DOWN:
-            return 0.1, 0.65 + (random.random() - 0.5) * 2 * .125
+            return 0.1, 0.45 + (random.random() - 0.5) * 2 * .125
         if action == constants.ACTION_LEFT:
-            return 0.1, 0.65 + (random.random() - 0.5) * 2 * .125
+            return 0.1, 0.45 + (random.random() - 0.5) * 2 * .125
         if action == constants.ACTION_RIGHT:
-            return 0.1, 0.65 + (random.random() - 0.5) * 2 * .125
+            return 0.1, 0.45 + (random.random() - 0.5) * 2 * .125
     
     def __init__(self, emulator_controller, save_que):
         self.start_time = time.time()
