@@ -16,7 +16,7 @@ class InGameRun:
 
     def wait_time_for_action(action):
         if (action == constants.ACTION_NOTHING):
-            return 0.1 # torch.normal(0.75, size=(1,)).item()
+            return torch.normal(0.75, 0.5, size=(1,)).item()
         
         if (action == constants.ACTION_UP):
             return torch.normal(1.3, .1, size=(1,)).item()
