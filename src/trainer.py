@@ -16,8 +16,8 @@ import shutil
 from PIL import Image
 
 # One in X
-MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 0.65
-MULTI_ELIM_NOTHING_LIMIT = 0.4 # This percent of single elim can be nothing multi elims
+MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 1
+MULTI_ELIM_NOTHING_LIMIT = 1 # This percent of single elim can be nothing multi elims
 
 # Returns (img_path, label (tensor with length 5 denoting elimination confidence.))
 def read_data(path):
@@ -83,13 +83,13 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
     train_dataset = ImageDataset(train_paths, train_labels, transform=transform)
     test_dataset = ImageDataset(test_paths, test_labels, transform=transform)
 
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, drop_last=True)
-    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False, drop_last=True)
+    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True, drop_last=True)
+    test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False, drop_last=True)
 
     return train_dataset, train_loader, test_dataset, test_loader
 
 def train(model, train_loader, device):
-    optimizer = optim.Adam(model.parameters(), lr=0.005)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
     num_epochs = 50
 
     for epoch in range(num_epochs):

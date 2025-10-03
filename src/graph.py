@@ -20,13 +20,15 @@ for subdir in subdirs:
         lines = f.readlines()
         if not lines:
             continue
+        first_line = lines[0].strip()
         last_line = lines[-1].strip()
         
+        start_time = float(first_line.split(";")[1])
         parts = last_line.split(";")
         if len(parts) >= 2:
             try:
                 time_val = float(parts[1])
-                times.append(time_val)
+                times.append(time_val - start_time)
                 dirs.append(subdir)
             except ValueError:
                 continue
@@ -38,7 +40,7 @@ times = np.array(times)
 def moving_average(x, w=5):
     return np.convolve(x, np.ones(w)/w, mode="valid")
 
-window_size = 20  # adjust for smoother / less smooth curve
+window_size = 50  # adjust for smoother / less smooth curve
 smoothed_times = moving_average(times, window_size)
 
 # Plot

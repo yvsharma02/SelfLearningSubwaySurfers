@@ -26,20 +26,17 @@ class SSAIModel(nn.Module):
             nn.Conv2d(3, 16, kernel_size=3, padding=1),
             nn.BatchNorm2d(16),
             nn.ReLU(),
-            nn.Dropout(p=0.025),
             nn.AvgPool2d(2),
 
             nn.Conv2d(16, 32, kernel_size=3, padding=1),
             nn.BatchNorm2d(32),
             nn.ReLU(),
-            nn.Dropout(p=0.025),
             nn.AvgPool2d(2),
 
             nn.Conv2d(32, 64, kernel_size=3, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(2),
-            nn.Dropout(p=0.05),
 
             nn.Flatten(),
         )
@@ -53,7 +50,7 @@ class SSAIModel(nn.Module):
             nn.Linear(512, 64),
             nn.BatchNorm1d(64),
             nn.LeakyReLU(),
-            nn.Dropout(p=0.25),
+            nn.Dropout(p=0.33),
 
             nn.Linear(64, 5),
         )

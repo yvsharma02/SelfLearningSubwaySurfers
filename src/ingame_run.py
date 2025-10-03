@@ -50,13 +50,13 @@ class InGameRun:
         if action == constants.ACTION_NOTHING:
             return 0, 0
         if action == constants.ACTION_UP:
-            return 0.1, 0.8 + (random.random() - 0.5) * 2 * .45
+            return 0.1, 1 + (random.random() - 0.5) * 2 * .35
         if action == constants.ACTION_DOWN:
-            return 0.1, 0.45 + (random.random() - 0.5) * 2 * .125
+            return 0, 0.55 + (random.random() - 0.5) * 2 * .05
         if action == constants.ACTION_LEFT:
-            return 0.1, 0.45 + (random.random() - 0.5) * 2 * .125
+            return 0.15, 0.55 + (random.random() - 0.5) * 2 * .05
         if action == constants.ACTION_RIGHT:
-            return 0.1, 0.45 + (random.random() - 0.5) * 2 * .125
+            return 0.15, 0.55 + (random.random() - 0.5) * 2 * .05
     
     def __init__(self, emulator_controller, save_que):
         self.start_time = time.time()
@@ -136,7 +136,8 @@ class InGameRun:
                     self.record_cmd(self.executing_cmd, True, "LOST_CONDITION")         
                 self.executing_cmd = None
             else:
-                log(f"Game Ongoing: {new_state}; {tse}")
+                pass
+                # log(f"Game Ongoing: {new_state}; {tse}")
             
         else:
             log("No pending command")
