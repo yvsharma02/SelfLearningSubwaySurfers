@@ -11,9 +11,9 @@ import time
 class SSAIModel(nn.Module):
 
     IMAGE_TRANSFORM = transforms.Compose([
-        transforms.Resize((75, 45)),
+        transforms.Resize((100, 60)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
+        transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.25,0.25,0.25])
     ])
 
     def calculate_loss_of_batch(pred, required):
@@ -28,31 +28,33 @@ class SSAIModel(nn.Module):
             nn.ReLU(),
             nn.AvgPool2d(2),
 
-            nn.Conv2d(16, 32, kernel_size=3, padding=1),
+            nn.Conv2d(16, 32, kernel_size=5, padding=2),
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.AvgPool2d(2),
 
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
-            nn.BatchNorm2d(64),
+            nn.Conv2d(32, 72, kernel_size=5, padding=2),
+            nn.BatchNorm2d(72),
             nn.ReLU(),
             nn.MaxPool2d(2),
 
             nn.Flatten(),
+            nn.Dropout(p=0.15),
         )
 
         self.fully_connected_stage = nn.Sequential(
-            nn.Linear(2880, 512),
-            nn.BatchNorm1d(512),
-            nn.LeakyReLU(),
+            nn.Linear(6048, 916),
+            nn.BatchNorm1d(916),
+            nn.ReLU(),
             nn.Dropout(p=0.5),
 
-            nn.Linear(512, 64),
-            nn.BatchNorm1d(64),
-            nn.LeakyReLU(),
-            nn.Dropout(p=0.33),
+            nn.Linear(916, 96),
+            nn.BatchNorm1d(96),
+            nn.ReLU(),
+            nn.Dropout(p=0.3),
 
-            nn.Linear(64, 5),
+            nn.Linear(96, 5),
+            nn.Sigmoid()
         )
 
     def forward(self, img):
@@ -62,7 +64,7 @@ class SSAIModel(nn.Module):
         return action
 
     # Returns the action to take.
-    def infer(self, img, run_time, device, randomize = False):
+    def infer(self, img, run_time, device, randomize = True):
         if type(run_time) is float:
             time_tensor = torch.tensor([run_time])
 
