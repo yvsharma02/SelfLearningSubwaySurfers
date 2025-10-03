@@ -15,7 +15,7 @@ def log(msg):
 class InGameRun:
     
     class Command:
-        def __init__(self, capture, pred_action, state, elimination_window_min, elimination_window_max, logits):
+        def __init__(self, capture, pred_action, state, elimination_window_min, elimination_window_max, logits, lane):
             self.capture = capture
             self.action = pred_action
             self.game_state = state
@@ -25,6 +25,7 @@ class InGameRun:
             self.execute_time = None
             self.logits = logits
             self.saved = False
+            self.lane = lane
 
         def time_since_given(self):
             return time.time() - self.command_time
@@ -74,14 +75,14 @@ class InGameRun:
     def start_delay(self):
         return 2
 
-    def give_command(self, action, capture, gamestate, logits):
+    def give_command(self, action, capture, gamestate, logits, lane):
         if (self.run_secs() < self.start_delay()):
             return
 
         now = time.time()
 
         if (action == constants.ACTION_NOTHING):
-            self.nothing_buffer.append((action, capture, gamestate, logits, now))
+            self.nothing_buffer.append((action, capture, gamestate, logits, now, lane))
             return
         
         if (self.executing_cmd != None and self.executing_cmd.time_since_execution() < self.executing_cmd.elim_win_high):
@@ -89,7 +90,7 @@ class InGameRun:
         
         win_low, win_high = self.get_command_elim_window(action)
         if (self.queued_cmd == None or self.queued_cmd.action != action):
-            self.queued_cmd = InGameRun.Command(capture, action, gamestate, win_low, win_high, logits)
+            self.queued_cmd = InGameRun.Command(capture, action, gamestate, win_low, win_high, logits, lane)
 
         pass
 
@@ -105,7 +106,7 @@ class InGameRun:
     #     now = time.time()
     #     self.record_nothing_buffer(eliminate, lambda x : (now - x[4]) >= 1)
 
-    def tick(self, new_state, lane):
+    def tick(self, new_state, new_lane):
         if (self.run_secs() < self.start_delay() or self.finished):
             return
         
@@ -114,7 +115,7 @@ class InGameRun:
             self.queued_cmd = None
 
         if (self.executing_cmd != None):
-            if (new_state != constants.GAME_STATE_OVER and ((self.executing_cmd.action == constants.ACTION_LEFT and lane == constants.LEFT_LANE) or (self.executing_cmd.action == constants.ACTION_RIGHT and lane == constants.RIGHT_LANE))):
+            if (new_state != constants.GAME_STATE_OVER and ((self.executing_cmd.action == constants.ACTION_LEFT and new_lane == constants.LEFT_LANE) or (self.executing_cmd.action == constants.ACTION_RIGHT and new_lane == constants.RIGHT_LANE))):
                     log("None prev nothing eliminiated (lane switch): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
                     self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="LANE_SWITCH_FLUSH")
                     self.record_cmd(self.executing_cmd, True, "LANE_SWITCH")
@@ -124,9 +125,14 @@ class InGameRun:
                 tse = self.executing_cmd.time_since_execution()
                 self.flush_nothing_buffer(False, lambda x : (now - x[4]) >= 1 and x[4] <= self.executing_cmd.command_time, debug_log="COMMAND_FLUSH")
                 if (tse >= self.executing_cmd.elim_win_high and new_state != constants.GAME_STATE_OVER):
-                    log("None prev nothing eliminiated (after window): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
-                    self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="AFTER_WINDOW_FLUSH") # TODO: Make sure this eliminates only nothings that happened before the command executed.
-                    self.record_cmd(self.executing_cmd, False, "AFTER_WINDOW")
+                    if ((self.executing_cmd.action == constants.ACTION_LEFT or self.executing_cmd.action == constants.ACTION_RIGHT) and self.executing_cmd.lane == new_lane):
+                        log("None prev nothing eliminiated (lane bounce): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                        self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="LANE_BOUNCE_FLUSH")
+                        self.record_cmd(self.executing_cmd, True, "LANE_BOUNCE")
+                    else:
+                        log("None prev nothing eliminiated (after window): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                        self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="AFTER_WINDOW_FLUSH") # TODO: Make sure this eliminates only nothings that happened before the command executed.
+                        self.record_cmd(self.executing_cmd, False, "AFTER_WINDOW")
                     self.executing_cmd = None
                 elif (new_state == constants.GAME_STATE_OVER):
                     if (tse < self.executing_cmd.elim_win_low):
