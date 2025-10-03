@@ -64,7 +64,7 @@ class InGameRun:
             
         low, high = get_unscaled()
         sf = 1 + self.run_secs() / (60 * 5)
-        return low / sf + high / sf
+        return low / sf, high / sf
     
     def __init__(self, emulator_controller, save_que):
         self.start_time = time.time()

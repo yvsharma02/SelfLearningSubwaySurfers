@@ -28,12 +28,12 @@ class ObjDetector:
         x1, y1, x2, y2 = constants.scale_dimensions(*self.unscaled_patch_area)
         patch = capture[y1:y2, x1:x2]
         true_max = 0
-        cv2.imwrite("patch.png", patch)
+        # cv2.imwrite("patch.png", patch)
 
         for i, scaled in enumerate(self.scaled_references):
             if scaled.shape[0] > patch.shape[0] or scaled.shape[1] > patch.shape[1]:
                 continue
-            cv2.imwrite(f"ref-{i}.png", scaled)
+            # cv2.imwrite(f"ref-{i}.png", scaled)
             if (scaled.shape[2] == 4):
                 mask = cv2.threshold(scaled[:, :, 3], 0, 255, cv2.THRESH_BINARY)[1]
                 result = cv2.matchTemplate(patch, scaled[:, :, :3], cv2.TM_CCORR_NORMED, mask=mask)
