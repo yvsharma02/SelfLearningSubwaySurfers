@@ -1,0 +1,1127 @@
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+All prev nothing eliminiated (Lost Condition): 0
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1151, 0.1211, 0.0042, -0.1227, -0.0476]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1172, 0.1227, 0.0082, -0.1219, -0.0429]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1177, 0.1205, 0.0062, -0.1233, -0.0442]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,RIGHT] ; Logits: [-0.1172, 0.1202, 0.0072, -0.1242, -0.0443]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: AFTER_WINDOW
+All prev nothing eliminiated: 0
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1170, 0.1206, 0.0064, -0.1253, -0.0428]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1155, 0.1192, 0.0043, -0.1234, -0.0461]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+All prev nothing eliminiated (Lost Condition): 0
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1171, 0.1215, 0.0053, -0.1214, -0.0455]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1168, 0.1216, 0.0061, -0.1243, -0.0453]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1152, 0.1202, 0.0049, -0.1225, -0.0467]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,RIGHT] ; Logits: [-0.1157, 0.1198, 0.0050, -0.1231, -0.0458]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: AFTER_WINDOW
+All prev nothing eliminiated: 0
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1165, 0.1214, 0.0053, -0.1224, -0.0465]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+All prev nothing eliminiated (Lost Condition): 0
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1180, 0.1219, 0.0051, -0.1224, -0.0452]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1178, 0.1219, 0.0048, -0.1218, -0.0464]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+All prev nothing eliminiated (Lost Condition): 0
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1170, 0.1209, 0.0072, -0.1247, -0.0443]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1154, 0.1204, 0.0062, -0.1243, -0.0452]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [LEFT] ; Logits: [-0.1160, 0.1196, 0.0031, -0.1234, -0.0448]; ELIM_MAX: UP; ELIM_MIN: LEFT; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0271, 0.0495, -0.0272, 0.7703, 0.0001]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0282, 0.0311, -0.0157, 0.7033, -0.0025]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 3
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0099, 0.0367, 0.0024, 0.6206, 0.0025]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0106, 0.0298, 0.0037, 0.6214, -0.0016]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0098, 0.0359, -0.0079, 0.6519, -0.0037]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0244, 0.0466, -0.0322, 0.7431, -0.0070]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0198, 0.0252, -0.0146, 0.6835, -0.0100]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0257, 0.0097, 0.0038, 0.6444, -0.0031]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0364, -0.0012, 0.0007, 0.6930, -0.0039]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0343, 0.0073, 0.0006, 0.6835, 0.0005]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0339, 0.0005, -0.0037, 0.6977, -0.0069]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0335, 0.0015, -0.0060, 0.7086, -0.0060]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0164, 0.0153, 0.0026, 0.6555, 0.0045]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+???????????????????
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0071, 0.0207, 0.0010, 0.6207, -0.0033]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+All prev nothing eliminiated (Lost Condition): 0
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0209, 0.0124, 0.0342, 0.6882, 0.0248]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0223, -0.0057, 0.0380, 0.6969, 0.0184]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0278, -0.0203, 0.0361, 0.7268, 0.0158]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0249, -0.0129, 0.0442, 0.7187, 0.0250]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0309, -0.0297, 0.0516, 0.7390, 0.0236]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0285, -0.0262, 0.0495, 0.7483, 0.0267]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0302, -0.0251, 0.0410, 0.7528, 0.0204]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0328, -0.0295, 0.0315, 0.7504, 0.0080]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0289, -0.0079, 0.0212, 0.7065, 0.0074]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0221, 0.0082, 0.0135, 0.6501, 0.0041]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 4
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0323, 0.0022, -0.0024, 0.7166, -0.0025]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0250, 0.0154, -0.0040, 0.6945, 0.0024]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0307, 0.0073, -0.0114, 0.7238, -0.0038]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0203, 0.0076, -0.0062, 0.7077, -0.0025]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0100, 0.0395, 0.0163, 0.5872, 0.0069]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+All prev nothing eliminiated: 0
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,DOWN,LEFT,RIGHT] ; Logits: [-0.0172, -0.0646, -0.0052, 0.8477, 0.0475]; ELIM_MAX: LEFT; ELIM_MIN: UP; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0010, -0.0161, -0.0544, 0.8229, -0.0539]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0064, -0.0217, -0.0529, 0.8269, -0.0462]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+All prev nothing eliminiated (Lost Condition): 0
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0210, 0.0319, 0.0296, 0.7349, -0.0177]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 6
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0284, 0.0202, 0.0330, 0.7778, -0.0140]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0168, 0.0368, 0.0413, 0.7415, -0.0087]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0319, 0.0152, 0.0483, 0.7717, -0.0085]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0217, 0.0190, 0.0504, 0.7734, -0.0060]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0169, 0.0247, 0.0518, 0.7490, -0.0068]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0303, 0.0164, 0.0391, 0.7464, -0.0236]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [-0.0273, 0.0253, 0.0252, 0.7078, -0.0295]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0188, 0.0083, -0.0059, 0.7856, -0.0161]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0180, 0.0084, -0.0157, 0.8011, -0.0085]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+???????????????????
+None prev nothing eliminiated: 0
+Eliminated: [DOWN] ; Logits: [0.0485, 0.0854, 0.0064, 0.5004, 0.0302]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: IN_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0254, 0.0895, -0.0333, 0.6100, -0.0041]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0048, 0.0351, -0.0080, 0.6499, -0.0017]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0370, 0.0002, -0.0068, 0.7189, -0.0048]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0382, 0.0058, -0.0108, 0.7229, -0.0038]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0392, -0.0009, -0.0082, 0.7287, -0.0065]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0322, 0.0049, -0.0060, 0.7162, -0.0036]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0213, 0.0126, 0.0004, 0.6773, 0.0014]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0249, 0.0049, 0.0032, 0.6810, -0.0008]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0202, 0.0102, 0.0038, 0.6538, -0.0008]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0076, 0.0257, 0.0055, 0.6170, 0.0036]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 5
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0016, 0.0317, 0.0064, 0.6011, 0.0071]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0068, 0.0255, 0.0092, 0.5978, 0.0027]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0040, 0.0318, 0.0043, 0.6036, 0.0059]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0071, 0.0274, 0.0100, 0.6051, 0.0058]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0057, 0.0304, 0.0082, 0.6012, 0.0073]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0052, 0.0299, -0.0059, 0.5900, 0.0036]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0118, 0.0203, -0.0169, 0.6379, -0.0072]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 1
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0060, 0.0230, -0.0036, 0.6123, -0.0029]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0061, 0.0240, -0.0080, 0.6053, -0.0056]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+All prev nothing eliminiated: 0
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0016, 0.0456, -0.0459, 0.7079, -0.0143]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0161, 0.0642, -0.0479, 0.6950, -0.0109]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0236, 0.0764, -0.0216, 0.6457, -0.0212]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0096, 0.0382, -0.0328, 0.7043, -0.0186]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0200, 0.0334, -0.0478, 0.7912, -0.0348]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+???????????????????
+All prev nothing eliminiated (Lost Condition): 0
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0193, 0.0206, 0.0282, 0.7050, 0.0213]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0255, -0.0016, 0.0200, 0.7382, 0.0104]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0332, -0.0207, 0.0224, 0.7785, 0.0064]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0292, -0.0062, 0.0274, 0.7570, 0.0114]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0350, -0.0266, 0.0356, 0.7873, 0.0117]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0318, -0.0300, 0.0445, 0.7951, 0.0166]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0318, -0.0178, 0.0347, 0.7910, 0.0124]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0361, -0.0293, 0.0234, 0.7783, -0.0000]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0290, -0.0169, 0.0174, 0.7358, -0.0013]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0259, 0.0059, 0.0108, 0.6790, 0.0049]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0306, 0.0040, 0.0101, 0.6848, 0.0028]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0269, 0.0091, 0.0018, 0.6837, 0.0031]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0343, 0.0052, -0.0083, 0.7200, -0.0011]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0233, 0.0061, -0.0094, 0.6958, -0.0041]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 3.0994415283203125e-06
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0136, 0.0157, 0.0032, 0.6403, -0.0021]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+All prev nothing eliminiated (Lost Condition): 0
+Finished
+No pending command
+No pending command
+No pending command
+No pending command
+Game Ongoing: 0; 2.1457672119140625e-06
+Game Ongoing: 0; 0.0829765796661377
+Game Ongoing: 0; 0.17052698135375977
+Game Ongoing: 0; 0.2548995018005371
+Game Ongoing: 0; 0.3382265567779541
+Game Ongoing: 0; 0.42095112800598145
+Game Ongoing: 0; 0.5038497447967529
+Game Ongoing: 0; 0.5885958671569824
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0169, 0.0281, 0.0183, 0.5354, 0.0521]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.6723217964172363
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0158, 0.0269, 0.0245, 0.5514, 0.0545]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0298, 0.0487, 0.0483, 0.4880, 0.0592]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.8965504169464111
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0271, 0.0294, 0.0456, 0.5137, 0.0529]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,DOWN,LEFT,RIGHT] ; Logits: [0.0291, 0.0180, 0.0543, 0.5484, 0.0523]; ELIM_MAX: LEFT; ELIM_MIN: UP; DEBUG: AFTER_WINDOW
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0300, 0.0622, -0.0101, 0.6351, -0.0270]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 4.76837158203125e-06
+Game Ongoing: 0; 0.22424769401550293
+Game Ongoing: 0; 0.30802059173583984
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0115, 0.0315, -0.0380, 0.7485, -0.0261]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 9.5367431640625e-07
+Game Ongoing: 0; 0.08239912986755371
+Game Ongoing: 0; 0.16811060905456543
+Game Ongoing: 0; 0.2518634796142578
+Game Ongoing: 0; 0.33448028564453125
+Game Ongoing: 0; 0.41884899139404297
+Game Ongoing: 0; 0.500908374786377
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0281, 0.0217, -0.0499, 0.8291, -0.0393]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.08493494987487793
+Game Ongoing: 0; 0.1721656322479248
+Game Ongoing: 0; 0.2551534175872803
+Game Ongoing: 0; 0.33780574798583984
+Game Ongoing: 0; 0.422990083694458
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0122, 0.0320, -0.0406, 0.7512, -0.0251]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.08307838439941406
+Game Ongoing: 0; 0.16510295867919922
+Game Ongoing: 0; 0.24925804138183594
+Game Ongoing: 0; 0.3318796157836914
+Game Ongoing: 0; 0.41378235816955566
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0170, 0.0383, -0.0622, 0.7092, -0.0222]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.0823521614074707
+Game Ongoing: 0; 0.1645216941833496
+Game Ongoing: 0; 0.24819374084472656
+Game Ongoing: 0; 0.32993388175964355
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0006, 0.0504, -0.0499, 0.7047, -0.0099]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.6689300537109375e-06
+Game Ongoing: 0; 0.08390593528747559
+Game Ongoing: 0; 0.16689467430114746
+Game Ongoing: 0; 0.2505981922149658
+Game Ongoing: 0; 0.33416128158569336
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0100, 0.0428, -0.0782, 0.8107, -0.0182]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08346414566040039
+Game Ongoing: 0; 0.16683053970336914
+Game Ongoing: 0; 0.2505974769592285
+Game Ongoing: 0; 0.33264684677124023
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0149, 0.0193, -0.1109, 0.9713, -0.0543]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08306193351745605
+Game Ongoing: 0; 0.16618609428405762
+Game Ongoing: 0; 0.25000739097595215
+Game Ongoing: 0; 0.3320505619049072
+Game Ongoing: 0; 0.4144463539123535
+Game Ongoing: 0; 0.4983513355255127
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0249, 0.0222, -0.1154, 0.9337, -0.0474]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 9.5367431640625e-07
+Game Ongoing: 0; 0.08290410041809082
+Game Ongoing: 0; 0.1667468547821045
+Game Ongoing: 0; 0.24935173988342285
+Game Ongoing: 0; 0.33141493797302246
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0381, 0.0741, 0.0208, 0.3218, -0.0148]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08272624015808105
+Game Ongoing: 0; 0.16605186462402344
+Game Ongoing: 0; 0.24949049949645996
+Game Ongoing: 0; 0.3329179286956787
+Game Ongoing: 0; 0.4157118797302246
+Game Ongoing: 0; 0.4994313716888428
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0379, 0.0738, 0.0212, 0.3171, -0.0140]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.08390021324157715
+Game Ongoing: 0; 0.16835689544677734
+Game Ongoing: 0; 0.25072264671325684
+Game Ongoing: 0; 0.3364546298980713
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0379, 0.0739, 0.0216, 0.3159, -0.0136]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08551859855651855
+Game Ongoing: 0; 0.17146062850952148
+Game Ongoing: 0; 0.2541239261627197
+Game Ongoing: 0; 0.3367605209350586
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0379, 0.0740, 0.0216, 0.3176, -0.0140]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.6689300537109375e-06
+Game Ongoing: 0; 0.08423566818237305
+Game Ongoing: 0; 0.17106032371520996
+Game Ongoing: 0; 0.25482702255249023
+Game Ongoing: 0; 0.3383910655975342
+Game Ongoing: 0; 0.4215426445007324
+Game Ongoing: 0; 0.50575852394104
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0379, 0.0739, 0.0218, 0.3143, -0.0135]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.6226043701171875e-06
+Game Ongoing: 0; 0.08258295059204102
+Game Ongoing: 0; 0.17059063911437988
+Game Ongoing: 0; 0.2584555149078369
+Game Ongoing: 0; 0.34134864807128906
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0380, 0.0740, 0.0221, 0.3132, -0.0132]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.0835726261138916
+Game Ongoing: 0; 0.16603565216064453
+Game Ongoing: 0; 0.250518798828125
+Game Ongoing: 0; 0.33428001403808594
+Game Ongoing: 0; 0.41698551177978516
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0380, 0.0740, 0.0220, 0.3134, -0.0134]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08224368095397949
+Game Ongoing: 0; 0.16627192497253418
+Game Ongoing: 0; 0.2502877712249756
+Game Ongoing: 0; 0.3320729732513428
+Game Ongoing: 0; 0.4147491455078125
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0380, 0.0740, 0.0220, 0.3132, -0.0134]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.0844264030456543
+Game Ongoing: 0; 0.16970133781433105
+Game Ongoing: 0; 0.2542753219604492
+Game Ongoing: 0; 0.33975839614868164
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0379, 0.0740, 0.0223, 0.3137, -0.0134]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.08467388153076172
+Game Ongoing: 0; 0.16796636581420898
+Game Ongoing: 0; 0.2508816719055176
+Game Ongoing: 0; 0.33582091331481934
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0380, 0.0740, 0.0222, 0.3119, -0.0132]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.0836648941040039
+Game Ongoing: 0; 0.1675868034362793
+Game Ongoing: 0; 0.24959707260131836
+Game Ongoing: 0; 0.332822322845459
+Game Ongoing: 0; 0.4141111373901367
+All prev nothing eliminiated (Lost Condition): 0
+Finished
+Game Ongoing: 0; 2.384185791015625e-06
+Game Ongoing: 0; 0.08714008331298828
+Game Ongoing: 0; 0.16981863975524902
+Game Ongoing: 0; 0.2547566890716553
+Game Ongoing: 0; 0.3374001979827881
+Game Ongoing: 0; 0.42036962509155273
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0120, 0.0331, -0.1186, 0.9136, -0.0354]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.08280372619628906
+Game Ongoing: 0; 0.16608119010925293
+Game Ongoing: 0; 0.24850010871887207
+Game Ongoing: 0; 0.33295679092407227
+Game Ongoing: 0; 0.41556644439697266
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0021, 0.0208, -0.0702, 0.8888, 0.0055]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08369016647338867
+Game Ongoing: 0; 0.16695880889892578
+Game Ongoing: 0; 0.2507131099700928
+Game Ongoing: 0; 0.3350827693939209
+Game Ongoing: 0; 0.42034006118774414
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0034, -0.0146, -0.0530, 0.8113, -0.0484]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.1457672119140625e-06
+Game Ongoing: 0; 0.08208918571472168
+Game Ongoing: 0; 0.16395115852355957
+Game Ongoing: 0; 0.24819087982177734
+Game Ongoing: 0; 0.3325676918029785
+Game Ongoing: 0; 0.41574525833129883
+Game Ongoing: 0; 0.49785327911376953
+Game Ongoing: 0; 0.580618143081665
+Game Ongoing: 0; 0.6634726524353027
+Game Ongoing: 0; 0.7475073337554932
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,DOWN,LEFT,RIGHT] ; Logits: [-0.0108, -0.0591, -0.0561, 0.8714, -0.0045]; ELIM_MAX: LEFT; ELIM_MIN: UP; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.6689300537109375e-06
+Game Ongoing: 0; 0.08450841903686523
+Game Ongoing: 0; 0.16724586486816406
+Game Ongoing: 0; 0.25091099739074707
+Game Ongoing: 0; 0.3348376750946045
+Game Ongoing: 0; 0.41855692863464355
+Game Ongoing: 0; 0.5018024444580078
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0017, -0.0294, -0.0449, 0.8526, -0.0420]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.6689300537109375e-06
+Game Ongoing: 0; 0.08229398727416992
+Game Ongoing: 0; 0.16868090629577637
+None prev nothing eliminiated: 0
+Eliminated: [DOWN] ; Logits: [-0.0197, -0.0150, -0.0356, 0.8275, -0.0295]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: IN_WINDOW
+Finished
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.09539937973022461
+Game Ongoing: 0; 0.18080639839172363
+Game Ongoing: 0; 0.26508331298828125
+Game Ongoing: 0; 0.34865665435791016
+Game Ongoing: 0; 0.4327836036682129
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0602, 0.0784, -0.0056, 0.6745, 0.0470]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08287405967712402
+Game Ongoing: 0; 0.1668410301208496
+Game Ongoing: 0; 0.2528560161590576
+Game Ongoing: 0; 0.3366389274597168
+None prev nothing eliminiated (after window): 1
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0534, 0.1025, 0.0540, 0.5618, 0.0879]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0385, 0.0746, -0.0313, 0.7009, 0.0187]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.08316373825073242
+Game Ongoing: 0; 0.16777992248535156
+Game Ongoing: 0; 0.2526116371154785
+Game Ongoing: 0; 0.33781862258911133
+Game Ongoing: 0; 0.422626256942749
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0341, 0.0226, -0.0672, 0.8114, -0.0355]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.08500981330871582
+Game Ongoing: 0; 0.16701221466064453
+Game Ongoing: 0; 0.25017452239990234
+Game Ongoing: 0; 0.333207368850708
+Game Ongoing: 0; 0.4160118103027344
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0621, 0.0323, -0.0516, 0.7477, -0.0473]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.49890685081481934
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0607, 0.0410, -0.0550, 0.7399, -0.0501]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0568, 0.0408, -0.0564, 0.7336, -0.0536]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0389, 0.0376, -0.0643, 0.7680, -0.0509]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.08284902572631836
+Game Ongoing: 0; 0.16927123069763184
+Game Ongoing: 0; 0.25159358978271484
+Game Ongoing: 0; 0.33570218086242676
+Game Ongoing: 0; 0.41740870475769043
+All prev nothing eliminiated (Lost Condition): 0
+Finished
+No pending command
+Game Ongoing: 0; 3.337860107421875e-06
+Game Ongoing: 0; 0.08933281898498535
+Game Ongoing: 0; 0.17483067512512207
+Game Ongoing: 0; 0.26159119606018066
+Game Ongoing: 0; 0.34673237800598145
+None prev nothing eliminiated (after window): 1
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0494, 0.0800, 0.0654, 0.3964, 0.0915]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0395, 0.0614, 0.0334, 0.4567, 0.0746]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08249902725219727
+Game Ongoing: 0; 0.16605305671691895
+Game Ongoing: 0; 0.24876642227172852
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0237, 0.0392, 0.0316, 0.5158, 0.0714]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.33156728744506836
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0304, 0.0319, 0.0540, 0.5090, 0.0842]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.5453572273254395
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0005, 0.0175, -0.0651, 0.8108, -0.0289]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 3.337860107421875e-06
+Game Ongoing: 0; 0.08404040336608887
+Game Ongoing: 0; 0.16892409324645996
+Game Ongoing: 0; 0.25090551376342773
+Game Ongoing: 0; 0.3373706340789795
+Game Ongoing: 0; 0.42137908935546875
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0020, -0.0234, -0.0447, 0.8014, -0.0356]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 9.5367431640625e-07
+Game Ongoing: 0; 0.08192300796508789
+Game Ongoing: 0; 0.16569852828979492
+Game Ongoing: 0; 0.25331950187683105
+None prev nothing eliminiated: 0
+Eliminated: [DOWN] ; Logits: [-0.0080, -0.0165, -0.0466, 0.7872, -0.0418]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: IN_WINDOW
+Finished
+Game Ongoing: 0; 2.6226043701171875e-06
+Game Ongoing: 0; 0.08763670921325684
+Game Ongoing: 0; 0.17118573188781738
+Game Ongoing: 0; 0.25496864318847656
+Game Ongoing: 0; 0.34212827682495117
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0629, 0.0871, -0.0070, 0.6136, -0.0023]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.384185791015625e-06
+Game Ongoing: 0; 0.08461236953735352
+Game Ongoing: 0; 0.16726088523864746
+Game Ongoing: 0; 0.2522752285003662
+Game Ongoing: 0; 0.3388645648956299
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.1027, 0.1349, 0.0375, 0.4054, 0.0772]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0344, 0.0636, 0.0531, 0.5822, 0.0414]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0165, 0.0410, 0.0273, 0.7013, 0.0183]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0102, 0.0370, 0.0123, 0.7326, 0.0199]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0071, 0.0332, 0.0111, 0.7412, 0.0151]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0062, 0.0331, 0.0257, 0.7053, 0.0150]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0105, 0.0359, 0.0270, 0.7153, 0.0201]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0044, 0.0346, 0.0106, 0.7509, 0.0271]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0004, 0.0301, 0.0189, 0.7357, 0.0192]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 1.1920928955078125e-06
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0089, 0.0352, 0.0302, 0.6916, 0.0215]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0100, 0.0391, 0.0371, 0.6775, 0.0334]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0139, 0.0413, 0.0560, 0.6281, 0.0320]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0217, 0.0486, 0.0500, 0.6343, 0.0309]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0167, 0.0431, 0.0276, 0.6882, 0.0226]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0195, 0.0406, 0.0157, 0.7087, 0.0214]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.0851283073425293
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0477, 0.0994, 0.0949, 0.4227, 0.0685]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.16848325729370117
+Game Ongoing: 0; 0.39002442359924316
+Game Ongoing: 0; 0.472247838973999
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.1239, 0.1678, 0.0671, 0.3232, 0.1032]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.1457672119140625e-06
+Game Ongoing: 0; 0.08514714241027832
+Game Ongoing: 0; 0.1681380271911621
+Game Ongoing: 0; 0.2519686222076416
+Game Ongoing: 0; 0.3352968692779541
+Game Ongoing: 0; 0.4191150665283203
+Game Ongoing: 0; 0.5041520595550537
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.1175, 0.1623, 0.0590, 0.3047, 0.0971]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08436059951782227
+Game Ongoing: 0; 0.1688096523284912
+Game Ongoing: 0; 0.2529428005218506
+Game Ongoing: 0; 0.33881187438964844
+Game Ongoing: 0; 0.42224907875061035
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0624, 0.0989, 0.0573, 0.4645, 0.0594]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+No pending command
+No pending command
+No pending command
+No pending command
+Game Ongoing: 0; 1.6689300537109375e-06
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0679, 0.1111, 0.0760, 0.3800, 0.0786]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.08384418487548828
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0809, 0.1147, 0.0953, 0.3701, 0.0994]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0809, 0.1214, 0.1271, 0.3567, 0.1220]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0791, 0.1148, 0.1345, 0.3759, 0.1204]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.3118255138397217
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0757, 0.1177, 0.1435, 0.3790, 0.1108]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0571, 0.1033, 0.1113, 0.4718, 0.0924]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0011, 0.0341, 0.0522, 0.6754, 0.0294]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0056, 0.0239, 0.0349, 0.7108, 0.0161]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0031, 0.0230, 0.0113, 0.7437, 0.0035]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 1
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0034, 0.0230, -0.0000, 0.7604, 0.0006]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0028, 0.0290, 0.0011, 0.7486, 0.0028]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0011, 0.0247, 0.0170, 0.6781, 0.0045]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+All prev nothing eliminiated: 0
+Finished
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.08870482444763184
+Game Ongoing: 0; 0.17368578910827637
+Game Ongoing: 0; 0.25822949409484863
+Game Ongoing: 0; 0.3425579071044922
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0210, 0.0446, 0.0221, 0.6930, 0.0091]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0246, 0.0500, 0.0574, 0.6160, 0.0249]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0160, 0.0480, 0.0874, 0.6015, 0.0359]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0286, 0.0499, 0.0957, 0.5901, 0.0456]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0236, 0.0453, 0.0744, 0.6447, 0.0398]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0135, 0.0420, 0.0630, 0.6834, 0.0415]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0103, 0.0382, 0.0579, 0.6957, 0.0379]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0138, 0.0402, 0.0588, 0.6879, 0.0417]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0127, 0.0404, 0.0553, 0.6916, 0.0413]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0086, 0.0401, 0.0577, 0.6746, 0.0399]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0058, 0.0391, 0.0629, 0.6790, 0.0430]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0023, 0.0348, 0.0511, 0.6936, 0.0368]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0023, 0.0360, 0.0538, 0.6709, 0.0393]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0048, 0.0399, 0.0550, 0.6535, 0.0380]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0058, 0.0388, 0.0540, 0.6161, 0.0209]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+All prev nothing eliminiated: 1
+Eliminated: [NOTHING] ; Logits: [0.0177, 0.0564, 0.0532, 0.5593, 0.0333]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: BEFORE_WINDOW_FLUSH
+Finished
+Game Ongoing: 0; 1.6689300537109375e-06
+Game Ongoing: 0; 0.09250903129577637
+Game Ongoing: 0; 0.17585301399230957
+Game Ongoing: 0; 0.25963902473449707
+Game Ongoing: 0; 0.34304261207580566
+Game Ongoing: 0; 0.42676591873168945
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0020, 0.0239, -0.1199, 0.9231, -0.0456]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.08302521705627441
+Game Ongoing: 0; 0.16580748558044434
+Game Ongoing: 0; 0.24903559684753418
+Game Ongoing: 0; 0.332322359085083
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0016, -0.0008, -0.0972, 0.8746, -0.0311]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 9.5367431640625e-07
+Game Ongoing: 0; 0.08300209045410156
+Game Ongoing: 0; 0.1664116382598877
+Game Ongoing: 0; 0.24996042251586914
+Game Ongoing: 0; 0.33397364616394043
+Game Ongoing: 0; 0.4172985553741455
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0176, -0.0185, -0.0777, 0.8707, -0.0370]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.1457672119140625e-06
+Game Ongoing: 0; 0.08197832107543945
+Game Ongoing: 0; 0.16598296165466309
+Game Ongoing: 0; 0.2484745979309082
+Game Ongoing: 0; 0.33141589164733887
+Game Ongoing: 0; 0.4168243408203125
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [-0.0073, -0.0168, -0.0520, 0.8381, -0.0546]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08428454399108887
+Game Ongoing: 0; 0.16817450523376465
+Game Ongoing: 0; 0.2523224353790283
+Game Ongoing: 0; 0.3364980220794678
+All prev nothing eliminiated (Lost Condition): 0
+Finished
+No pending command
+No pending command
+No pending command
+No pending command
+Game Ongoing: 0; 9.5367431640625e-07
+Game Ongoing: 0; 0.08661460876464844
+Game Ongoing: 0; 0.16946887969970703
+Game Ongoing: 0; 0.2518959045410156
+Game Ongoing: 0; 0.3362417221069336
+Game Ongoing: 0; 0.41943359375
+Game Ongoing: 0; 0.5043778419494629
+Game Ongoing: 0; 0.5866744518280029
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0548, 0.1123, 0.0703, 0.2670, 0.0663]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.6687695980072021
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0484, 0.0935, 0.0610, 0.3123, 0.0695]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0628, 0.0980, 0.0786, 0.3170, 0.0933]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 1
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0529, 0.0538, 0.0818, 0.4353, 0.0936]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,DOWN,LEFT,RIGHT] ; Logits: [0.0443, 0.0357, 0.0846, 0.4802, 0.0938]; ELIM_MAX: LEFT; ELIM_MIN: UP; DEBUG: AFTER_WINDOW
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0467, 0.0514, 0.0830, 0.4560, 0.0873]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0401, 0.0484, 0.0584, 0.4656, 0.0641]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 3.0994415283203125e-06
+Game Ongoing: 0; 0.35698795318603516
+Game Ongoing: 0; 0.44260239601135254
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0340, 0.0674, 0.0005, 0.5200, 0.0062]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.384185791015625e-06
+Game Ongoing: 0; 0.08216404914855957
+Game Ongoing: 0; 0.16688227653503418
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0083, 0.0221, 0.0071, 0.6067, 0.0018]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated: 2
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0099, 0.0235, -0.0031, 0.6284, 0.0006]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0123, 0.0184, -0.0078, 0.6375, -0.0013]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [DOWN] ; Logits: [-0.0075, 0.0271, -0.0166, 0.6224, -0.0017]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: IN_WINDOW
+Finished
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.09663867950439453
+Game Ongoing: 0; 0.18067240715026855
+Game Ongoing: 0; 0.265216588973999
+Game Ongoing: 0; 0.34885072708129883
+Game Ongoing: 0; 0.4334678649902344
+Game Ongoing: 0; 0.5173530578613281
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0890, 0.1182, 0.0844, 0.3110, 0.1126]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0684, 0.0745, 0.0727, 0.4001, 0.1008]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0643, 0.0831, 0.0791, 0.3848, 0.1023]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0523, 0.0594, 0.0773, 0.4364, 0.0943]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0081, 0.0108, 0.0406, 0.5910, 0.0418]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 1.6689300537109375e-06
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0366, -0.0004, -0.0066, 0.7220, -0.0062]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0362, 0.0091, -0.0093, 0.7196, -0.0022]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.22194504737854004
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0330, 0.0025, -0.0069, 0.7133, -0.0056]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0316, 0.0044, -0.0081, 0.7194, -0.0049]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0135, 0.0191, 0.0043, 0.6525, 0.0060]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated (after window): 1
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0058, 0.0268, -0.0013, 0.6514, 0.0057]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: AFTER_WINDOW_FLUSH
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0091, 0.0351, 0.0146, 0.5834, 0.0045]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0024, 0.0365, 0.0165, 0.5681, 0.0028]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+All prev nothing eliminiated: 0
+Finished
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.09224486351013184
+Game Ongoing: 0; 0.17826104164123535
+Game Ongoing: 0; 0.2626786231994629
+Game Ongoing: 0; 0.3451857566833496
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0078, 0.0112, -0.0843, 0.9127, -0.0244]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.86102294921875e-06
+Game Ongoing: 0; 0.08377528190612793
+Game Ongoing: 0; 0.16928791999816895
+Game Ongoing: 0; 0.25345802307128906
+Game Ongoing: 0; 0.3405191898345947
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0220, 0.0160, -0.1070, 0.9361, -0.0191]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.08193016052246094
+Game Ongoing: 0; 0.1674957275390625
+Game Ongoing: 0; 0.24971437454223633
+Game Ongoing: 0; 0.3318595886230469
+Game Ongoing: 0; 0.4182264804840088
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0126, 0.0307, -0.0606, 0.8153, -0.0590]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.08586812019348145
+Game Ongoing: 0; 0.16899776458740234
+Game Ongoing: 0; 0.2518491744995117
+Game Ongoing: 0; 0.33504366874694824
+Game Ongoing: 0; 0.41765475273132324
+Game Ongoing: 0; 0.500216007232666
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0046, -0.0269, -0.0471, 0.8199, -0.0363]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.6689300537109375e-06
+Game Ongoing: 0; 0.0825948715209961
+Game Ongoing: 0; 0.16576933860778809
+Game Ongoing: 0; 0.24783849716186523
+Game Ongoing: 0; 0.3305323123931885
+Game Ongoing: 0; 0.4137749671936035
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0029, -0.0078, -0.0423, 0.7480, -0.0413]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.384185791015625e-06
+Game Ongoing: 0; 0.08315038681030273
+Game Ongoing: 0; 0.1666567325592041
+Game Ongoing: 0; 0.25014424324035645
+Game Ongoing: 0; 0.33208203315734863
+Game Ongoing: 0; 0.41591787338256836
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0041, -0.0072, -0.0234, 0.7520, -0.0190]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.08318614959716797
+Game Ongoing: 0; 0.16858148574829102
+Game Ongoing: 0; 0.25293898582458496
+Game Ongoing: 0; 0.33663511276245117
+Game Ongoing: 0; 0.4228196144104004
+Game Ongoing: 0; 0.5067698955535889
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0117, -0.0030, -0.0326, 0.7434, -0.0266]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.08485913276672363
+Game Ongoing: 0; 0.16815185546875
+Game Ongoing: 0; 0.2519412040710449
+Game Ongoing: 0; 0.33560633659362793
+Game Ongoing: 0; 0.41881275177001953
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0043, 0.0201, -0.0187, 0.6558, -0.0399]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.1920928955078125e-06
+Game Ongoing: 0; 0.08315849304199219
+Game Ongoing: 0; 0.16710948944091797
+None prev nothing eliminiated: 0
+Eliminated: [RIGHT] ; Logits: [-0.0012, 0.0606, -0.0031, 0.5390, -0.0328]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: IN_WINDOW
+Finished
+Game Ongoing: 0; 2.384185791015625e-06
+Game Ongoing: 0; 0.08693528175354004
+Game Ongoing: 0; 0.17304229736328125
+Game Ongoing: 0; 0.2566070556640625
+Game Ongoing: 0; 0.341416597366333
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0389, 0.0535, -0.0355, 0.7813, -0.0285]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.1457672119140625e-06
+Game Ongoing: 0; 0.08619976043701172
+Game Ongoing: 0; 0.1737504005432129
+Game Ongoing: 0; 0.25739240646362305
+Game Ongoing: 0; 0.33907651901245117
+Game Ongoing: 0; 0.4246847629547119
+Game Ongoing: 0; 0.5075335502624512
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0631, 0.1010, -0.0066, 0.4561, 0.0353]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 5.4836273193359375e-06
+Game Ongoing: 0; 0.08161497116088867
+Game Ongoing: 0; 0.1636362075805664
+Game Ongoing: 0; 0.24706220626831055
+Game Ongoing: 0; 0.329512357711792
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0477, 0.0692, -0.0045, 0.5956, -0.0009]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.1457672119140625e-06
+Game Ongoing: 0; 0.08327579498291016
+Game Ongoing: 0; 0.167266845703125
+Game Ongoing: 0; 0.2513902187347412
+Game Ongoing: 0; 0.33370399475097656
+Game Ongoing: 0; 0.4176795482635498
+Game Ongoing: 0; 0.5006768703460693
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0027, 0.0463, -0.0428, 0.7208, -0.0247]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+All prev nothing eliminiated: 0
+Finished
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08823728561401367
+Game Ongoing: 0; 0.17306733131408691
+Game Ongoing: 0; 0.2582993507385254
+Game Ongoing: 0; 0.3411722183227539
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0425, 0.0751, -0.0331, 0.7086, 0.0133]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.0848531723022461
+Game Ongoing: 0; 0.16990351676940918
+Game Ongoing: 0; 0.25359058380126953
+Game Ongoing: 0; 0.3376164436340332
+Game Ongoing: 0; 0.422792911529541
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0426, 0.0789, -0.0295, 0.6725, 0.0139]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 4.0531158447265625e-06
+Game Ongoing: 0; 0.08387565612792969
+Game Ongoing: 0; 0.17002606391906738
+Game Ongoing: 0; 0.25582361221313477
+Game Ongoing: 0; 0.3418538570404053
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0577, 0.0770, 0.0106, 0.5497, 0.0243]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.0846567153930664
+Game Ongoing: 0; 0.169647216796875
+Game Ongoing: 0; 0.2536156177520752
+Game Ongoing: 0; 0.3436543941497803
+Game Ongoing: 0; 0.4258768558502197
+Game Ongoing: 0; 0.5082685947418213
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0417, 0.0637, 0.0225, 0.6011, 0.0071]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+No pending command
+Game Ongoing: 0; 1.9073486328125e-06
+Game Ongoing: 0; 0.08357954025268555
+Game Ongoing: 0; 0.16739273071289062
+None prev nothing eliminiated: 5
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0184, 0.0651, 0.0868, 0.5244, 0.0200]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0191, 0.0573, 0.0735, 0.5658, 0.0273]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0113, 0.0513, 0.0532, 0.5987, 0.0245]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0121, 0.0530, 0.0543, 0.5910, 0.0261]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0546, 0.0956, 0.0823, 0.4174, 0.0602]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [RIGHT] ; Logits: [0.0772, 0.1124, 0.0911, 0.3678, 0.0724]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: IN_WINDOW
+Finished
+Game Ongoing: 0; 1.430511474609375e-06
+Game Ongoing: 0; 0.09204912185668945
+Game Ongoing: 0; 0.17966938018798828
+Game Ongoing: 0; 0.2631387710571289
+Game Ongoing: 0; 0.3469254970550537
+Game Ongoing: 0; 0.43072056770324707
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [0.0857, 0.1084, 0.0788, 0.3289, 0.1187]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.1457672119140625e-06
+Game Ongoing: 0; 0.08231782913208008
+Game Ongoing: 0; 0.1676502227783203
+Game Ongoing: 0; 0.2517375946044922
+Game Ongoing: 0; 0.3348398208618164
+Game Ongoing: 0; 0.4185364246368408
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0639, 0.0820, 0.0797, 0.3832, 0.1116]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.5019748210906982
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0521, 0.0579, 0.0742, 0.4316, 0.0998]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 0.7154605388641357
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,DOWN,LEFT,RIGHT] ; Logits: [0.0316, 0.0259, 0.0613, 0.5203, 0.0765]; ELIM_MAX: LEFT; ELIM_MIN: UP; DEBUG: AFTER_WINDOW
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0185, 0.0097, 0.0174, 0.6241, 0.0061]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0350, 0.0005, 0.0013, 0.6983, -0.0006]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0363, -0.0005, -0.0006, 0.7043, -0.0029]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0295, 0.0069, 0.0141, 0.6813, 0.0076]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0339, 0.0099, 0.0013, 0.7066, -0.0040]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0280, 0.0126, 0.0149, 0.6742, 0.0024]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0347, 0.0119, 0.0120, 0.6837, 0.0004]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0132, 0.0227, 0.0055, 0.6331, -0.0029]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0065, 0.0224, 0.0099, 0.6069, 0.0002]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [-0.0058, 0.0274, 0.0009, 0.6241, -0.0008]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+All prev nothing eliminiated: 1
+Eliminated: [NOTHING] ; Logits: [-0.0093, 0.0233, -0.0014, 0.6218, -0.0011]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: BEFORE_WINDOW_FLUSH
+Finished
+Game Ongoing: 0; 3.337860107421875e-06
+Game Ongoing: 0; 0.08969378471374512
+Game Ongoing: 0; 0.18026447296142578
+Game Ongoing: 0; 0.26554417610168457
+Game Ongoing: 0; 0.3518950939178467
+Game Ongoing: 0; 0.43616223335266113
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,LEFT,RIGHT] ; Logits: [-0.0046, 0.0354, -0.0514, 0.7983, -0.0153]; ELIM_MAX: LEFT; ELIM_MIN: DOWN; DEBUG: AFTER_WINDOW
+Game Ongoing: 0; 2.1457672119140625e-06
+Game Ongoing: 0; 0.08382749557495117
+Game Ongoing: 0; 0.16751599311828613
+Game Ongoing: 0; 0.2497999668121338
+Game Ongoing: 0; 0.33287596702575684
+Game Ongoing: 0; 0.41544413566589355
+Game Ongoing: 0; 0.4997262954711914
+None prev nothing eliminiated (after window): 0
+Eliminated: [NOTHING,UP,DOWN,LEFT] ; Logits: [0.0064, 0.0347, 0.0184, 0.6417, 0.0009]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: AFTER_WINDOW
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+No pending command
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0106, 0.0359, 0.0582, 0.6215, 0.0183]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: NO_COMMAND_FLUSH_NON_ELIM
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0212, 0.0491, 0.0747, 0.5896, 0.0337]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0089, 0.0421, 0.0583, 0.6289, 0.0288]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Game Ongoing: 0; 1.6689300537109375e-06
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0102, 0.0421, 0.0619, 0.6174, 0.0314]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0086, 0.0382, 0.0483, 0.6381, 0.0206]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0054, 0.0374, 0.0423, 0.6467, 0.0214]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: COMMAND_FLUSH
+None prev nothing eliminiated: 5
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0084, 0.0384, 0.0429, 0.6353, 0.0174]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0048, 0.0360, 0.0331, 0.6573, 0.0105]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0036, 0.0380, 0.0322, 0.6547, 0.0149]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0052, 0.0369, 0.0305, 0.6799, 0.0126]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [UP,DOWN,LEFT,RIGHT] ; Logits: [0.0030, 0.0337, 0.0162, 0.7088, 0.0079]; ELIM_MAX: LEFT; ELIM_MIN: NOTHING; DEBUG: IN_WINDOW_FLUSH
+Eliminated: [RIGHT] ; Logits: [0.0028, 0.0315, 0.0114, 0.7056, 0.0023]; ELIM_MAX: LEFT; ELIM_MIN: RIGHT; DEBUG: IN_WINDOW
+Finished
