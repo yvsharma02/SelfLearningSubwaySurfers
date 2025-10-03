@@ -52,13 +52,13 @@ class InGameRun:
         if action == constants.ACTION_NOTHING:
             return 0, 0
         if action == constants.ACTION_UP:
-            return 0.15, torch.normal(1, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
+            return 0.175, torch.normal(1, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
         if action == constants.ACTION_DOWN:
             return 0.125, torch.normal(0.7, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
         if action == constants.ACTION_LEFT:
-            return 0.22, torch.normal(0.7, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+            return 0.35, torch.normal(0.7, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
         if action == constants.ACTION_RIGHT:
-            return 0.22, torch.normal(0.7, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+            return 0.35, torch.normal(0.7, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
     
     def __init__(self, emulator_controller, save_que):
         self.start_time = time.time()
@@ -115,7 +115,7 @@ class InGameRun:
             self.queued_cmd = None
 
         if (self.executing_cmd != None):
-            if (new_state != constants.GAME_STATE_OVER and ((self.executing_cmd.action == constants.ACTION_LEFT and new_lane == constants.LEFT_LANE) or (self.executing_cmd.action == constants.ACTION_RIGHT and new_lane == constants.RIGHT_LANE))):
+            if (new_state != constants.GAME_STATE_OVER and ((self.executing_cmd.action == constants.ACTION_LEFT and self.executing_cmd.lane == constants.LEFT_LANE) or (self.executing_cmd.action == constants.ACTION_RIGHT and self.executing_cmd.lane == constants.RIGHT_LANE))):
                     log("None prev nothing eliminiated (lane switch): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
                     self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="LANE_SWITCH_FLUSH")
                     self.record_cmd(self.executing_cmd, True, "LANE_SWITCH")
@@ -139,6 +139,7 @@ class InGameRun:
                         log("All prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] <= self.executing_cmd.command_time])))
                         self.flush_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH") # Elimninate last few seconds of noting.
                         # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
+                        # Maybe retroactively eliminate previous action in this case?
                     elif (self.executing_cmd.elim_win_low <= tse and tse <= self.executing_cmd.elim_win_high):
                         log("None prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
                         self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="IN_WINDOW_FLUSH")

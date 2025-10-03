@@ -97,9 +97,10 @@ class Player:
             self.start()
 
         if (self.current_run != None):
-            action, logits = self.model.infer(Image.fromarray(img_rgb), self.current_run.run_secs(), self.device)
-            self.current_run.give_command(action, img_bgr, gamestate, logits)
-            self.current_run.tick(gamestate, lane)
+            if (gamestate != constants.GAME_STATE_OVER):
+                action, logits = self.model.infer(Image.fromarray(img_rgb), self.current_run.run_secs(), self.device)
+                self.current_run.give_command(action, img_bgr, gamestate, logits, lane)
+                self.current_run.tick(gamestate, lane)
 
             if (self.current_run.is_finished()):
                 self.stop()

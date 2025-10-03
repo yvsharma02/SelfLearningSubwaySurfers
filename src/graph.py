@@ -2,7 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-root_dir = "generated/runs/dataset_old54"
+root_dir = "generated/runs/dataset"
 
 times = []
 dirs = []

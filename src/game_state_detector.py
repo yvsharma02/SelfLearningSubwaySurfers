@@ -30,6 +30,17 @@ class StateDetector:
             1,
             20,
             (16, 12, 68, 64), log_confidence=False, detect_bound_upper_limit=0.866)
+        
+        self.save_me_detector = ObjDetector(
+            "data/reference_images/save_me.png",
+            1,
+            0.86,
+            0.86,
+            0,
+            0.05,
+            1,
+            20,
+            (59, 252, 241, 293), log_confidence=True, detect_bound_upper_limit=0.866)
 
     def detect_lane(self, capture):
         new_lane = self.detect_lane_raw(capture)
