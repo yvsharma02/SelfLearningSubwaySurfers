@@ -8,7 +8,7 @@ import pipeline
 class StateDetector:
 
     def __init__(self):
-        self.lane_window = deque([], maxlen=5)
+        self.lane_window = deque([], maxlen=4)
         self.police_detector = ObjDetector(
             "data/reference_images/police4.png",
             3,
@@ -30,17 +30,6 @@ class StateDetector:
             1,
             20,
             (16, 12, 68, 64), log_confidence=False, detect_bound_upper_limit=0.866)
-        
-        self.save_me_detector = ObjDetector(
-            "data/reference_images/save_me.png",
-            1,
-            0.86,
-            0.86,
-            0,
-            0.05,
-            1,
-            20,
-            (59, 252, 241, 293), log_confidence=True, detect_bound_upper_limit=0.866)
 
     def detect_lane(self, capture):
         new_lane = self.detect_lane_raw(capture)
@@ -68,12 +57,5 @@ class StateDetector:
         if not self.pause_button_detector.detect(capture):
             return constants.GAME_STATE_OVER
         
-        # if self.police_detector.detect(capture):
-        #     return constants.GAME_STATE_NON_FATAL_MISTAKE
-        
         return constants.GAME_STATE_ONGOING
-        
-    #     # return constants.GAME_STATE_ONGOING if pause_button_detected else constants.GAME_STATE_OVER        
-
-    # def detect_police(self, capture):
-    #     return self.police_detector.detect(capture)
+    

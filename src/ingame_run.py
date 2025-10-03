@@ -48,17 +48,23 @@ class InGameRun:
             return self.saved and self.time_since_execution() > self.elim_win_high
 
     # Maybe cooldown should be independent frmo window_high???
+    # Scale?? (1.5 times lower at 2 min mark???)
     def get_command_elim_window(self, action):
-        if action == constants.ACTION_NOTHING:
-            return 0, 0
-        if action == constants.ACTION_UP:
-            return 0.175, torch.normal(1, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
-        if action == constants.ACTION_DOWN:
-            return 0.125, torch.normal(0.7, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
-        if action == constants.ACTION_LEFT:
-            return 0.35, torch.normal(0.7, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
-        if action == constants.ACTION_RIGHT:
-            return 0.35, torch.normal(0.7, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+        def get_unscaled():
+            if action == constants.ACTION_NOTHING:
+                return 0, 0
+            if action == constants.ACTION_UP:
+                return 0.175, torch.normal(.65, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
+            if action == constants.ACTION_DOWN:
+                return 0.125, torch.normal(0.45, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+            if action == constants.ACTION_LEFT:
+                return 0.35, torch.normal(0.5, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+            if action == constants.ACTION_RIGHT:
+                return 0.35, torch.normal(0.5, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+            
+        low, high = get_unscaled()
+        sf = 1 + self.run_secs() / (60 * 5)
+        return low / sf + high / sf
     
     def __init__(self, emulator_controller, save_que):
         self.start_time = time.time()
@@ -116,9 +122,9 @@ class InGameRun:
 
         if (self.executing_cmd != None):
             if (new_state != constants.GAME_STATE_OVER and ((self.executing_cmd.action == constants.ACTION_LEFT and self.executing_cmd.lane == constants.LEFT_LANE) or (self.executing_cmd.action == constants.ACTION_RIGHT and self.executing_cmd.lane == constants.RIGHT_LANE))):
-                    log("None prev nothing eliminiated (lane switch): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
-                    self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="LANE_SWITCH_FLUSH")
-                    self.record_cmd(self.executing_cmd, True, "LANE_SWITCH")
+                    log("None prev nothing eliminiated (out of bounds): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                    self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="OUT_OF_BOUNDS_FLUSH")
+                    self.record_cmd(self.executing_cmd, True, "OUT_OF_BOUNDS")
                     self.executing_cmd = None
             else:
                 now = time.time()

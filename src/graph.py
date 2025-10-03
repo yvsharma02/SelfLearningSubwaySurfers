@@ -8,7 +8,7 @@ times = []
 dirs = []
 
 # Get subdirectories sorted by name
-subdirs = sorted([d for d in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, d))])
+subdirs = sorted([d for d in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, d))])[10:300]
 
 for subdir in subdirs:
     metadata_file = os.path.join(root_dir, subdir, "metadata.txt")

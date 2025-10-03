@@ -5,3 +5,4 @@ src/emulator_controller_pb2_grpc.py
 src/emulator_controller_pb2.py
 cache-server/*
 data/avd
+global_log.txt
