@@ -88,8 +88,7 @@ class Player:
         img_rgb = self.controller.capture()
         img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
         gamestate = self.gsd.detect_gamestate(img_bgr)
-        print(self.gsd.detect_lane(img_bgr))
-
+        lane = self.gsd.detect_lane(img_bgr)
 
         if (self.current_run == None and gamestate == constants.GAME_STATE_OVER):
             self.controller.tap(400, 750)
@@ -100,7 +99,7 @@ class Player:
         if (self.current_run != None):
             action, logits = self.model.infer(Image.fromarray(img_rgb), self.current_run.run_secs(), self.device)
             self.current_run.give_command(action, img_bgr, gamestate, logits)
-            self.current_run.tick(gamestate)
+            self.current_run.tick(gamestate, lane)
 
             if (self.current_run.is_finished()):
                 self.stop()

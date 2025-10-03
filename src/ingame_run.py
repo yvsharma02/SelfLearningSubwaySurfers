@@ -9,7 +9,7 @@ from collections import deque
 def log(msg):
     logfile = open("global_log.txt", "a+")
     logfile.write(f"{msg}\n")
-    # print(msg)
+    print(msg)
     
 
 class InGameRun:
@@ -105,7 +105,7 @@ class InGameRun:
     #     now = time.time()
     #     self.record_nothing_buffer(eliminate, lambda x : (now - x[4]) >= 1)
 
-    def tick(self, new_state):
+    def tick(self, new_state, lane):
         if (self.run_secs() < self.start_delay() or self.finished):
             return
         
@@ -114,31 +114,37 @@ class InGameRun:
             self.queued_cmd = None
 
         if (self.executing_cmd != None):
-            now = time.time()
-            tse = self.executing_cmd.time_since_execution()
-            self.flush_nothing_buffer(False, lambda x : (now - x[4]) >= 1 and x[4] <= self.executing_cmd.command_time, debug_log="COMMAND_FLUSH")
-            if (tse >= self.executing_cmd.elim_win_high and new_state != constants.GAME_STATE_OVER):
-                log("None prev nothing eliminiated (after window): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
-                self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="AFTER_WINDOW_FLUSH") # TODO: Make sure this eliminates only nothings that happened before the command executed.
-                self.record_cmd(self.executing_cmd, False, "AFTER_WINDOW")
-                self.executing_cmd = None
-            elif (new_state == constants.GAME_STATE_OVER):
-                if (tse < self.executing_cmd.elim_win_low):
-                    log("All prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] <= self.executing_cmd.command_time])))
-                    self.flush_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH") # Elimninate last few seconds of noting.
-                    # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
-                elif (self.executing_cmd.elim_win_low <= tse and tse <= self.executing_cmd.elim_win_high):
-                    log("None prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
-                    self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="IN_WINDOW_FLUSH")
-                    self.record_cmd(self.executing_cmd, True, "IN_WINDOW")
-                else:
-                    log("All prev nothing eliminiated (Lost Condition): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
-                    self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="LOST_CONDITION_FLUSH")
-                    self.record_cmd(self.executing_cmd, True, "LOST_CONDITION")         
-                self.executing_cmd = None
+            if (new_state != constants.GAME_STATE_OVER and ((self.executing_cmd.action == constants.ACTION_LEFT and lane == constants.LEFT_LANE) or (self.executing_cmd.action == constants.ACTION_RIGHT and lane == constants.RIGHT_LANE))):
+                    log("None prev nothing eliminiated (lane switch): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                    self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="LANE_SWITCH_FLUSH")
+                    self.record_cmd(self.executing_cmd, True, "LANE_SWITCH")
+                    self.executing_cmd = None
             else:
-                pass
-                # log(f"Game Ongoing: {new_state}; {tse}")
+                now = time.time()
+                tse = self.executing_cmd.time_since_execution()
+                self.flush_nothing_buffer(False, lambda x : (now - x[4]) >= 1 and x[4] <= self.executing_cmd.command_time, debug_log="COMMAND_FLUSH")
+                if (tse >= self.executing_cmd.elim_win_high and new_state != constants.GAME_STATE_OVER):
+                    log("None prev nothing eliminiated (after window): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                    self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="AFTER_WINDOW_FLUSH") # TODO: Make sure this eliminates only nothings that happened before the command executed.
+                    self.record_cmd(self.executing_cmd, False, "AFTER_WINDOW")
+                    self.executing_cmd = None
+                elif (new_state == constants.GAME_STATE_OVER):
+                    if (tse < self.executing_cmd.elim_win_low):
+                        log("All prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] <= self.executing_cmd.command_time])))
+                        self.flush_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH") # Elimninate last few seconds of noting.
+                        # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
+                    elif (self.executing_cmd.elim_win_low <= tse and tse <= self.executing_cmd.elim_win_high):
+                        log("None prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                        self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="IN_WINDOW_FLUSH")
+                        self.record_cmd(self.executing_cmd, True, "IN_WINDOW")
+                    else:
+                        log("All prev nothing eliminiated (Lost Condition): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                        self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="LOST_CONDITION_FLUSH")
+                        self.record_cmd(self.executing_cmd, True, "LOST_CONDITION")         
+                    self.executing_cmd = None
+                else:
+                    pass
+                    # log(f"Game Ongoing: {new_state}; {tse}")
             
         else:
             log("No pending command")
@@ -182,10 +188,10 @@ class InGameRun:
         if (cmd.time_since_execution() >= 0): raise "Command Already Executed."
 
         action = cmd.action
-        # if action == constants.ACTION_UP: self.emulator_controller.swipe_up()
-        # elif action == constants.ACTION_DOWN: self.emulator_controller.swipe_down()
-        # elif action == constants.ACTION_LEFT: self.emulator_controller.swipe_left()
-        # elif action == constants.ACTION_RIGHT: self.emulator_controller.swipe_right()
+        if action == constants.ACTION_UP: self.emulator_controller.swipe_up()
+        elif action == constants.ACTION_DOWN: self.emulator_controller.swipe_down()
+        elif action == constants.ACTION_LEFT: self.emulator_controller.swipe_left()
+        elif action == constants.ACTION_RIGHT: self.emulator_controller.swipe_right()
         cmd.mark_as_executed()
         self.executing_cmd = cmd
     
