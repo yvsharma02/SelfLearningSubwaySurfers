@@ -14,10 +14,11 @@ import constants
 import numpy as np
 import shutil
 from PIL import Image
+import pipeline
 
 # One in X
-MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 1
-MULTI_ELIM_NOTHING_LIMIT = 1 # This percent of single elim can be nothing multi elims
+MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 0.9
+MULTI_ELIM_NOTHING_LIMIT = 0.9 # This percent of single elim can be nothing multi elims
 
 # Returns (img_path, label (tensor with length 5 denoting elimination confidence.))
 def read_data(path):
@@ -64,13 +65,14 @@ def read_data(path):
 
     return res_mp
 
-def write_data(data, output):
-    counts = [0] * 5
-    for k in data:
-        action = torch.argmax(torch.tensor(data[k]), dim=0).item()
-        os.makedirs(os.path.join(output, str(action)), exist_ok=True)
-        shutil.copy(k, os.path.join(output, str(action), f"{counts[action]}.png"))
-        counts[action] += 1
+# def write_data(data, output):
+#     c = 0
+#     for k in data:
+#         # action = torch.argmax(torch.tensor(data[k]), dim=0).item()
+#         # os.makedirs(os.path.join(output, str(action)), exist_ok=True)
+#         pipeline.detect_whitest_large_greys(k, os.path.join(output, f"{c}.png"))
+#         # shutil.copy(k, os.path.join(output, str(action), f"{counts[action]}.png"))
+#         c += 1
 
 def create_train_test_split(data):
     train_paths, test_paths, train_labels, test_labels = train_test_split(
@@ -205,8 +207,6 @@ def main():
     print("Reading Data...")
     # data = read_data(PATH)
 
-    # write_data(read_data(PATH), "generated/analysis")
-    # return
     train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(read_data(PATH)), transform=SSAIModel.IMAGE_TRANSFORM)
     print("Starting Training...")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

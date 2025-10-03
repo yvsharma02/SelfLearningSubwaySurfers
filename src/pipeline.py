@@ -1,0 +1,145 @@
+import cv2 as cv
+import numpy as np
+import os
+from glob import glob
+
+def detect_whitest_large_circlish_greys(img, value_thresh=220, sat_thresh=30, min_area=500, circ_thresh=0.4):
+    """Process one image array to keep only large, whitish-grey, circlish blobs in bottom 60%."""
+    h, w = img.shape[:2]
+
+    # Convert to HSV
+    hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+    mask = cv.inRange(hsv, (0, 0, value_thresh), (180, sat_thresh, 255))
+
+    # Keep only bottom 60% of the mask
+    start_row = int(h * 0.4)
+    roi_mask = np.zeros_like(mask)
+    roi_mask[start_row:, :] = mask[start_row:, :]
+
+    # Find contours (better for shape analysis than connectedComponents)
+    contours, _ = cv.findContours(roi_mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+
+    # Prepare mask for valid blobs
+    valid_mask = np.zeros_like(mask)
+
+    for cnt in contours:
+        area = cv.contourArea(cnt)
+        if area < min_area:
+            continue
+
+        perimeter = cv.arcLength(cnt, True)
+        if perimeter == 0:
+            continue
+
+        circularity = 4 * np.pi * area / (perimeter ** 2)
+
+        if circularity >= circ_thresh:
+            cv.drawContours(valid_mask, [cnt], -1, 255, -1)
+
+    # Apply mask on original image
+    return cv.bitwise_and(img, img, mask=valid_mask)
+
+def get_blob_average_position(img, value_thresh=220, sat_thresh=30, min_area=10, circ_thresh=0.4):
+    """
+    Detect circlish whitish-grey blobs in bottom 60% and return normalized average position.
+    
+    Returns:
+        (x_norm, y_norm): normalized centroid in [0,1] range
+        or None if no valid blob
+    """
+    h, w = img.shape[:2]
+
+    # Convert to HSV
+    hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+    mask = cv.inRange(hsv, (0, 0, value_thresh), (180, sat_thresh, 255))
+
+    # Keep only bottom 60%
+    start_row = int(h * 0.4)
+    roi_mask = np.zeros_like(mask)
+    roi_mask[start_row:, :] = mask[start_row:, :]
+
+    # Find contours (for filtering)
+    contours, _ = cv.findContours(roi_mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+
+    # Mask for valid blobs
+    valid_mask = np.zeros_like(mask)
+
+    for cnt in contours:
+        area = cv.contourArea(cnt)
+        if area < min_area:
+            continue
+        perimeter = cv.arcLength(cnt, True)
+        if perimeter == 0:
+            continue
+        circularity = 4 * np.pi * area / (perimeter ** 2)
+        if circularity >= circ_thresh:
+            cv.drawContours(valid_mask, [cnt], -1, 255, -1)
+
+    # Get all white pixel coordinates
+    ys, xs = np.where(valid_mask > 0)
+    if len(xs) == 0:
+        return None, None
+
+    # Compute average (mean) position
+    avg_x = np.mean(xs)
+    avg_y = np.mean(ys)
+
+    # Normalize
+    x_norm = avg_x / w
+    y_norm = avg_y / h
+
+    return (x_norm, y_norm)
+
+def process_directory(input_dir, output_dir, value_thresh=220, sat_thresh=30, min_area=500, circ_thresh=0.4):
+    """
+    Process all images in a directory through the pipeline and save results.
+    
+    Args:
+        input_dir (str): Directory with images + metadata.txt
+        output_dir (str): Where processed images will be saved
+        value_thresh (int): Brightness threshold
+        sat_thresh (int): Saturation threshold
+        min_area (int): Minimum blob size
+        circ_thresh (float): Circularity threshold (0–1). Higher = stricter.
+    """
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # Process all .png files (sorted for sequential order)
+    image_paths = sorted(glob(os.path.join(input_dir, "*.png")))
+
+    for img_path in image_paths:
+        img = cv.imread(img_path)
+        if img is None:
+            print(f"⚠️ Skipping {img_path} (could not read)")
+            continue
+
+        processed = detect_whitest_large_circlish_greys(
+            img, value_thresh, sat_thresh, min_area, circ_thresh
+        )
+
+        # Save with same filename in output_dir
+        filename = os.path.basename(img_path)
+        out_path = os.path.join(output_dir, filename)
+        cv.imwrite(out_path, processed)
+        print(f"✅ Processed {filename}")
+
+    # Copy metadata.txt if it exists
+    meta_path = os.path.join(input_dir, "metadata.txt")
+    if os.path.exists(meta_path):
+        import shutil
+        shutil.copy(meta_path, os.path.join(output_dir, "metadata.txt"))
+        print("📄 metadata.txt copied")
+
+    print(f"\nAll images processed and saved in {output_dir}")
+
+
+if __name__ == "__main__":
+    process_directory(
+        "generated/runs/dataset_old54/2025-10-03 04:22:39 UTC",
+        "generated/analysis/dataset_old54/2025-10-03 04:22:39 UTC",
+        value_thresh=220,
+        sat_thresh=30,
+        min_area=10,
+        circ_thresh=0.45  # tweak between 0.6–0.8
+    )

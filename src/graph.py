@@ -2,7 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-root_dir = "generated/runs/dataset"
+root_dir = "generated/runs/dataset_old54"
 
 times = []
 dirs = []
@@ -35,6 +35,7 @@ for subdir in subdirs:
 
 # Convert times to numpy for easier handling
 times = np.array(times)
+x = np.arange(len(times))  # numeric x-axis instead of subdir strings
 
 # --- Moving average smoothing ---
 def moving_average(x, w=5):
@@ -43,15 +44,21 @@ def moving_average(x, w=5):
 window_size = 50  # adjust for smoother / less smooth curve
 smoothed_times = moving_average(times, window_size)
 
+# --- Trend line (linear fit) ---
+coeffs = np.polyfit(x, times, 1)   # degree=1 for linear
+slope, intercept = coeffs[0], coeffs[1]
+trend = np.polyval(coeffs, x)
+
 # Plot
 plt.figure(figsize=(10,5))
 plt.plot(dirs, times, marker="o", label="Original")
 plt.plot(dirs[window_size-1:], smoothed_times, marker="s", label=f"Moving Avg (window={window_size})")
+plt.plot(dirs, trend, color="red", linestyle="--", label=f"Trend Line (slope={slope:.4f})")
 
 plt.xticks(rotation=45, ha="right")
 plt.xlabel("Subdirectory")
 plt.ylabel("Time (last line)")
-plt.title("Last line time per subdirectory (with smoothing)")
+plt.title("Last line time per subdirectory (with smoothing + trend)")
 plt.legend()
 plt.tight_layout()
 # plt.show()

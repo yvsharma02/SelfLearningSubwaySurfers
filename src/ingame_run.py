@@ -9,7 +9,7 @@ from collections import deque
 def log(msg):
     logfile = open("global_log.txt", "a+")
     logfile.write(f"{msg}\n")
-    print(msg)
+    # print(msg)
     
 
 class InGameRun:
@@ -46,17 +46,18 @@ class InGameRun:
         def is_complete(self):
             return self.saved and self.time_since_execution() > self.elim_win_high
 
+    # Maybe cooldown should be independent frmo window_high???
     def get_command_elim_window(self, action):
         if action == constants.ACTION_NOTHING:
             return 0, 0
         if action == constants.ACTION_UP:
-            return 0.1, 1 + (random.random() - 0.5) * 2 * .35
+            return 0.15, torch.normal(1, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
         if action == constants.ACTION_DOWN:
-            return 0, 0.55 + (random.random() - 0.5) * 2 * .05
+            return 0.125, torch.normal(0.7, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
         if action == constants.ACTION_LEFT:
-            return 0.15, 0.55 + (random.random() - 0.5) * 2 * .05
+            return 0.22, torch.normal(0.7, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
         if action == constants.ACTION_RIGHT:
-            return 0.15, 0.55 + (random.random() - 0.5) * 2 * .05
+            return 0.22, torch.normal(0.7, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
     
     def __init__(self, emulator_controller, save_que):
         self.start_time = time.time()
@@ -123,7 +124,7 @@ class InGameRun:
                 self.executing_cmd = None
             elif (new_state == constants.GAME_STATE_OVER):
                 if (tse < self.executing_cmd.elim_win_low):
-                    log("All prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                    log("All prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] <= self.executing_cmd.command_time])))
                     self.flush_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH") # Elimninate last few seconds of noting.
                     # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
                 elif (self.executing_cmd.elim_win_low <= tse and tse <= self.executing_cmd.elim_win_high):
@@ -181,10 +182,10 @@ class InGameRun:
         if (cmd.time_since_execution() >= 0): raise "Command Already Executed."
 
         action = cmd.action
-        if action == constants.ACTION_UP: self.emulator_controller.swipe_up()
-        elif action == constants.ACTION_DOWN: self.emulator_controller.swipe_down()
-        elif action == constants.ACTION_LEFT: self.emulator_controller.swipe_left()
-        elif action == constants.ACTION_RIGHT: self.emulator_controller.swipe_right()
+        # if action == constants.ACTION_UP: self.emulator_controller.swipe_up()
+        # elif action == constants.ACTION_DOWN: self.emulator_controller.swipe_down()
+        # elif action == constants.ACTION_LEFT: self.emulator_controller.swipe_left()
+        # elif action == constants.ACTION_RIGHT: self.emulator_controller.swipe_right()
         cmd.mark_as_executed()
         self.executing_cmd = cmd
     

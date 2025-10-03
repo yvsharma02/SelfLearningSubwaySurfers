@@ -15,7 +15,7 @@ import cv2
 import os
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
-RETRAIN_AFTER_X_RUNS = 20
+RETRAIN_AFTER_X_RUNS = 10
 
 keypress_action_map = {
     "NONE": constants.ACTION_NOTHING,
@@ -33,7 +33,7 @@ class Player:
         self.device = device
         self.current_run = None
         self.run_no = 0
-        self.input_controller = MultiDeviceReader()
+        # self.input_controller = MultiDeviceReader()
 
     def start(self):
         if (self.current_run != None):
@@ -57,38 +57,39 @@ class Player:
             trainer.main()
             self.model, self.device = ssai_model.load("generated/models/test.pth")
 
-    def is_valid_kb_down_event(self, event):
-        if event.ev_type == "Key" and event.state == 1:
-            if event.code == "KEY_UP": return True
-            elif event.code == "KEY_DOWN": return True
-            elif event.code == "KEY_LEFT": return True
-            elif event.code == "KEY_RIGHT": return True
-            elif event.code == "KEY_Q": return True
-            elif event.code == "KEY_W": return True
-            elif event.code == "KEY_R": return True
+    # def is_valid_kb_down_event(self, event):
+    #     if event.ev_type == "Key" and event.state == 1:
+    #         if event.code == "KEY_UP": return True
+    #         elif event.code == "KEY_DOWN": return True
+    #         elif event.code == "KEY_LEFT": return True
+    #         elif event.code == "KEY_RIGHT": return True
+    #         elif event.code == "KEY_Q": return True
+    #         elif event.code == "KEY_W": return True
+    #         elif event.code == "KEY_R": return True
 
-        return False
+    #     return False
     
     def tick(self):
-        keypress = "NONE"
+        # keypress = "NONE"
 
-        events = self.input_controller.read()
-        for event in events:
-            is_valid = self.is_valid_kb_down_event(event)
-            if (not is_valid):
-                continue
+        # events = self.input_controller.read()
+        # for event in events:
+        #     is_valid = self.is_valid_kb_down_event(event)
+        #     if (not is_valid):
+        #         continue
             
-            keypress = event.code
+        #     keypress = event.code
 
-            if (keypress == "KEY_Q"): 
-                self.stop()
-                return False
+        #     # if (keypress == "KEY_Q"): 
+        #     #     self.stop()
+        #     #     return False
             
-            break
-        
+        #     break
         img_rgb = self.controller.capture()
         img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
         gamestate = self.gsd.detect_gamestate(img_bgr)
+        print(self.gsd.detect_lane(img_bgr))
+
 
         if (self.current_run == None and gamestate == constants.GAME_STATE_OVER):
             self.controller.tap(400, 750)
@@ -109,7 +110,7 @@ class Player:
         return True
 
     def start_mainloop(self):
-        print("Press Q to quit\n")
+        # print("Press Q to quit\n")
         while True:
             try:
                 if (not self.tick()):
