@@ -54,7 +54,6 @@ class SSAIModel(nn.Module):
             nn.Dropout(p=0.3),
 
             nn.Linear(96, 5),
-            nn.Sigmoid()
         )
 
     def forward(self, img):
@@ -64,7 +63,7 @@ class SSAIModel(nn.Module):
         return action
 
     # Returns the action to take.
-    def infer(self, img, run_time, device, randomize = True):
+    def infer(self, img, run_time, device, randomize = False):
         if type(run_time) is float:
             time_tensor = torch.tensor([run_time])
 

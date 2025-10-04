@@ -7,8 +7,8 @@ from collections import deque
 
 
 def log(msg):
-    logfile = open("global_log.txt", "a+")
-    logfile.write(f"{msg}\n")
+    # logfile = open("global_log.txt", "a+")
+    # logfile.write(f"{msg}\n")
     print(msg)
     
 
@@ -54,13 +54,14 @@ class InGameRun:
             if action == constants.ACTION_NOTHING:
                 return 0, 0
             if action == constants.ACTION_UP:
-                return 0.175, torch.normal(.65, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
+                return 0.175, torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
             if action == constants.ACTION_DOWN:
-                return 0.125, torch.normal(0.45, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.125, torch.normal(0.6, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+            # point to note: left and right actions are mostly eliminated due to deflection or out of bounds.
             if action == constants.ACTION_LEFT:
-                return 0.35, torch.normal(0.5, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.5, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             if action == constants.ACTION_RIGHT:
-                return 0.35, torch.normal(0.5, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.5, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             
         low, high = get_unscaled()
         sf = 1 + self.run_secs() / (60 * 5)
@@ -185,17 +186,11 @@ class InGameRun:
         capture = cmd.capture
         logits = cmd.logits
         ts = cmd.command_time
-        elim = [cmd.action] if eliminate else [i for i in range(0, 5) if i != cmd.action]
 
-        self.record(elim, capture, ts, logits, debug_log)
+        self.record(cmd.action, eliminate, capture, ts, logits, debug_log)
 
-    def record(self, eliminations, capture, cmd_time, logits, debug_log="NA"):
-        _, act_max_idx = torch.max(logits, dim=0)
-        _, act_min_idx = torch.min(logits, dim=0)
-        act_max = constants.action_to_name(act_max_idx.item())
-        act_min = constants.action_to_name(act_min_idx.item())
-        log("Eliminated: [" + ",".join([constants.action_to_name(x) for x in eliminations]) + "] ; Logits: [" + ", ".join([f'{x:.4f}' for x in logits]) + "]; " + "ELIM_MAX: " + act_max + "; ELIM_MIN: " + act_min + "; DEBUG: " + debug_log)
-        self.save_que.put(eliminations, capture, cmd_time, logits, debug_log)
+    def record(self, capture, action, elim, cmd_time, logits, debug_log="NA"):
+        self.save_que.put(action, elim, capture, cmd_time, logits, debug_log)
 
     def execute_command(self, cmd : Command):
         if (cmd.time_since_execution() >= 0): raise "Command Already Executed."
