@@ -19,4 +19,5 @@ class ImageDataset(Dataset):
         if self.transform:
             image = self.transform(image)
         # print(image.shape)
+        # print(f"{img_path} : {label}")
         return image, torch.tensor(label)

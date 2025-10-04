@@ -19,6 +19,53 @@ import pipeline
 MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 8
 MULTI_ELIM_NOTHING_LIMIT = 0.475 # This percent of single elim can be nothing multi elims
 
+def normalize_single_elims(single_elim_map):
+    counts = [0] * 5
+    items = [[], [], [], [], []]
+    res = [[], [], [], [], []]
+    for k in single_elim_map:
+        mx = torch.argmax(torch.tensor(single_elim_map[k]))
+        counts[mx] += 1
+        items[mx].append(k)
+
+    print(counts)
+    avg = int(sum(counts) / 5)
+
+    for i in range(0, 5):
+        res[i] = np.random.choice(items[i], avg, replace=True)
+
+    paths = []
+    labels = []
+    for i in range(0, 5):
+        paths.extend(res[i])
+        labels.extend([[1.0 if i == j else 0.0 for j in range(0, 5)]] * len(res[i]))
+        # print(len(paths), len(labels))
+
+    return paths, labels
+
+def normalize_multi_elims(multi_elim_map):
+    counts = [0] * 5
+    items = [[], [], [], [], []]
+    res = [[], [], [], [], []]
+    for k in multi_elim_map:
+        min = torch.argmin(torch.tensor(multi_elim_map[k]))
+        counts[min] += 1
+        items[min].append(k)
+
+    print(counts)
+    avg = int(sum(counts) / 5)
+
+    for i in range(0, 5):
+        res[i] = np.random.choice(items[i], avg, replace=True)
+
+    paths = []
+    labels = []
+    for i in range(0, 5):
+        paths.extend(res[i])
+        labels.extend([[0.0 if i == j else 1.0 for j in range(0, 5)]] * len(res[i]))
+        # print(len(paths), len(labels))
+    return paths, labels
+
 # Returns (img_path, label (tensor with length 5 denoting elimination confidence.))
 def read_data(path):
     single_elim = {
@@ -52,7 +99,7 @@ def read_data(path):
                     else: 
                         single_elim[imname] = label
 
-    res_mp = {}
+    multi_elim_res_mp = {}
 
     no_action_multi_elims = [k for k in multi_elim.keys() if multi_elim[k][0] < 0.25]
     action_multi_elims = [k for k in multi_elim.keys() if k not in no_action_multi_elims]
@@ -60,13 +107,30 @@ def read_data(path):
     sampled_actions = np.random.choice(action_multi_elims, size=min(int(len(single_elim.keys()) * MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM) - len(sampled_no_actions), len(action_multi_elims)), replace=False)
 
     for k in sampled_actions:
-        single_elim[k] = multi_elim[k]
+        multi_elim_res_mp[k] = multi_elim[k]
     for k in sampled_no_actions:
-        single_elim[k] = multi_elim[k]
-    for k in single_elim.keys():
-        res_mp[k] = single_elim[k]
+        multi_elim_res_mp[k] = multi_elim[k]
 
-    return res_mp
+    paths, labels = [], []
+    single_paths, single_labels = normalize_single_elims(single_elim)
+    multi_paths, multi_labels = normalize_multi_elims(multi_elim_res_mp)
+
+    paths.extend(single_paths)
+    paths.extend(multi_paths)
+    labels.extend(single_labels)
+    labels.extend(multi_labels)
+
+    return paths, labels
+
+    # # for k in single_elim.keys():
+    # #     res_mp[k] = single_elim[k]
+
+
+
+    # for i in range(0, 5):
+    #     multi_elim_res_mp[]
+
+    # return multi_elim_res_mp
 
 # def write_data(data, output):
 #     c = 0
@@ -77,9 +141,9 @@ def read_data(path):
 #         # shutil.copy(k, os.path.join(output, str(action), f"{counts[action]}.png"))
 #         c += 1
 
-def create_train_test_split(data):
+def create_train_test_split(paths, labels):
     train_paths, test_paths, train_labels, test_labels = train_test_split(
-        list(data.keys()), list(data.values()), test_size=0.2, random_state=42
+        paths, labels, test_size=0.2, random_state=42
     )
 
     return train_paths, test_paths, train_labels, test_labels
@@ -145,9 +209,11 @@ def train(model, train_loader, test_loader, device):
 
         model.save_to_file("generated/models/test.pth")
         test_loss = test(model, test_loader, device)[0]
-        window = test_loss[-max(len(test_loss, 7)):]
+        window = test_losses[-min(len(test_losses), 7):]
+        # print(window)
         avg_loss = 0 if len(window) == 0 else sum(window) / len(window)
-        test_loss.append(test_loss)
+        test_losses.append(test_loss)
+        print(f"Last 7 avg: {avg_loss}")
 
         if (len(window) > 7 and avg_loss - test_loss < 0.001):
             break
@@ -218,7 +284,7 @@ def main():
     print("Reading Data...")
     # data = read_data(PATH)
 
-    train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(read_data(PATH)), transform=SSAIModel.IMAGE_TRANSFORM)
+    train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*read_data(PATH)), transform=SSAIModel.IMAGE_TRANSFORM)
     print("Starting Training...")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
