@@ -45,6 +45,10 @@ class InGameRun:
         def is_complete(self):
             return self.saved and self.time_since_execution() > self.elim_win_high
 
+    def scale_time(self, *x):
+        sf = 1 + self.run_secs() / (60 * 5)
+        return tuple(v / sf for v in x)
+
     # Maybe cooldown should be independent frmo window_high???
     # Scale?? (1.5 times lower at 2 min mark???)
     def get_command_elim_window(self, action):
@@ -52,9 +56,9 @@ class InGameRun:
             if action == constants.ACTION_NOTHING:
                 return 0, 0
             if action == constants.ACTION_UP:
-                return 0.175, torch.normal(.6, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
+                return 0.225, torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
             if action == constants.ACTION_DOWN:
-                return 0.175, torch.normal(0.5, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.225, torch.normal(0.65, .050, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             # point to note: left and right actions are mostly eliminated due to deflection or out of bounds.
             if action == constants.ACTION_LEFT:
                 return 0.375, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
@@ -62,8 +66,7 @@ class InGameRun:
                 return 0.375, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             
         low, high = get_unscaled()
-        sf = 1 + self.run_secs() / (60 * 5)
-        return low / sf, high / sf
+        return self.scale_time(low, high)
     
     def __init__(self, emulator_controller, save_que):
         self.start_time = time.time()
@@ -134,7 +137,7 @@ class InGameRun:
             else:
                 now = time.time()
                 tse = self.executing_cmd.time_since_execution()
-                self.flush_nothing_buffer(False, lambda x : (now - x[4]) >= 1 and x[4] <= self.executing_cmd.command_time, debug_log="COMMAND_FLUSH")
+                self.flush_nothing_buffer(False, lambda x : (now - x[4]) >= self.scale_time(1) and x[4] <= self.executing_cmd.command_time, debug_log="COMMAND_FLUSH")
                 if (tse >= self.executing_cmd.elim_win_high and new_state != constants.GAME_STATE_OVER):
                     if ((self.executing_cmd.action == constants.ACTION_LEFT or self.executing_cmd.action == constants.ACTION_RIGHT) and self.executing_cmd.lane == new_lane):
                         log("None prev nothing eliminiated (lane bounce): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
@@ -151,7 +154,7 @@ class InGameRun:
                         log("All prev nothing eliminiated: " + str(nothing_count))
                         self.flush_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH") # Elimninate last few seconds of noting.
                         log("Eliminating last seconds of action retroactively")
-                        self.eliminate_retroactively(lambda i, x: now - x.cmd_time <= 1.5,"_RETRO_ELIM")
+                        self.eliminate_retroactively(lambda i, x: now - x.cmd_time <= self.scale_time(1.5 if x.action == constants.ACTION_UP else 1),"_RETRO_ELIM")
                         # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
                         # Maybe retroactively eliminate previous action in this case?
                     elif (self.executing_cmd.elim_win_low <= tse and tse <= self.executing_cmd.elim_win_high):
@@ -159,7 +162,7 @@ class InGameRun:
                         self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="IN_WINDOW_FLUSH")
                         self.record_cmd(self.executing_cmd, True, "IN_WINDOW")
                     else:
-                        log("All prev nothing eliminiated (Lost Condition): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
+                        log("None prev nothing eliminiated (Lost Condition): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
                         self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="LOST_CONDITION_FLUSH")
                         self.record_cmd(self.executing_cmd, True, "LOST_CONDITION")         
                     self.executing_cmd = None
@@ -170,7 +173,7 @@ class InGameRun:
         else:
             log("No pending command")
             now = time.time()
-            self.flush_nothing_buffer(False, lambda x : (now - x[4]) >= 1, debug_log="NO_COMMAND_FLUSH_NON_ELIM")
+            self.flush_nothing_buffer(False, lambda x : (now - x[4]) >= self.scale_time(1), debug_log="NO_COMMAND_FLUSH_NON_ELIM")
             if (new_state == constants.GAME_STATE_OVER):
                 log ("Game Over without command")
                 self.flush_nothing_buffer(True, lambda x : True, debug_log="NO_COMMAND_FLUSH_ELIM")
