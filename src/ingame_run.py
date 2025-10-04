@@ -47,6 +47,8 @@ class InGameRun:
 
     def scale_time(self, *x):
         sf = 1 + self.run_secs() / (60 * 5)
+        if (len(x) == 1):
+            return x[0] / sf
         return tuple(v / sf for v in x)
 
     # Maybe cooldown should be independent frmo window_high???
@@ -151,8 +153,9 @@ class InGameRun:
                 elif (new_state == constants.GAME_STATE_OVER):
                     if (tse < self.executing_cmd.elim_win_low):
                         nothing_count = len([x for x in self.nothing_buffer if x[4] <= self.executing_cmd.command_time])
-                        log("All prev nothing eliminiated: " + str(nothing_count))
-                        self.flush_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH") # Elimninate last few seconds of noting.
+                        log("Last few nothing eliminiated): " + str(nothing_count))
+                        self.flush_nothing_buffer(True, lambda x : (now - x[4]) <= self.scale_time(1.5 if x[0] == constants.ACTION_UP else 1) and (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH_ELIM") # Elimninate last few seconds of noting.
+                        self.flush_nothing_buffer(False, lambda x : (now - x[4]) > self.scale_time(1.5 if x[0] == constants.ACTION_UP else 1) and (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH_NO_ELIM")
                         log("Eliminating last seconds of action retroactively")
                         self.eliminate_retroactively(lambda i, x: now - x.cmd_time <= self.scale_time(1.5 if x.action == constants.ACTION_UP else 1),"_RETRO_ELIM")
                         # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
