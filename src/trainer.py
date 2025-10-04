@@ -39,7 +39,7 @@ def normalize_single_elims(single_elim_map):
     for i in range(0, 5):
         paths.extend(res[i])
         labels.extend([[1.0 if i == j else 0.0 for j in range(0, 5)]] * len(res[i]))
-        # print(len(paths), len(labels))
+        print(len(paths), len(labels))
 
     return paths, labels
 
@@ -63,7 +63,7 @@ def normalize_multi_elims(multi_elim_map):
     for i in range(0, 5):
         paths.extend(res[i])
         labels.extend([[0.0 if i == j else 1.0 for j in range(0, 5)]] * len(res[i]))
-        # print(len(paths), len(labels))
+        print(len(paths), len(labels))
     return paths, labels
 
 # Returns (img_path, label (tensor with length 5 denoting elimination confidence.))
@@ -111,25 +111,25 @@ def read_data(path):
     for k in sampled_no_actions:
         multi_elim_res_mp[k] = multi_elim[k]
 
-    res_mp = {}
+    # res_mp = {}
 
-    for k in multi_elim_res_mp.keys():
-        res_mp[k] = multi_elim_res_mp[k]
-    for k in single_elim.keys():
-        res_mp[k] = single_elim[k]
+    # for k in multi_elim_res_mp.keys():
+    #     res_mp[k] = multi_elim_res_mp[k]
+    # for k in single_elim.keys():
+    #     res_mp[k] = single_elim[k]
 
-    return list(res_mp.keys()), list(res_mp.values())
+    # return list(res_mp.keys()), list(res_mp.values())
 
-    # paths, labels = [], []
-    # single_paths, single_labels = normalize_single_elims(single_elim)
-    # multi_paths, multi_labels = normalize_multi_elims(multi_elim_res_mp)
+    paths, labels = [], []
+    single_paths, single_labels = normalize_single_elims(single_elim)
+    multi_paths, multi_labels = normalize_multi_elims(multi_elim_res_mp)
 
-    # paths.extend(single_paths)
-    # paths.extend(multi_paths)
-    # labels.extend(single_labels)
-    # labels.extend(multi_labels)
+    paths.extend(single_paths)
+    paths.extend(multi_paths)
+    labels.extend(single_labels)
+    labels.extend(multi_labels)
 
-    # return paths, labels
+    return paths, labels
 
     # # for k in single_elim.keys():
     # #     res_mp[k] = single_elim[k]

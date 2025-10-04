@@ -13,6 +13,7 @@ import torch
 from ingame_run import InGameRun
 import cv2
 import os
+import shutil
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
 RETRAIN_AFTER_X_RUNS = 10
@@ -53,7 +54,7 @@ class Player:
         self.current_run.close()
         self.current_run = None
 
-        if (self.run_no % RETRAIN_AFTER_X_RUNS == 0):
+        if (self.run_no % ((os.listdir("generated/runs/dataset") + 10) / 10) == 0):
             trainer.main()
             self.model, self.device = ssai_model.load("generated/models/test.pth")
 
