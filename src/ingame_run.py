@@ -4,7 +4,7 @@ import cv2
 import torch
 import random
 from collections import deque
-
+from save_queue import SaveItem
 
 def log(msg):
     print(msg)
@@ -52,14 +52,14 @@ class InGameRun:
             if action == constants.ACTION_NOTHING:
                 return 0, 0
             if action == constants.ACTION_UP:
-                return 0.175, torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
+                return 0.175, torch.normal(.6, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
             if action == constants.ACTION_DOWN:
-                return 0.125, torch.normal(0.6, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.175, torch.normal(0.5, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             # point to note: left and right actions are mostly eliminated due to deflection or out of bounds.
             if action == constants.ACTION_LEFT:
-                return 0.4, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.375, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             if action == constants.ACTION_RIGHT:
-                return 0.4, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.375, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             
         low, high = get_unscaled()
         sf = 1 + self.run_secs() / (60 * 5)
@@ -112,9 +112,9 @@ class InGameRun:
     #     self.record_nothing_buffer(eliminate, lambda x : (now - x[4]) >= 1)
 
     def eliminate_retroactively(self, criteria, debug_log_append):
-        entries = self.save_que.get_entries_filter(criteria)
+        entries : list[SaveItem] = self.save_que.get_entries_filter(criteria)
         for entry in entries:
-            entry.eliminate = True
+            entry.eliminated = True
             entry.debug_log += debug_log_append
 
     def tick(self, new_state, new_lane):
@@ -150,9 +150,8 @@ class InGameRun:
                         nothing_count = len([x for x in self.nothing_buffer if x[4] <= self.executing_cmd.command_time])
                         log("All prev nothing eliminiated: " + str(nothing_count))
                         self.flush_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH") # Elimninate last few seconds of noting.
-                        if (nothing_count <= 2):
-                            log("Eliminating last action retrooactively.")
-                            self.eliminate_retroactively(lambda i, x: i == nothing_count and x.cmd_time < self.executing_cmd.command_time ,"_RETRO_ELIM")
+                        log("Eliminating last seconds of action retroactively")
+                        self.eliminate_retroactively(lambda i, x: now - x.cmd_time <= 1.5,"_RETRO_ELIM")
                         # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
                         # Maybe retroactively eliminate previous action in this case?
                     elif (self.executing_cmd.elim_win_low <= tse and tse <= self.executing_cmd.elim_win_high):
