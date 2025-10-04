@@ -7,8 +7,6 @@ from collections import deque
 
 
 def log(msg):
-    # logfile = open("global_log.txt", "a+")
-    # logfile.write(f"{msg}\n")
     print(msg)
     
 
@@ -59,9 +57,9 @@ class InGameRun:
                 return 0.125, torch.normal(0.6, .075, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             # point to note: left and right actions are mostly eliminated due to deflection or out of bounds.
             if action == constants.ACTION_LEFT:
-                return 0.5, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.4, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             if action == constants.ACTION_RIGHT:
-                return 0.5, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.4, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             
         low, high = get_unscaled()
         sf = 1 + self.run_secs() / (60 * 5)
@@ -106,12 +104,18 @@ class InGameRun:
         if (record):
             for idx in to_flush:
                 elim = [0] if eliminate else [i for i in range(1, 5)]
-                self.record(elim, self.nothing_buffer[idx][1], self.nothing_buffer[idx][4], self.nothing_buffer[idx][3], debug_log)
+                self.record(self.nothing_buffer[idx][1], 0, eliminate, self.nothing_buffer[idx][4], self.nothing_buffer[idx][3], debug_log)
         self.nothing_buffer = [self.nothing_buffer[i] for i in range(0, len(self.nothing_buffer)) if i not in to_flush]
 
     # def record_stale_nothing(self, eliminate):
     #     now = time.time()
     #     self.record_nothing_buffer(eliminate, lambda x : (now - x[4]) >= 1)
+
+    def eliminate_retroactively(self, criteria, debug_log_append):
+        entries = self.save_que.get_entries_filter(criteria)
+        for entry in entries:
+            entry.eliminate = True
+            entry.debug_log += debug_log_append
 
     def tick(self, new_state, new_lane):
         if (self.run_secs() < self.start_delay() or self.finished):
@@ -143,8 +147,12 @@ class InGameRun:
                     self.executing_cmd = None
                 elif (new_state == constants.GAME_STATE_OVER):
                     if (tse < self.executing_cmd.elim_win_low):
-                        log("All prev nothing eliminiated: " + str(len([x for x in self.nothing_buffer if x[4] <= self.executing_cmd.command_time])))
+                        nothing_count = len([x for x in self.nothing_buffer if x[4] <= self.executing_cmd.command_time])
+                        log("All prev nothing eliminiated: " + str(nothing_count))
                         self.flush_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH") # Elimninate last few seconds of noting.
+                        if (nothing_count <= 2):
+                            log("Eliminating last action retrooactively.")
+                            self.eliminate_retroactively(lambda i, x: i == 0 and x.cmd_time < self.executing_cmd.command_time ,"_RETRO_ELIM")
                         # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
                         # Maybe retroactively eliminate previous action in this case?
                     elif (self.executing_cmd.elim_win_low <= tse and tse <= self.executing_cmd.elim_win_high):
@@ -179,7 +187,7 @@ class InGameRun:
         return self.finished
     
     def record_cmd(self, cmd : Command, eliminate, debug_log="NA"):
-        if (cmd.saved): raise "Command already saved"
+        if (cmd.saved): raise Exception("Command already saved")
 
         cmd.mark_as_saved()
 
@@ -193,7 +201,7 @@ class InGameRun:
         self.save_que.put(action, elim, capture, cmd_time, logits, debug_log)
 
     def execute_command(self, cmd : Command):
-        if (cmd.time_since_execution() >= 0): raise "Command Already Executed."
+        if (cmd.time_since_execution() >= 0): raise Exception("Command Already Executed.")
 
         action = cmd.action
         if action == constants.ACTION_UP: self.emulator_controller.swipe_up()

@@ -6,12 +6,12 @@ import constants
 import torch
 
 class SaveItem:
-    def __init__(self, im_no, action, eliminated, time_sec, img, logits, debug_log):
+    def __init__(self, im_no, action, eliminated, cmd_time, img, logits, debug_log):
         self.action = action
         self.eliminated = eliminated
         self.im_no = im_no
         # self.elimiated_choices = eliminated_choices
-        self.time_sec = time_sec
+        self.cmd_time = cmd_time
         self.img = img
         self.logits = logits
         self.debug_log = debug_log
@@ -66,8 +66,9 @@ class SaveQue:
     def get_entries(self, indices):
         return [self.remaining_metadata[x] for x in indices]
     
+    #Filter peekback idx, item
     def get_entries_filter(self, filter):
-        return [x for x in self.remaining_metadata if filter(x)]
+        return [x for i, x in enumerate(self.remaining_metadata) if filter(len(self.remaining_metadata) - 1 - i, x)]
 
     def close(self):
         self.process_metadata_entries()
