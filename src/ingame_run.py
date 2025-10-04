@@ -58,14 +58,14 @@ class InGameRun:
             if action == constants.ACTION_NOTHING:
                 return 0, 0
             if action == constants.ACTION_UP:
-                return 0.225, torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
+                return 0.275, 0.7 #torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
             if action == constants.ACTION_DOWN:
-                return 0.225, torch.normal(0.65, .050, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.275, 0.65 #torch.normal(0.65, .050, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             # point to note: left and right actions are mostly eliminated due to deflection or out of bounds.
             if action == constants.ACTION_LEFT:
-                return 0.375, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.4, 0.65 #torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             if action == constants.ACTION_RIGHT:
-                return 0.375, torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.4, 0.675# torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             
         low, high = get_unscaled()
         return self.scale_time(low, high)

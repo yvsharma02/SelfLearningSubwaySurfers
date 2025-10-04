@@ -17,8 +17,8 @@ from PIL import Image
 import pipeline
 
 # One in X
-MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 0.9
-MULTI_ELIM_NOTHING_LIMIT = 0.9 # This percent of single elim can be nothing multi elims
+MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 1000000
+MULTI_ELIM_NOTHING_LIMIT = 0.666666 # This percent of single elim can be nothing multi elims
 
 # Returns (img_path, label (tensor with length 5 denoting elimination confidence.))
 def read_data(path):
@@ -56,7 +56,7 @@ def read_data(path):
     no_action_multi_elims = [k for k in multi_elim.keys() if multi_elim[k][0] < 0.25]
     action_multi_elims = [k for k in multi_elim.keys() if k not in no_action_multi_elims]
     sampled_no_actions = np.random.choice(no_action_multi_elims, size=min(int(len(res_mp.keys()) * MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM * MULTI_ELIM_NOTHING_LIMIT), len(no_action_multi_elims)), replace=False)
-    sampled_actions = np.random.choice(action_multi_elims, size=min(int(len(res_mp.keys()) * MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM) - len(sampled_no_actions), len(multi_elim.keys())), replace=False)
+    sampled_actions = np.random.choice(action_multi_elims, size=min(int(len(res_mp.keys()) * MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM) - len(sampled_no_actions), len(action_multi_elims.keys())), replace=False)
 
     for k in sampled_actions:
         res_mp[k] = multi_elim[k]
