@@ -152,7 +152,7 @@ class InGameRun:
                         self.flush_nothing_buffer(True, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH") # Elimninate last few seconds of noting.
                         if (nothing_count <= 2):
                             log("Eliminating last action retrooactively.")
-                            self.eliminate_retroactively(lambda i, x: i == 0 and x.cmd_time < self.executing_cmd.command_time ,"_RETRO_ELIM")
+                            self.eliminate_retroactively(lambda i, x: i == nothing_count and x.cmd_time < self.executing_cmd.command_time ,"_RETRO_ELIM")
                         # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
                         # Maybe retroactively eliminate previous action in this case?
                     elif (self.executing_cmd.elim_win_low <= tse and tse <= self.executing_cmd.elim_win_high):
@@ -195,7 +195,7 @@ class InGameRun:
         logits = cmd.logits
         ts = cmd.command_time
 
-        self.record(cmd.action, eliminate, capture, ts, logits, debug_log)
+        self.record(capture, cmd.action, eliminate, ts, logits, debug_log)
 
     def record(self, capture, action, elim, cmd_time, logits, debug_log="NA"):
         self.save_que.put(action, elim, capture, cmd_time, logits, debug_log)

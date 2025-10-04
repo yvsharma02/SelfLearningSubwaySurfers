@@ -21,7 +21,7 @@ class SaveQue:
         self.dataset_dir = dataset_dir
         self.dataset_name = dataset_name
         self.counter = 0
-        self.remaining_metadata = Queue()
+        self.remaining_metadata = []
         os.makedirs(self.dataset_dir, exist_ok=True)
         self.metadata_file = open(os.path.join(self.dataset_dir, "metadata.txt"), "w+")
 
@@ -47,13 +47,13 @@ class SaveQue:
             eliminated_choices = self.get_elim_list(item.action, item.eliminated)
             eliminated_actions_str = f"[{','.join([str(act) for act in eliminated_choices])}]"
             logits_str = f"({",".join(str(l.item()) for l in item.logits)})"
-            self.metadata_file.write(f"{item.im_no}; {item.time_sec}; {eliminated_actions_str}; {logits_str}; {item.debug_log}\n")
+            self.metadata_file.write(f"{item.im_no}; {item.cmd_time}; {eliminated_actions_str}; {logits_str}; {item.debug_log}\n")
 
     def process_image(self, item):
         cv2.imwrite(os.path.join(self.dataset_dir, f"{item.im_no}.png"), item.img)
         del item.img
         item.img = None
-        self.remaining_metadata.put(item)
+        self.remaining_metadata.append(item)
         
         return True
     
