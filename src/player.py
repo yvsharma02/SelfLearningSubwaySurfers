@@ -100,6 +100,8 @@ class Player:
 
         if (self.current_run == None and gamestate == constants.GAME_STATE_OVER):
             self.controller.tap(400, 750)
+            time.sleep(0.1)
+            self.controller.tap(355, 101)
 
         if (self.current_run == None and gamestate < constants.GAME_STATE_OVER):
             self.start()
