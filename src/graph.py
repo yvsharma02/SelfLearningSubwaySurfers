@@ -2,12 +2,12 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-root_dir = "generated/runs/dataset"
+root_dir = "generated/runs/dataset_old10"
 
 times = []
 dirs = []
 
-subdirs = sorted([d for d in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, d))])
+subdirs = sorted([d for d in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, d))])[25:216]
 
 for subdir in subdirs:
     metadata_file = os.path.join(root_dir, subdir, "metadata.txt")

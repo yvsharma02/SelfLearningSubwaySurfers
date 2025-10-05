@@ -16,8 +16,19 @@ import shutil
 from PIL import Image
 import pipeline
 
-MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 6
-MULTI_ELIM_NOTHING_LIMIT = 0.45 # This percent of single elim can be nothing multi elims
+MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 5.5
+MULTI_ELIM_NOTHING_LIMIT = 0.3 # This percent of single elim can be nothing multi elims
+PERCENT_VARIATION_IN_SAMPLING = 0.3
+
+def scale_counts(counts):
+    print(counts)
+    
+    avg = sum(counts) / 5.0
+    new_up = avg * (1 + PERCENT_VARIATION_IN_SAMPLING)
+    new_down = avg * (1 - PERCENT_VARIATION_IN_SAMPLING)
+    counts = [max(0, int(new_down + (counts[i] - min(counts)) / (max(counts) - min(counts)) * (new_up - new_down))) for i in range(0, 5)]
+    print(counts)
+    return counts
 
 def normalize_single_elims(single_elim_map):
     counts = [0] * 5
@@ -28,11 +39,10 @@ def normalize_single_elims(single_elim_map):
         counts[mx] += 1
         items[mx].append(k)
 
-    # print(counts)
-    target = max(counts) # int(sum(counts) / 5)
+    counts = scale_counts(counts)
 
     for i in range(0, 5):
-        res[i] = np.random.choice(items[i], target if len(items[i]) > 0 else 0, replace=True)
+        res[i] = np.random.choice(items[i], counts[i] if len(items[i]) > 0 else 0, replace=True)
 
     paths = []
     labels = []
@@ -52,11 +62,10 @@ def normalize_multi_elims(multi_elim_map):
         counts[min] += 1
         items[min].append(k)
 
-    # print(counts)
-    target = max(counts) # int(sum(counts) / 5)
+    counts = scale_counts(counts)
 
     for i in range(0, 5):
-        res[i] = np.random.choice(items[i], target if len(items[i]) > 0 else 0, replace=True)
+        res[i] = np.random.choice(items[i], counts[i] if len(items[i]) > 0 else 0, replace=True)
 
     paths = []
     labels = []
