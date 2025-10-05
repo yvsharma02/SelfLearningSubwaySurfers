@@ -43,38 +43,38 @@ class SSAIModel(nn.Module):
         )
 
         self.fully_connected_stage = nn.Sequential(
-            nn.Linear(6048, 916),
-            nn.BatchNorm1d(916),
+            nn.Linear(6048 * 3, 916 * 3),
+            nn.BatchNorm1d(916 * 3),
             nn.ReLU(),
-            nn.Dropout(p=0.5),
+            nn.Dropout(p=0.4),
 
-            nn.Linear(916, 96),
-            nn.BatchNorm1d(96),
+            nn.Linear(916 * 3, 96 * 4),
+            nn.BatchNorm1d(96 * 4),
             nn.ReLU(),
-            nn.Dropout(p=0.3),
+            nn.Dropout(p=0.2),
 
-            nn.Linear(96, 5),
+            nn.Linear(96 * 4, 5),
         )
 
-    def forward(self, img):
-        flattened = self.cnn_stage(img)
+    def forward(self, imgages):
+        flattened = [self.cnn_stage(img) for img in imgages]
         # flattened_with_velocity = torch.cat((flattened, time), dim=1)
-        action = self.fully_connected_stage(flattened)
+        action = self.fully_connected_stage(torch.cat(flattened, dim=1))
         return action
 
     # Returns the action to take.
-    def infer(self, img, run_time, device, randomize = False):
+    def infer(self, images, run_time, device, randomize = False):
         if type(run_time) is float:
             time_tensor = torch.tensor([run_time])
 
-        image_tensor = SSAIModel.IMAGE_TRANSFORM(img).unsqueeze(0)
-        image_tensor = image_tensor.to(device)
-        time_tensor = time_tensor.unsqueeze(0)
-        time_tensor = time_tensor.to(device)
+        image_tensors = [SSAIModel.IMAGE_TRANSFORM(img).unsqueeze(0).to(device) for img in images]
+        # image_tensor = image_tensor.to(device)
+        # time_tensor = time_tensor.unsqueeze(0)
+        # time_tensor = time_tensor.to(device)
         # print(image_tensor.shape)
         self.eval()
         with torch.no_grad():
-            eliminations_logits = self(image_tensor)
+            eliminations_logits = self(image_tensors)
             eliminations = F.softmax(eliminations_logits, dim=1)
 
             if (not randomize):

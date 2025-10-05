@@ -179,8 +179,8 @@ def train(model, train_loader, test_loader, device):
         multi_elim_correct = 0
         multi_elim_total = 0
 
-        for images, labels in train_loader:
-            images = images.to(device)
+        for multiimages, labels in train_loader:
+            images = [image.to(device) for image in multiimages]
 
             eliminations = labels.to(device)
             optimizer.zero_grad()
@@ -205,7 +205,7 @@ def train(model, train_loader, test_loader, device):
                     multi_elim_total += 1
 
 
-            running_loss += loss.item() * images.size(0)
+            running_loss += loss.item() * multiimages[0].size(0)
 
         if ((single_elim_total + multi_elim_total) > 0):
             train_loss = running_loss / (single_elim_total + multi_elim_total)
@@ -216,16 +216,28 @@ def train(model, train_loader, test_loader, device):
         else:
             print(f"Empty Empoch: {epoch+1}/{MAX_EPOCH}")
 
+        def avg_loss(win_size):
+            return sum(test_losses[-win_size - 1:-1]) / win_size
+
         model.save_to_file("generated/models/test.pth")
         test_loss = test(model, test_loader, device)[0]
-        window = test_losses[-min(len(test_losses), 7):]
-        # print(window)
-        avg_loss = 0 if len(window) == 0 else sum(window) / len(window)
         test_losses.append(test_loss)
-        print(f"Last 7 avg: {avg_loss}")
+        if (len(test_losses) < 7 + 1): 
+            continue
 
-        if (len(window) > 7 and avg_loss - test_loss < 0.001):
+        print(f"AVG_4: {avg_loss(4)} vs AVG_7: {avg_loss(7)}")
+        if (avg_loss(4) >= avg_loss(7)):
             break
+
+
+        # last7window = test_losses[-min(len(test_losses), 7):]
+        # print(window)
+        # last7avg = 0 if len(last7window) == 0 else sum(last7window) / len(last7window)
+        # test_losses.append(test_loss)
+        # print(f"Last 7 avg: {last7avg}")
+
+        # if (len(last7window) > 7 and last7avg - test_loss < 0.001):
+            # break
     print("Training Finished!")
 
 def test(model, test_loader, device):
@@ -240,13 +252,13 @@ def test(model, test_loader, device):
     c = 0
 
     with torch.no_grad():
-        for images, labels in test_loader:
-            images = images.to(device)
+        for multiimages, labels in test_loader:
+            images = [image.to(device) for image in multiimages]
             eliminations = labels.to(device)
 
             elim_pred = model(images)
             loss = SSAIModel.calculate_loss_of_batch(elim_pred, eliminations)
-            running_loss += loss.item() * images.size(0)
+            running_loss += loss.item() * images[0].size(0)
 
             for i in range(0, elim_pred.shape[0]):
                 elim_count = sum(1 if eliminations[i, x].item() > 0.05 else 0 for x in range(0, 5))

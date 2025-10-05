@@ -14,6 +14,7 @@ from ingame_run import InGameRun
 import cv2
 import os
 import shutil
+from collections import deque
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
 RETRAIN_AFTER_X_RUNS = 10
@@ -34,7 +35,12 @@ class Player:
         self.device = device
         self.current_run = None
         self.run_no = 0
+        self.rgb_queue = deque([],maxlen=3)
+        self.bgr_queue = deque([],maxlen=3)
         # self.input_controller = MultiDeviceReader()
+
+    def get_dataset_len(self):
+        return len(os.listdir("generated/runs/dataset"))
 
     def start(self):
         if (self.current_run != None):
@@ -53,8 +59,7 @@ class Player:
         print(f"Stopping Recording...: {self.run_no}")
         self.current_run.close()
         self.current_run = None
-
-        if (self.run_no % ((os.listdir("generated/runs/dataset") + 10) / 10) == 0):
+        if (self.run_no % 10 == 0):
             trainer.main()
             self.model, self.device = ssai_model.load("generated/models/test.pth")
 
@@ -88,6 +93,8 @@ class Player:
         #     break
         img_rgb = self.controller.capture()
         img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
+        self.rgb_queue.append(img_rgb)
+        self.bgr_queue.append(img_bgr)
         gamestate = self.gsd.detect_gamestate(img_bgr)
         lane = self.gsd.detect_lane(img_bgr)
 
@@ -98,10 +105,10 @@ class Player:
             self.start()
 
         if (self.current_run != None):
-            action, logits = self.model.infer(Image.fromarray(img_rgb), self.current_run.run_secs(), self.device)
+            action, logits = self.model.infer([Image.fromarray(x) for x in self.rgb_queue], self.current_run.run_secs(), self.device, randomize=self.get_dataset_len() <= 25)
 
             if (gamestate != constants.GAME_STATE_OVER):
-                self.current_run.give_command(action, img_bgr, gamestate, logits, lane)
+                self.current_run.give_command(action, list(self.bgr_queue), gamestate, logits, lane)
 
             self.current_run.tick(gamestate, lane)
 
@@ -120,8 +127,8 @@ class Player:
                     break
             except KeyboardInterrupt as e:
                 break
-            except Exception as e:
-                print(e)
+            # except Exception as e:
+            #     print(e)
         self.stop()
 
 

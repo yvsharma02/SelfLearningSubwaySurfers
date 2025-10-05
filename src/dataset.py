@@ -12,12 +12,12 @@ class ImageDataset(Dataset):
         return len(self.image_paths)
     
     def __getitem__(self, idx):
-        img_path = self.image_paths[idx]
+        img_path : str= self.image_paths[idx]
         label = self.labels[idx]
         
-        image = Image.open(img_path).convert("RGB")
+        images = [Image.open(img_path[:-4] + f"_{i}.png").convert("RGB") for i in range(0, 3)]
         if self.transform:
-            image = self.transform(image)
+            images = [self.transform(image) for image in images]
         # print(image.shape)
         # print(f"{img_path} : {label}")
-        return image, torch.tensor(label)
+        return images, torch.tensor(label)

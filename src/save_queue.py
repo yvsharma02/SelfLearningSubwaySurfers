@@ -50,7 +50,8 @@ class SaveQue:
             self.metadata_file.write(f"{item.im_no}; {item.cmd_time}; {eliminated_actions_str}; {logits_str}; {item.debug_log}\n")
 
     def process_image(self, item):
-        cv2.imwrite(os.path.join(self.dataset_dir, f"{item.im_no}.png"), item.img)
+        for i in range(0, len(item.img)):
+            cv2.imwrite(os.path.join(self.dataset_dir, f"{item.im_no}_{i}.png"), item.img[i])
         del item.img
         item.img = None
         self.remaining_metadata.append(item)
