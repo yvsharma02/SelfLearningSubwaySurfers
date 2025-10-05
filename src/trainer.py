@@ -16,8 +16,8 @@ import shutil
 from PIL import Image
 import pipeline
 
-MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 5.5
-MULTI_ELIM_NOTHING_LIMIT = 0.3 # This percent of single elim can be nothing multi elims
+MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 5
+MULTI_ELIM_NOTHING_LIMIT = 0.35 # This percent of single elim can be nothing multi elims
 PERCENT_VARIATION_IN_SAMPLING = 0.3
 
 def scale_counts(counts):
