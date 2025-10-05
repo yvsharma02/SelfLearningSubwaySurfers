@@ -7,7 +7,6 @@ root_dir = "generated/runs/dataset"
 times = []
 dirs = []
 
-# Get subdirectories sorted by name
 subdirs = sorted([d for d in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, d))])
 
 for subdir in subdirs:
@@ -33,33 +32,41 @@ for subdir in subdirs:
             except ValueError:
                 continue
 
-# Convert times to numpy for easier handling
 times = np.array(times)
 x = np.arange(len(times))  # numeric x-axis instead of subdir strings
 
-# --- Moving average smoothing ---
 def moving_average(x, w=5):
     return np.convolve(x, np.ones(w)/w, mode="valid")
 
-window_size = 50  # adjust for smoother / less smooth curve
+window_size = 15  # adjust for smoother / less smooth curve
 smoothed_times = moving_average(times, window_size)
 
-# --- Trend line (linear fit) ---
 coeffs = np.polyfit(x, times, 1)   # degree=1 for linear
 slope, intercept = coeffs[0], coeffs[1]
 trend = np.polyval(coeffs, x)
 
-# Plot
 plt.figure(figsize=(10,5))
-plt.plot(dirs, times, marker="o", label="Original")
-plt.plot(dirs[window_size-1:], smoothed_times, marker="s", label=f"Moving Avg (window={window_size})")
-plt.plot(dirs, trend, color="red", linestyle="--", label=f"Trend Line (slope={slope:.4f})")
+plt.plot(x, times, marker="o", label="Original")
+plt.plot(x[window_size-1:], smoothed_times, marker="s", label=f"Moving Avg (window={window_size})")
+plt.plot(x, trend, color="red", linestyle="--", label=f"Trend Line (slope={slope:.4f})")
 
-plt.xticks(rotation=45, ha="right")
-plt.xlabel("Subdirectory")
-plt.ylabel("Time (last line)")
+y_lines = range(5, 65, 5)
+for y in y_lines:
+    # Check if any data point lies within ±2.5 of this line
+    if np.any((times >= y - 2.5) & (times <= y + 2.5)):
+        plt.axhline(y=y, color='gray', linestyle='--', linewidth=0.8, alpha=0.5)
+
+num_points = len(x)
+if num_points > 0:
+    tick_positions = np.linspace(0, num_points - 1, 5, dtype=int)
+    tick_labels = [str(i) for i in tick_positions]
+    plt.xticks(tick_positions, tick_labels)
+else:
+    plt.xticks([])
+
+plt.xlabel("Subdirectory index")
+plt.ylabel("Time (last line - start time)")
 plt.title("Last line time per subdirectory (with smoothing + trend)")
 plt.legend()
 plt.tight_layout()
-# plt.show()
 plt.savefig("graph.png")

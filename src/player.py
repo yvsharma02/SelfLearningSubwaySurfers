@@ -40,7 +40,8 @@ class Player:
         # self.input_controller = MultiDeviceReader()
 
     def get_dataset_len(self):
-        return len(os.listdir("generated/runs/dataset"))
+        x = len(os.listdir("generated/runs/dataset"))
+        return x
 
     def start(self):
         if (self.current_run != None):
@@ -59,38 +60,11 @@ class Player:
         print(f"Stopping Recording...: {self.run_no}")
         self.current_run.close()
         self.current_run = None
-        if (self.run_no % 10 == 0):
+        if (self.run_no % ((self.get_dataset_len() + 10) / 10) == 0):
             trainer.main()
             self.model, self.device = ssai_model.load("generated/models/test.pth")
 
-    # def is_valid_kb_down_event(self, event):
-    #     if event.ev_type == "Key" and event.state == 1:
-    #         if event.code == "KEY_UP": return True
-    #         elif event.code == "KEY_DOWN": return True
-    #         elif event.code == "KEY_LEFT": return True
-    #         elif event.code == "KEY_RIGHT": return True
-    #         elif event.code == "KEY_Q": return True
-    #         elif event.code == "KEY_W": return True
-    #         elif event.code == "KEY_R": return True
-
-    #     return False
-    
     def tick(self):
-        # keypress = "NONE"
-
-        # events = self.input_controller.read()
-        # for event in events:
-        #     is_valid = self.is_valid_kb_down_event(event)
-        #     if (not is_valid):
-        #         continue
-            
-        #     keypress = event.code
-
-        #     # if (keypress == "KEY_Q"): 
-        #     #     self.stop()
-        #     #     return False
-            
-        #     break
         img_rgb = self.controller.capture()
         img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
         self.rgb_queue.append(img_rgb)
@@ -123,15 +97,12 @@ class Player:
         return True
 
     def start_mainloop(self):
-        # print("Press Q to quit\n")
         while True:
             try:
                 if (not self.tick()):
                     break
             except KeyboardInterrupt as e:
                 break
-            # except Exception as e:
-            #     print(e)
         self.stop()
 
 
