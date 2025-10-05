@@ -58,14 +58,13 @@ class InGameRun:
             if action == constants.ACTION_NOTHING:
                 return 0, 0
             if action == constants.ACTION_UP:
-                return 0.35, 0.7 #torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
+                return 0.4, 0.6
             if action == constants.ACTION_DOWN:
-                return 0.275, 0.65 #torch.normal(0.65, .050, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
-            # point to note: left and right actions are mostly eliminated due to deflection or out of bounds.
+                return 0.4, 0.45
             if action == constants.ACTION_LEFT:
-                return 0.4, 0.65 #torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.4, 0.45
             if action == constants.ACTION_RIGHT:
-                return 0.4, 0.675# torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.4, 0.45
             
         low, high = get_unscaled()
         return self.scale_time(low, high)
@@ -154,10 +153,10 @@ class InGameRun:
                     if (tse < self.executing_cmd.elim_win_low):
                         nothing_count = len([x for x in self.nothing_buffer if x[4] <= self.executing_cmd.command_time])
                         log("Last few nothing eliminiated): " + str(nothing_count))
-                        self.flush_nothing_buffer(True, lambda x : (now - x[4]) <= self.scale_time(2 if x[0] == constants.ACTION_UP else 1.25) and (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH_ELIM") # Elimninate last few seconds of noting.
-                        self.flush_nothing_buffer(False, lambda x : (now - x[4]) > self.scale_time(2 if x[0] == constants.ACTION_UP else 1.25) and (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH_NO_ELIM")
+                        self.flush_nothing_buffer(True, lambda x : (now - x[4]) <= self.scale_time(0.75) and (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH_ELIM") # Elimninate last few seconds of noting.
+                        self.flush_nothing_buffer(False, lambda x : (now - x[4]) > self.scale_time(0.75) and (x[4] < self.executing_cmd.command_time), debug_log="BEFORE_WINDOW_FLUSH_NO_ELIM")
                         log("Eliminating last seconds of action retroactively")
-                        self.eliminate_retroactively(lambda i, x: now - x.cmd_time <= self.scale_time(1.5 if x.action == constants.ACTION_UP else 1),"_RETRO_ELIM")
+                        self.eliminate_retroactively(lambda i, x: (now - x.cmd_time) <= self.scale_time(1.75 if x.action == constants.ACTION_UP else 0.75),"_RETRO_ELIM")
                         # self.record_cmd(self.executing_cmd, False, "BEFORE_WINDOW") #Just don't bother with this.
                         # Maybe retroactively eliminate previous action in this case?
                     elif (self.executing_cmd.elim_win_low <= tse and tse <= self.executing_cmd.elim_win_high):
