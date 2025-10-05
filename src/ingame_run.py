@@ -52,21 +52,20 @@ class InGameRun:
         return tuple(v / sf for v in x)
 
     # Maybe cooldown should be independent frmo window_high???
-    # Maybe add another number for retroactive elimination?
     # Scale?? (1.5 times lower at 2 min mark???)
     def get_command_elim_window(self, action):
         def get_unscaled():
             if action == constants.ACTION_NOTHING:
                 return 0, 0
             if action == constants.ACTION_UP:
-                return 0.3, 0.5 #torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
+                return 0.35, 0.7 #torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
             if action == constants.ACTION_DOWN:
-                return 0.275, 0.45 #torch.normal(0.65, .050, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.275, 0.65 #torch.normal(0.65, .050, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             # point to note: left and right actions are mostly eliminated due to deflection or out of bounds.
             if action == constants.ACTION_LEFT:
-                return 0.35, 0.55 #torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.4, 0.65 #torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             if action == constants.ACTION_RIGHT:
-                return 0.35, 0.55 # torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.4, 0.675# torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             
         low, high = get_unscaled()
         return self.scale_time(low, high)
@@ -148,11 +147,8 @@ class InGameRun:
                         self.record_cmd(self.executing_cmd, True, "LANE_BOUNCE")
                     else:
                         log("None prev nothing eliminiated (after window): " + str(len([x for x in self.nothing_buffer if x[4] < self.executing_cmd.command_time])))
-                        self.flush_nothing_buffer(True, lambda x : now - x[4] <= self.scale_time(1.25 if x[0] == constants.ACTION_UP else 0.75) and (x[4] < self.executing_cmd.command_time), debug_log="AFTER_WINDOW_FLUSH_NON_ELIM")
-                        self.flush_nothing_buffer(False, lambda x : now - x[4] > self.scale_time(1.25 if x[0] == constants.ACTION_UP else 0.75) and (x[4] < self.executing_cmd.command_time), debug_log="AFTER_WINDOW_FLUSH_NON_ELIM") # TODO: Make sure this eliminates only nothings that happened before the command executed.
+                        self.flush_nothing_buffer(False, lambda x : (x[4] < self.executing_cmd.command_time), debug_log="AFTER_WINDOW_FLUSH") # TODO: Make sure this eliminates only nothings that happened before the command executed.
                         self.record_cmd(self.executing_cmd, False, "AFTER_WINDOW")
-                        log("Eliminating last seconds of action retroactively after window")
-                        self.eliminate_retroactively(lambda i, x: now - x.cmd_time <= self.scale_time(1.85 if x.action == constants.ACTION_UP else 1.25),"__AF_RETRO_ELIM")
                     self.executing_cmd = None
                 elif (new_state == constants.GAME_STATE_OVER):
                     if (tse < self.executing_cmd.elim_win_low):
