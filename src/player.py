@@ -107,12 +107,13 @@ class Player:
             self.start()
 
         if (self.current_run != None):
-            action, logits = self.model.infer([Image.fromarray(x) for x in self.rgb_queue], self.current_run.run_secs(), self.device, randomize=self.get_dataset_len() <= 25)
+            if (len(self.rgb_queue) >= 3):
+                action, logits = self.model.infer([Image.fromarray(x) for x in self.rgb_queue], self.current_run.run_secs(), self.device, randomize=self.get_dataset_len() <= 25)
 
-            if (gamestate != constants.GAME_STATE_OVER):
-                self.current_run.give_command(action, list(self.bgr_queue), gamestate, logits, lane)
+                if (gamestate != constants.GAME_STATE_OVER):
+                    self.current_run.give_command(action, list(self.bgr_queue), gamestate, logits, lane)
 
-            self.current_run.tick(gamestate, lane)
+                self.current_run.tick(gamestate, lane)
 
             if (self.current_run.is_finished()):
                 self.stop()

@@ -33,33 +33,43 @@ class SSAIModel(nn.Module):
             nn.ReLU(),
             nn.AvgPool2d(2),
 
-            nn.Conv2d(32, 72, kernel_size=5, padding=2),
-            nn.BatchNorm2d(72),
+            nn.Conv2d(32, 64, kernel_size=5, padding=2),
+            nn.BatchNorm2d(64),
             nn.ReLU(),
-            nn.MaxPool2d(2),
+            nn.AvgPool2d(2),
+
+            nn.Conv2d(64, 128, kernel_size=5, padding=2),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.AvgPool2d(2),
 
             nn.Flatten(),
-            nn.Dropout(p=0.15),
+            nn.Dropout(p=0.4),
         )
 
-        self.fully_connected_stage = nn.Sequential(
-            nn.Linear(6048 * 3, 916 * 3),
-            nn.BatchNorm1d(916 * 3),
-            nn.ReLU(),
-            nn.Dropout(p=0.4),
+        self.fcs = nn.ModuleList([
+            nn.Sequential(
+                nn.Linear(2304, 1024),
+                nn.BatchNorm1d(1024),
+                nn.ReLU(),
+                nn.Dropout(p=0.45),
+            )
+            for i in range(3)
+        ])
 
-            nn.Linear(916 * 3, 96 * 4),
-            nn.BatchNorm1d(96 * 4),
+
+        self.final_layer = nn.Sequential(
+            nn.Linear(1024 * 3, 512),
+            nn.BatchNorm1d(512),
             nn.ReLU(),
             nn.Dropout(p=0.2),
 
-            nn.Linear(96 * 4, 5),
+            nn.Linear(512, 5),
         )
 
-    def forward(self, imgages):
-        flattened = [self.cnn_stage(img) for img in imgages]
-        # flattened_with_velocity = torch.cat((flattened, time), dim=1)
-        action = self.fully_connected_stage(torch.cat(flattened, dim=1))
+    def forward(self, images):
+        flattened = [self.fcs[i](self.cnn_stage(images[i])) for i in range(0, len(images))]
+        action = self.final_layer(torch.cat(flattened, dim=1))
         return action
 
     # Returns the action to take.

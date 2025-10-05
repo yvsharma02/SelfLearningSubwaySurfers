@@ -16,8 +16,8 @@ import shutil
 from PIL import Image
 import pipeline
 
-MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 8
-MULTI_ELIM_NOTHING_LIMIT = 0.475 # This percent of single elim can be nothing multi elims
+MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 5
+MULTI_ELIM_NOTHING_LIMIT = 0.35 # This percent of single elim can be nothing multi elims
 
 def normalize_single_elims(single_elim_map):
     counts = [0] * 5
@@ -168,7 +168,7 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
 
 def train(model, train_loader, test_loader, device):
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    MAX_EPOCH = 50
+    MAX_EPOCH = 150
     test_losses = []
     for epoch in range(MAX_EPOCH):
         model.train()
@@ -181,7 +181,6 @@ def train(model, train_loader, test_loader, device):
 
         for multiimages, labels in train_loader:
             images = [image.to(device) for image in multiimages]
-
             eliminations = labels.to(device)
             optimizer.zero_grad()
             elim_pred = model(images)
