@@ -46,7 +46,7 @@ class InGameRun:
             return self.saved and self.time_since_execution() > self.elim_win_high
 
     def scale_time(self, *x):
-        sf = 1 + self.run_secs() / (60 * 5)
+        sf = 1 + self.run_secs() / (60 * 3)
         if (len(x) == 1):
             return x[0] / sf
         return tuple(v / sf for v in x)
@@ -58,14 +58,14 @@ class InGameRun:
             if action == constants.ACTION_NOTHING:
                 return 0, 0
             if action == constants.ACTION_UP:
-                return 0.35, 0.7 #torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
+                return 0.2, 0.6 #torch.normal(.8, .15, size=(1,)).item()# 1 + (random.random() - 0.5) * 2 * .35
             if action == constants.ACTION_DOWN:
-                return 0.275, 0.65 #torch.normal(0.65, .050, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.2, 0.6 #torch.normal(0.65, .050, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             # point to note: left and right actions are mostly eliminated due to deflection or out of bounds.
             if action == constants.ACTION_LEFT:
-                return 0.4, 0.65 #torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.45, 0.5 #torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             if action == constants.ACTION_RIGHT:
-                return 0.4, 0.65# torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
+                return 0.45, 0.5# torch.normal(0.65, .0375, size=(1,)).item()#0.55 + (random.random() - 0.5) * 2 * .05
             
         low, high = get_unscaled()
         return self.scale_time(low, high)

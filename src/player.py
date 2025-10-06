@@ -65,6 +65,7 @@ class Player:
             self.model, self.device = ssai_model.load("generated/models/test.pth")
 
     def tick(self):
+        now = time.time()
         img_rgb = self.controller.capture()
         img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
         self.rgb_queue.append(img_rgb)
@@ -73,9 +74,10 @@ class Player:
         lane = self.gsd.detect_lane(img_bgr)
 
         if (self.current_run == None and gamestate == constants.GAME_STATE_OVER):
+            # cv2.imwrite("capture.png", img_bgr)
+            # time.sleep(1)
             self.controller.tap(400, 750)
-            time.sleep(0.1)
-            self.controller.tap(355, 101)
+            self.controller.tap(432, 105)
 
         if (self.current_run == None and gamestate < constants.GAME_STATE_OVER):
             self.start()
@@ -93,7 +95,8 @@ class Player:
                 self.stop()
                 self.current_run = None
 
-        time.sleep(0.075)
+        # print(f"Frame Time: {time.time() - now}")
+        # time.sleep(0.075)
         return True
 
     def start_mainloop(self):

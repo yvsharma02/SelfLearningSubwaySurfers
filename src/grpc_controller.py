@@ -27,13 +27,16 @@ class EmulatorController:
     def stop(self):
         self.channel.close()
 
-    def tap(self, x, y):
+    def tap(self, x, y, sleeptime=0):
         self.stub.sendTouch(emu_pb2.TouchEvent(touches=[emu_pb2.Touch(
             identifier=1,
             x=x,
             y=y,
             pressure=1
         )]))
+
+        if (sleeptime != 0):
+            time.sleep(sleeptime)
 
         self.stub.sendTouch(emu_pb2.TouchEvent(touches=[emu_pb2.Touch(
             identifier=1,
