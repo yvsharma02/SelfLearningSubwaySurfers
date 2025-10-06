@@ -4,10 +4,13 @@ import numpy as np
 
 root_dir = "generated/runs/dataset"
 
+
 times = []
 dirs = []
 
 subdirs = sorted([d for d in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, d))])[25:]
+lengths = [len(os.listdir(os.path.join(root_dir, d))) for d in subdirs]
+print(subdirs[lengths.index(max(lengths))])
 
 for subdir in subdirs:
     metadata_file = os.path.join(root_dir, subdir, "metadata.txt")
