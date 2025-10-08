@@ -15,6 +15,7 @@ import numpy as np
 import shutil
 from PIL import Image
 import pipeline
+import time
 
 MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 3.75
 MULTI_ELIM_NOTHING_LIMIT = 0.45 # This percent of single elim can be nothing multi elims
@@ -93,7 +94,8 @@ def read_data(path):
                 lines = f.readlines()
                 for idx, line in enumerate(lines):
                     line = line.strip()
-                    index, time, eliminations, logits, debug_log = line.split(';')
+                    splits = line.split(';')
+                    index, time, eliminations = splits[0:3]
                     index = int(index.strip())
                     time = float(time.strip())
                     eliminations = eliminations.strip("[] \n").split(",")
@@ -176,10 +178,12 @@ def create_datasets(train_paths, test_paths, train_labels, test_labels, transfor
     return train_dataset, train_loader, test_dataset, test_loader
 
 def train(model, train_loader, test_loader, device):
+    now = time.time()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     MAX_EPOCH = 150
     test_losses = []
     for epoch in range(MAX_EPOCH):
+        epoch_now = time.time()
         model.train()
         running_loss = 0.0
 
@@ -230,6 +234,10 @@ def train(model, train_loader, test_loader, device):
         model.save_to_file("generated/models/test.pth")
         test_loss = test(model, test_loader, device)[0]
         test_losses.append(test_loss)
+
+        epoch_time = time.time() - epoch_now
+        print(f"Epoch Time: {epoch_time}")
+
         if (len(test_losses) < 7 + 1): 
             continue
 
@@ -246,7 +254,7 @@ def train(model, train_loader, test_loader, device):
 
         # if (len(last7window) > 7 and last7avg - test_loss < 0.001):
             # break
-    print("Training Finished!")
+    print(f"Training Finished!: {time.time() - now} s")
 
 def test(model, test_loader, device):
     model.eval()

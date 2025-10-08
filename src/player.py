@@ -15,6 +15,7 @@ import cv2
 import os
 import shutil
 from collections import deque
+from grpc._channel import _InactiveRpcError
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
 RETRAIN_AFTER_X_RUNS = 10
@@ -37,6 +38,8 @@ class Player:
         self.run_no = 0
         self.rgb_queue = deque([],maxlen=3)
         self.bgr_queue = deque([],maxlen=3)
+        self.frame_number = 0
+        self.last_frame_time = time.time()
         # self.input_controller = MultiDeviceReader()
 
     def get_dataset_len(self):
@@ -49,9 +52,13 @@ class Player:
 
         self.dataset = time.strftime(('%Y-%m-%d %H:%M:%S %Z'), time.localtime(time.time()))
         print(f"Starting Recording... Dataset: ${self.dataset}")
+        self.frame_number = 0
         self.save_que = SaveQue(self.dataset, f"generated/runs/dataset/{self.dataset}")
+        self.stream_path = f"generated/streams/{self.dataset}"
         self.current_run = InGameRun(self.controller, self.save_que)
         self.run_no += 1
+
+        os.makedirs(self.stream_path, exist_ok=True)
 
     def stop(self):
         if (self.current_run == None): 
@@ -60,7 +67,7 @@ class Player:
         print(f"Stopping Recording...: {self.run_no}")
         self.current_run.close()
         self.current_run = None
-        if (self.run_no % 100 == 0):
+        if (self.run_no % 100000 == 0):
             trainer.main()
             self.model, self.device = ssai_model.load("generated/models/test.pth")
 
@@ -87,7 +94,7 @@ class Player:
                 action, logits = self.model.infer([Image.fromarray(x) for x in self.rgb_queue], self.current_run.run_secs(), self.device, randomize=self.get_dataset_len() <= 25)
 
                 if (gamestate != constants.GAME_STATE_OVER):
-                    self.current_run.give_command(action, list(self.bgr_queue), gamestate, logits, lane)
+                    self.current_run.give_command(action, list(self.bgr_queue), gamestate, logits, lane, self.frame_number)
 
                 self.current_run.tick(gamestate, lane)
 
@@ -95,6 +102,11 @@ class Player:
                 self.stop()
                 self.current_run = None
 
+            # if (now - self.last_frame_time >= 1.0 / 60.0):
+            cv2.imwrite(os.path.join(self.stream_path, f"{self.frame_number}.png"), img_bgr)
+            self.frame_number += 1
+
+        self.last_frame_time = now
         # print(f"Frame Time: {time.time() - now}")
         # time.sleep(0.075)
         return True
@@ -106,6 +118,8 @@ class Player:
                     break
             except KeyboardInterrupt as e:
                 break
+            except _InactiveRpcError:
+                pass
         self.stop()
 
 
@@ -116,7 +130,8 @@ def main():
 
     logfile = open("generated/emu_log.txt", "w+")
     adb_client = AdbClient(host="127.0.0.1", port=5037)
-    emulator_utils.launch(adb_client, 15, stderror=logfile, stdout=logfile)
+    print("Launching Emulator. Please Wait. Should not take longer than 120s.")
+    emulator_utils.launch(adb_client, 120, stderror=logfile, stdout=logfile)
     player = Player(model, device)
     player.start_mainloop()
     logfile.close()

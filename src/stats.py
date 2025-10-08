@@ -9,7 +9,7 @@ times = []
 subdirs = sorted([d for d in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, d))])[25:]
 lengths = [len(os.listdir(os.path.join(root_dir, d))) for d in subdirs]
 
-print(subdirs[lengths.index(max(lengths))])
+#print(subdirs[lengths.index(max(lengths))])
 
 for subdir in subdirs:
     metadata_file = os.path.join(root_dir, subdir, "metadata.txt")
@@ -20,6 +20,7 @@ for subdir in subdirs:
     with open(metadata_file, "r") as f:
         lines = f.readlines()
         if not lines:
+            times.append(0)
             continue
         first_line = lines[0].strip()
         last_line = lines[-1].strip()
@@ -33,6 +34,12 @@ for subdir in subdirs:
                 dirs.append(subdir)
             except ValueError:
                 continue
+
+
+sorted_dirs = [(x, times[i]) for i, x in enumerate(subdirs)]
+sorted_dirs.sort(key=lambda x: x[1])
+
+print(sorted_dirs[-10:])
 
 def graph():
     global times

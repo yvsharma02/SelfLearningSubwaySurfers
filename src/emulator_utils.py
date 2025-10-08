@@ -23,7 +23,7 @@ def launch(adb_client : Client, timeout_s : float = 10.0, stdout = None, stderro
     "-no-boot-anim",
     "-grpc", "8554",
     "-idle-grpc-timeout", "0",
-    "-no-snapshot-load"
+    # "-no-snapshot-load"
     # "-gpu", ("swiftshader_indirect" if use_cpu_rendering else "host"),
     # "-accel", "on",
     ]

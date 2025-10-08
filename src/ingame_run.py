@@ -13,7 +13,7 @@ def log(msg):
 class InGameRun:
     
     class Command:
-        def __init__(self, capture, pred_action, state, elimination_window_min, elimination_window_max, logits, lane):
+        def __init__(self, capture, pred_action, state, elimination_window_min, elimination_window_max, logits, lane, frame_number):
             self.capture = capture
             self.action = pred_action
             self.game_state = state
@@ -24,6 +24,7 @@ class InGameRun:
             self.logits = logits
             self.saved = False
             self.lane = lane
+            self.frame_number = frame_number
 
         def time_since_given(self):
             return time.time() - self.command_time
@@ -85,14 +86,14 @@ class InGameRun:
     def start_delay(self):
         return 2
 
-    def give_command(self, action, capture, gamestate, logits, lane):
+    def give_command(self, action, capture, gamestate, logits, lane, frame_number):
         if (self.run_secs() < self.start_delay()):
             return
 
         now = time.time()
 
         if (action == constants.ACTION_NOTHING):
-            self.nothing_buffer.append((action, capture, gamestate, logits, now, lane))
+            self.nothing_buffer.append((action, capture, gamestate, logits, now, lane, frame_number))
             return
         
         if (self.executing_cmd != None and self.executing_cmd.time_since_execution() < self.executing_cmd.elim_win_high):
@@ -100,7 +101,7 @@ class InGameRun:
         
         win_low, win_high = self.get_command_elim_window(action)
         if (self.queued_cmd == None or self.queued_cmd.action != action):
-            self.queued_cmd = InGameRun.Command(capture, action, gamestate, win_low, win_high, logits, lane)
+            self.queued_cmd = InGameRun.Command(capture, action, gamestate, win_low, win_high, logits, lane, frame_number)
 
         pass
 
@@ -109,7 +110,7 @@ class InGameRun:
         if (record):
             for idx in to_flush:
                 elim = [0] if eliminate else [i for i in range(1, 5)]
-                self.record(self.nothing_buffer[idx][1], 0, eliminate, self.nothing_buffer[idx][4], self.nothing_buffer[idx][3], debug_log)
+                self.record(self.nothing_buffer[idx][1], 0, eliminate, self.nothing_buffer[idx][4], self.nothing_buffer[idx][3], self.nothing_buffer[idx][6], debug_log)
         self.nothing_buffer = [self.nothing_buffer[i] for i in range(0, len(self.nothing_buffer)) if i not in to_flush]
 
     # def record_stale_nothing(self, eliminate):
@@ -200,10 +201,10 @@ class InGameRun:
         logits = cmd.logits
         ts = cmd.command_time
 
-        self.record(capture, cmd.action, eliminate, ts, logits, debug_log)
+        self.record(capture, cmd.action, eliminate, ts, logits, cmd.frame_number, debug_log)
 
-    def record(self, capture, action, elim, cmd_time, logits, debug_log="NA"):
-        self.save_que.put(action, elim, capture, cmd_time, logits, debug_log)
+    def record(self, capture, action, elim, cmd_time, logits, frame_number, debug_log="NA"):
+        self.save_que.put(action, elim, capture, cmd_time, logits, frame_number, debug_log)
 
     def execute_command(self, cmd : Command):
         if (cmd.time_since_execution() >= 0): raise Exception("Command Already Executed.")
