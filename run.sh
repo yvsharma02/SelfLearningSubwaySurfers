@@ -1,68 +1,27 @@
-# Arguments:
-# 0: run.sh
-# 1: run or build or build_and_run image
-# 2: work directory (inside the container)
-# 3: container name
-# 4: image tag
-# 5: blocking or non-blocking
+echo "Run using devcontainers and setup/launch.sh instead"
 
-export MSYS_NO_PATHCONV=1
-export DOCKER_BUILDKIT=1
+# set -e
 
-MODE="build_and_run"
-CONTAINER_NAME="subwaysurfersai_container"
-IMAGE_NAME="subwaysurfersai_image"
-BLOCKING="blocking"
+# CONTAINER_NAME="subwaysurfersai"
+# IMAGE_NAME="subwaysurfersai:latest"
+# WORKSPACE_DIR="$(pwd)"
+# DOCKERFILE_PATH="Dockerfile"
+# BUILD_CONTEXT="."
 
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    --mode)
-      MODE="$2"
-      shift 2
-      ;;
-    --container-name)
-      CONTAINER_NAME="$2"
-      shift 2
-      ;;
-    --image-name)
-      IMAGE_NAME="$2"
-      shift 2
-      ;;
-    --blocking)
-      BLOCKING="$2"
-      shift 2
-      ;;
-    *)
-      echo "Unknown option: $1"
-      exit 1
-      ;;
-  esac
-done
+# echo ">>> Building Docker image from $DOCKERFILE_PATH ..."
+# DOCKER_BUILDKIT=1 docker build \
+#     --file "$DOCKERFILE_PATH" \
+#     --tag "$IMAGE_NAME" \
+#     "$BUILD_CONTEXT"
 
-# These are not parameters.
-DATA_ROOT="/home/ubuntu/subwaysurfersai"
-
-if [[ "$MODE" = "build" || "$MODE" = "build_and_run" ]]; then
-    echo "Building Image..."
-    docker build . -t $IMAGE_NAME --progress plain --add-host=host.docker.internal:host-gateway
-fi
-
-if [[ "$MODE" = "run" || "$MODE" = "build_and_run" ]]; then
-    echo "Running Container...."
-
-    run_flags=""
-    if [ "$BLOCKING" = "non-blocking" ]; then
-        run_flags="-d"
-    elif [ "$BLOCKING" != "blocking" ]; then
-        echo "Blocking argument can be 'blocking' or 'non-blocking' only."
-        exit 1
-    fi
-
-    docker run  \
-      --rm      \
-      --name "$CONTAINER_NAME"  \
-      -v $(pwd):$DATA_ROOT/workspace \
-      $IMAGE_NAME \
-      $run_flags  \
-      bash 
-fi
+# echo ">>> Launching Docker container..."
+# docker run -it \
+#     --name "$CONTAINER_NAME" \
+#     --privileged \
+#     --gpus all \
+#     --device /dev/kvm \
+#     --add-host=host.docker.internal:host-gateway \
+#     --volume="$WORKSPACE_DIR:/home/ubuntu/subwaysurfersai/workspace" \
+#     --volume="/dev/input:/dev/input" \
+#     "$IMAGE_NAME"
+#     # bash -c "cd /home/ubuntu/subwaysurfersai/workspace && ./setup/launch.sh && bash"
