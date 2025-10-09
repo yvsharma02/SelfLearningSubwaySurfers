@@ -128,7 +128,7 @@ def graph():
         axes[1].set_xticklabels(tick_labels)
 
     plt.tight_layout()
-    plt.savefig("graph.png")
+    plt.savefig("generatedenerated/graph.png")
     # plt.show()
 
 

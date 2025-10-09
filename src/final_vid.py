@@ -136,9 +136,13 @@ def main(stream_dir):
     widths = [int(c.get(cv2.CAP_PROP_FRAME_WIDTH)) for c in caps]
     tile_h = 240
     tile_ws = [int(w * (tile_h / h)) for w, h in zip(widths, heights)]
+
     panel_w = 220
+    panel_extra_h = 60
+    panel_h = tile_h + panel_extra_h  # Taller classifier panel
+
     total_w = sum(tile_ws) + 16 * (len(tile_ws) + 1) + panel_w
-    total_h = tile_h + 40
+    total_h = panel_h + 40
     out_path = os.path.join(ANALYSIS_DIR, "final_video.mp4")
     out = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*"mp4v"), FPS, (total_w, total_h))
 
@@ -150,7 +154,6 @@ def main(stream_dir):
         x = 16
         y = 20
         centers = []
-        frames = []
 
         # ---- read and label stage tiles ----
         for i, cap in enumerate(caps):
@@ -163,8 +166,6 @@ def main(stream_dir):
                 lbl_main, lbl_sub = "Input", "(last 3 frames)"
             elif i < len(caps) - 1:
                 lbl_main, lbl_sub = f"CNN-{i}", "(brightest 3 channels)"
-            # else:
-                # lbl_main, lbl_sub = "CNN-x", "(Action with lowest score is taken)"
 
             cv2.putText(tile, lbl_main, (8, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
             cv2.putText(tile, lbl_sub, (1, tile_h - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (200,200,200), 1, cv2.LINE_AA)
@@ -178,17 +179,8 @@ def main(stream_dir):
             base[y:y+tile_h, x:x+tile_ws[i]] = tile
             centers.append((x + tile_ws[i] // 2, y + tile_h // 2))
             x += tile_ws[i] + 16
-            frames.append(tile)
 
-        # ---- arrows (white, spaced) ----
-        for i in range(len(centers)-1):
-            start = (centers[i][0] + 50, centers[i][1])
-            end   = (centers[i+1][0] - 50, centers[i+1][1])
-            cv2.arrowedLine(base, start, end, (255,255,255), 2, tipLength=0.05)
-            if i == len(centers)-2:
-                midx = (start[0] + end[0]) // 2
-                cv2.putText(base, "Fully Connected", (midx-60, centers[i][1]-35),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+        centers.append((x + panel_w // 4, y + tile_h // 2))
 
         # ---- Run classifier on last 3 frames ----
         frame_indices = [max(0, f_idx - 2), max(0, f_idx - 1), f_idx]
@@ -210,36 +202,56 @@ def main(stream_dir):
         # ---- Classifier panel ----
         px = total_w - panel_w + 10
         py = 10
-        ph = tile_h
-        cv2.rectangle(base, (px, py), (px + panel_w - 10, py + ph + 20), (20,20,20), -1)
+        ph = panel_h
+        cv2.rectangle(base, (px, py), (px + panel_w - 10, py + ph), (20, 20, 20), -1)
 
         # Reverse mapping: lowest → green, highest → red
         norm_probs = (probs - probs.min()) / (probs.max() - probs.min() + 1e-8)
         bar_colors = [interp_red_green(1 - p) for p in norm_probs]
 
-        bar_h = (ph - 50) // len(CLASS_NAMES)
+        bar_h = (tile_h - 50) // len(CLASS_NAMES)
         bar_w = panel_w - 40
         max_conf = probs.max()
+
         for i, cname in enumerate(CLASS_NAMES):
             val = probs[i]
             color = bar_colors[i]
-            y0 = py + 40 + i*(bar_h + 5)
-            cv2.rectangle(base, (px+20, y0), (px+20+int(bar_w*val), y0+bar_h), color, -1)
-            cv2.putText(base, f"{cname} {val*100:4.1f}%", (px+20, y0+bar_h-5),
+            y0 = py + 40 + i * (bar_h + 5)
+            cv2.rectangle(base, (px + 20, y0), (px + 20 + int(bar_w * val), y0 + bar_h), color, -1)
+            cv2.putText(base, f"{cname} {val * 100:4.1f}%", (px + 20, y0 + bar_h - 5),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255,255,255), 1, cv2.LINE_AA)
+
+        # ---- Add "Lowest is performed" inside bottom area ----
+        safe_y = py + ph - 25
+        cv2.putText(base, "(least is performed)", (px + 25, safe_y),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180,255,180), 1, cv2.LINE_AA)
 
         # Tint classifier green when confidence is low
         if max_conf < 0.5:
             tint = np.zeros_like(base, dtype=np.uint8)
-            cv2.rectangle(tint, (px, py), (px+panel_w-10, py+ph+20), (0,80,0), -1)
+            cv2.rectangle(tint, (px, py), (px + panel_w - 10, py + ph), (0,80,0), -1)
             base = cv2.addWeighted(base, 0.7, tint, 0.3, 0)
-            cv2.putText(base, "Eliminate Choice (Lowest is performed)", (px+5, py+25),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0,255,0), 1, cv2.LINE_AA)
 
+            # Smaller title and safe "(least is performed)" below
+            cv2.putText(base, "Eliminated Choices", (px + 10, py + 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0,255,0), 1, cv2.LINE_AA)
+            # cv2.putText(base, "(least is performed)", (px + 25, py + 50),
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.4, (120,255,120), 1, cv2.LINE_AA)
+
+                # ---- arrows (white, spaced) ----
+        for i in range(len(centers)-1):
+            start = (centers[i][0] + 50, centers[i][1])
+            end   = (centers[i+1][0] - 50, centers[i+1][1])
+            cv2.arrowedLine(base, start, end, (255,255,255), 2, tipLength=0.05)
+            if i == len(centers)-2:
+                midx = (start[0] + end[0]) // 2
+                cv2.putText(base, "FC", (midx-10, centers[i][1]-35),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
         out.write(base)
 
     out.release()
-    for c in caps: c.release()
+    for c in caps:
+        c.release()
     print(f"\n✅ Final pipeline visualization saved → {out_path}")
 
 # ===== ENTRY =====
