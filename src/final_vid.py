@@ -14,7 +14,7 @@ from ssai_model import SSAIModel  # import your model class
 # ===== CONFIG =====
 MODEL_PATH = "generated/models/test copy.pth"
 ANALYSIS_DIR = "generated/analysis"
-FPS = 24
+FPS = 30
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CLASS_NAMES = ["Nothing", "Up", "Down", "Left", "Right"]
 
@@ -34,6 +34,7 @@ def normalize_img(tensor):
     return tensor
 
 def interp_red_green(p):
+    """Normal red→green map (we'll reverse for classifier)."""
     p = float(np.clip(p, 0.0, 1.0))
     r = int((1 - p) * 255)
     g = int(p * 255)
@@ -143,7 +144,6 @@ def main(stream_dir):
     tform = transform
 
     for f_idx in tqdm(range(int(caps[0].get(cv2.CAP_PROP_FRAME_COUNT))), desc="Compositing pipeline"):
-        # --- dark background ---
         base = np.zeros((total_h, total_w, 3), dtype=np.uint8)
         x = 16
         y = 20
@@ -157,14 +157,17 @@ def main(stream_dir):
                 frame = np.zeros((heights[i], widths[i], 3), dtype=np.uint8)
             tile = cv2.resize(frame, (tile_ws[i], tile_h))
 
-            # Simple small label like "CNN-1"
-            lbl = "Input" if i == 0 else f"CNN-{i}"
-            if i == 5: lbl = "Eliminate Change"
+            if i == 0:
+                lbl_main, lbl_sub = "Input", "(last 3 frames)"
+            elif i < len(caps) - 1:
+                lbl_main, lbl_sub = f"CNN-{i}", "(brightest 3 channels)"
+            # else:
+                # lbl_main, lbl_sub = "CNN-x", "(Action with lowest score is taken)"
 
-            cv2.putText(tile, lbl, (8, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+            cv2.putText(tile, lbl_main, (8, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+            cv2.putText(tile, lbl_sub, (1, tile_h - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (200,200,200), 1, cv2.LINE_AA)
 
-            # fade-in for stages 2-4 and classifier
-            fade_stage_start = [0, 20, 40, 60, 80]  # frame index offsets
+            fade_stage_start = [0, 20, 40, 60, 80]
             fade = 1.0
             if i > 0:
                 fade = np.clip((f_idx - fade_stage_start[i]) / 20.0, 0, 1)
@@ -175,15 +178,14 @@ def main(stream_dir):
             x += tile_ws[i] + 16
             frames.append(tile)
 
-        # ---- arrows (white, separated) ----
+        # ---- arrows (white, spaced) ----
         for i in range(len(centers)-1):
             start = (centers[i][0] + 50, centers[i][1])
             end   = (centers[i+1][0] - 50, centers[i+1][1])
             cv2.arrowedLine(base, start, end, (255,255,255), 2, tipLength=0.05)
-            # “Fully Connected” between CNN-4 and classifier
             if i == len(centers)-2:
                 midx = (start[0] + end[0]) // 2
-                cv2.putText(base, "Fully Connected", (midx-60, centers[i][1]-50),
+                cv2.putText(base, "Fully Connected", (midx-60, centers[i][1]-35),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
 
         # ---- Run classifier on last 3 frames ----
@@ -207,30 +209,30 @@ def main(stream_dir):
         px = total_w - panel_w + 10
         py = 10
         ph = tile_h
-        cv2.rectangle(base, (px, py), (px+panel_w-10, py+ph+20), (20,20,20), -1)
-        # cv2.putText(base, "", (px+25, py+25),
-                    # cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255,255,255), 1, cv2.LINE_AA)
+        cv2.rectangle(base, (px, py), (px + panel_w - 10, py + ph + 20), (20,20,20), -1)
+
+        # Reverse mapping: lowest → green, highest → red
+        norm_probs = (probs - probs.min()) / (probs.max() - probs.min() + 1e-8)
+        bar_colors = [interp_red_green(1 - p) for p in norm_probs]
 
         bar_h = (ph - 50) // len(CLASS_NAMES)
         bar_w = panel_w - 40
         max_conf = probs.max()
         for i, cname in enumerate(CLASS_NAMES):
             val = probs[i]
-            color = interp_red_green(val)
+            color = bar_colors[i]
             y0 = py + 40 + i*(bar_h + 5)
             cv2.rectangle(base, (px+20, y0), (px+20+int(bar_w*val), y0+bar_h), color, -1)
-            cv2.putText(base, f"{cname} {val*100:4.1f}%",
-                        (px+20, y0+bar_h-5), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255,255,255), 1, cv2.LINE_AA)
+            cv2.putText(base, f"{cname} {val*100:4.1f}%", (px+20, y0+bar_h-5),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255,255,255), 1, cv2.LINE_AA)
 
         # Tint classifier green when confidence is low
         if max_conf < 0.5:
             tint = np.zeros_like(base, dtype=np.uint8)
             cv2.rectangle(tint, (px, py), (px+panel_w-10, py+ph+20), (0,80,0), -1)
             base = cv2.addWeighted(base, 0.7, tint, 0.3, 0)
-
-            # Replace title with "Eliminate Change"
-            cv2.putText(base, "Eliminate Chance", (px+5, py+25),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0,255,0), 2, cv2.LINE_AA)
+            cv2.putText(base, "Eliminate Choice\n(Lowest is performed)", (px+5, py+25),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0,255,0), 2, cv2.LINE_AA)
 
         out.write(base)
 
