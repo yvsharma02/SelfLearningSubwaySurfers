@@ -1,4 +1,4 @@
-(Link to the older manual version): https://github.com/yvsharma02/SubwaySurfersAI
+(Link to the older manual version): https://github.com/yvsharma02/SubwaySurfersAI <br/>
 Example Run:
 
 
