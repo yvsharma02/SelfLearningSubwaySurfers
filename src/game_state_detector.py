@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from collections import deque
 from object_detector import ObjDetector
-import pipeline
+import player_detector
 
 class StateDetector:
 
@@ -47,7 +47,7 @@ class StateDetector:
         return max_idx
 
     def detect_lane_raw(self, capture):
-        x, y = pipeline.get_blob_average_position(capture)
+        x, y = player_detector.get_blob_average_position(capture)
         if (x == None): return -1
         if (x < .4): return 0
         if (x > .58): return 2

@@ -1,3 +1,5 @@
+# This file was completely generated.
+
 import os
 import matplotlib.pyplot as plt
 import numpy as np

@@ -1,3 +1,5 @@
+# This file was completely generated.
+
 import os
 import cv2
 import torch
@@ -137,7 +139,7 @@ def main(stream_dir):
     panel_w = 220
     total_w = sum(tile_ws) + 16 * (len(tile_ws) + 1) + panel_w
     total_h = tile_h + 40
-    out_path = os.path.join(ANALYSIS_DIR, "final_pipeline.mp4")
+    out_path = os.path.join(ANALYSIS_DIR, "final_video.mp4")
     out = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*"mp4v"), FPS, (total_w, total_h))
 
     # Helper transform for classification
@@ -231,8 +233,8 @@ def main(stream_dir):
             tint = np.zeros_like(base, dtype=np.uint8)
             cv2.rectangle(tint, (px, py), (px+panel_w-10, py+ph+20), (0,80,0), -1)
             base = cv2.addWeighted(base, 0.7, tint, 0.3, 0)
-            cv2.putText(base, "Eliminate Choice\n(Lowest is performed)", (px+5, py+25),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0,255,0), 2, cv2.LINE_AA)
+            cv2.putText(base, "Eliminate Choice (Lowest is performed)", (px+5, py+25),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0,255,0), 1, cv2.LINE_AA)
 
         out.write(base)
 

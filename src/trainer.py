@@ -14,7 +14,7 @@ import constants
 import numpy as np
 import shutil
 from PIL import Image
-import pipeline
+import player_detector
 import time
 
 MULTI_ELIM_PERCENTAGE_OF_SINGLE_ELIM = 3.75

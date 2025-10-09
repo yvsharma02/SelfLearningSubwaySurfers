@@ -1,3 +1,5 @@
+# This file was completely generated.
+
 import os
 import cv2
 import torch
