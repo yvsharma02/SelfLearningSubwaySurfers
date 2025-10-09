@@ -1,3 +1,6 @@
+Example Run:
+
+
 How to start the devcontainer:
 
 Things to have on host machine:
@@ -13,3 +16,9 @@ If you want to use Git while being inside the container, the following things al
 5) GitCredentailManager (Make sure to proprely set this up. Good luck with that :) )
 
 To run the project (from inside dev-container): Run: ./setup/launch.sh
+
+Here are the overall results:
+<img width="1000" height="800" alt="graph" src="https://github.com/user-attachments/assets/099230a0-fbac-495e-a4a5-0d2e50a4ed2c" />
+
+Network Architecture:
+<img width="1024" height="1536" alt="architecture" src="https://github.com/user-attachments/assets/84a6558c-4354-47fe-80e6-061c983a1685" />
