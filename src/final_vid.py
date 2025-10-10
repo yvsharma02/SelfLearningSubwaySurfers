@@ -247,6 +247,14 @@ def main(stream_dir):
                 midx = (start[0] + end[0]) // 2
                 cv2.putText(base, "FC", (midx-10, centers[i][1]-35),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+        
+        footer_text = "Self Learning"
+        (text_w, text_h), _ = cv2.getTextSize(footer_text, cv2.FONT_HERSHEY_SIMPLEX, 0.8, 2)
+        text_x = (total_w - text_w) // 2
+        text_y = total_h - 10
+        cv2.putText(base, footer_text, (text_x, text_y),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255,255,255), 2, cv2.LINE_AA)
+
         out.write(base)
 
     out.release()

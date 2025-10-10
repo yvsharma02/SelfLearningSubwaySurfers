@@ -21,6 +21,10 @@ Sample Run:
 
 https://github.com/user-attachments/assets/544474dc-55cc-472e-8016-1a5e8a681b17
 
+This works be starting with an uninitialized model, predicting which actions it should eliminate.
+The action with the least confidence in elimination it performed (after considering some cooldowns and stuff).
+If the taken action leads to the game ending, that action is marked as eliminated, and saved as a data point.
+After few such tries, a new model is training on the data which contains the data of the eliminiated actions for each frame we just created.
 
 Here are the overall results:
 
