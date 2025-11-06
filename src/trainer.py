@@ -9,7 +9,6 @@ from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 from dataset import ImageDataset
 from ssai_model import SSAIModel
-import run_validator
 import constants
 import numpy as np
 import shutil
@@ -86,9 +85,6 @@ def read_data(path):
     }
     for subdir, _, files in os.walk(path):
         if "metadata.txt" in files:
-            if (not run_validator.is_valid(subdir)):
-                continue
-
             metadata_path = os.path.join(subdir, "metadata.txt")
             with open(metadata_path, "r") as f:
                 lines = f.readlines()

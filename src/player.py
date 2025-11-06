@@ -2,7 +2,6 @@ from save_queue import SaveQue
 from grpc_controller import EmulatorController
 import constants
 from ppadb.client import Client as AdbClient
-from multi_device_reader import MultiDeviceReader
 import time
 import emulator_utils
 import ssai_model
@@ -127,7 +126,7 @@ def main():
     # model, device = None, None
     model, device = ssai_model.load("generated/models/test.pth") if os.path.exists("generated/models/test.pth") else (ssai_model.SSAIModel(), torch.device("cuda" if torch.cuda.is_available() else "cpu"))
     model = model.to(device)
-
+    os.makedirs("generated", exist_ok=True)
     logfile = open("generated/emu_log.txt", "w+")
     adb_client = AdbClient(host="127.0.0.1", port=5037)
     print("Launching Emulator. Please Wait. Should not take longer than 120s.")

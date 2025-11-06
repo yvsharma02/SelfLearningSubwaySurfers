@@ -5,7 +5,6 @@ from ppadb.device import Device
 import time
 import numpy as np
 import matplotlib.pyplot as plt
-import xvfb_capture
 
 from grpc._channel import _InactiveRpcError
 from grpc_controller import EmulatorController

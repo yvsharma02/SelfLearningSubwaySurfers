@@ -9,17 +9,6 @@ class StateDetector:
 
     def __init__(self):
         self.lane_window = deque([], maxlen=4)
-        self.police_detector = ObjDetector(
-            "data/reference_images/police4.png",
-            3,
-            0.98,
-            0.96,
-            3,
-            0.05,
-            1,
-            20,
-            (0, 360, 480, 800), log_confidence=False)
-        
         self.pause_button_detector = ObjDetector(
             "data/reference_images/pause_button.png",
             1,
