@@ -226,7 +226,8 @@ def train(model, train_loader, test_loader, device):
 
         def avg_loss(win_size):
             return sum(test_losses[-win_size - 1:-1]) / win_size
-
+        
+        os.makedirs("generated/models/", exist_ok=True)
         model.save_to_file("generated/models/test.pth")
         test_loss = test(model, test_loader, device)[0]
         test_losses.append(test_loss)
@@ -317,7 +318,7 @@ def main():
     print("Reading Data...")
     # data = read_data(PATH)
 
-    # train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*read_data(PATH)), transform=SSAIModel.IMAGE_TRANSFORM)
+    train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*read_data(PATH)), transform=SSAIModel.IMAGE_TRANSFORM)
     print("Starting Training...")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)

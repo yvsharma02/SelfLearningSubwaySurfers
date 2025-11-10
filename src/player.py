@@ -66,7 +66,7 @@ class Player:
         print(f"Stopping Recording...: {self.run_no}")
         self.current_run.close()
         self.current_run = None
-        if (self.run_no % 100000 == 0):
+        if (self.run_no % 25 == 0):
             trainer.main()
             self.model, self.device = ssai_model.load("generated/models/test.pth")
 
