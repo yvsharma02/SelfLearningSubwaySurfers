@@ -12,19 +12,18 @@ from grpc_controller import EmulatorController
 def launch(adb_client : Client, timeout_s : float = 10.0, stdout = None, stderror = None, use_cpu_rendering = False):
     print("Opening Emulator")
 
-    #FOR FUTURE ME: If I want to run this via X-forwarding, remove the -no-window option and remove the accel on and gpu command option.
     start_time = time.time()
     start_cmd = [
     "emulator",
     "-avd", "default_avd",
-    # "-no-window",
     "-no-audio",
     "-no-boot-anim",
     "-grpc", "8554",
     "-idle-grpc-timeout", "0",
-    # "-no-snapshot-load"
-    # "-gpu", ("swiftshader_indirect" if use_cpu_rendering else "host"),
-    # "-accel", "on",
+
+    # Un-Comment if you want to run without window
+    # "-no-window",
+    # "-gpu", "host"
     ]
 
     subprocess.Popen(start_cmd, stdout=stdout, stderr=stderror)

@@ -102,7 +102,7 @@ class Player:
                 self.current_run = None
 
             # if (now - self.last_frame_time >= 1.0 / 60.0):
-            cv2.imwrite(os.path.join(self.stream_path, f"{self.frame_number}.png"), img_bgr)
+#            cv2.imwrite(os.path.join(self.stream_path, f"{self.frame_number}.png"), img_bgr)
             self.frame_number += 1
 
         self.last_frame_time = now

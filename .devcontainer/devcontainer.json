@@ -20,7 +20,7 @@
    "/dev/kvm",
     "--add-host=host.docker.internal:host-gateway"
   ],
-  // "postStartCommand": "./setup/launch.sh",
+  "postStartCommand": "./setup/entry.sh",
   "customizations": {
     "vscode": {
       "extensions": [
