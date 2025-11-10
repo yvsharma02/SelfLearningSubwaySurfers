@@ -55,7 +55,6 @@ class ObjDetector:
             return False
 
         avg_confidence = ObjDetector.weighted_average(self.police_state_queue)
-
         new_detection = self.last_detected
         if avg_confidence > self.detect_bound and avg_confidence < self.detect_bound_upper_limit:
             if not self.last_detected:

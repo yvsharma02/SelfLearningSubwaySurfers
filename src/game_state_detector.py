@@ -12,13 +12,15 @@ class StateDetector:
         self.pause_button_detector = ObjDetector(
             "data/reference_images/pause_button.png",
             1,
-            0.86,
-            0.86,
+            0.9575,
+            0.94,
             0,
             0.05,
             1,
             20,
-            (16, 12, 68, 64), log_confidence=False, detect_bound_upper_limit=0.866)
+            (16, 12, 68, 64),
+            log_confidence=False,
+            detect_bound_upper_limit=0.975)
 
     def detect_lane(self, capture):
         new_lane = self.detect_lane_raw(capture)

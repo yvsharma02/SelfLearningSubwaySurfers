@@ -317,7 +317,7 @@ def main():
     print("Reading Data...")
     # data = read_data(PATH)
 
-    train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*read_data(PATH)), transform=SSAIModel.IMAGE_TRANSFORM)
+    # train_dataset, train_loader, test_dataset, test_loader = create_datasets(*create_train_test_split(*read_data(PATH)), transform=SSAIModel.IMAGE_TRANSFORM)
     print("Starting Training...")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
