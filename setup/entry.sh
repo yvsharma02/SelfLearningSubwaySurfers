@@ -7,3 +7,4 @@ adb devices
 # export DISPLAY=:1
 
 python src/player.py
+# emulator -avd default_avd -no-audio -no-boot-anim -grpc 8554 -idle-grpc-timeout 0

@@ -82,4 +82,4 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
 
 RUN echo "Built!"
 
-ENTRYPOINT [ "setup/launch.sh" ]
+ENTRYPOINT [ "setup/entry.sh" ]

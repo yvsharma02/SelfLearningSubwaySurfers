@@ -22,8 +22,8 @@ def launch(adb_client : Client, timeout_s : float = 10.0, stdout = None, stderro
     "-idle-grpc-timeout", "0",
 
     # Un-Comment if you want to run without window
-    # "-no-window",
-    # "-gpu", "host"
+    "-no-window",
+    "-gpu", "host"
     ]
 
     subprocess.Popen(start_cmd, stdout=stdout, stderr=stderror)

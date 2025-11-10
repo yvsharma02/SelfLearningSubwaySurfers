@@ -57,7 +57,7 @@ class Player:
         self.current_run = InGameRun(self.controller, self.save_que)
         self.run_no += 1
 
-        os.makedirs(self.stream_path, exist_ok=True)
+        # os.makedirs(self.stream_path, exist_ok=True)
 
     def stop(self):
         if (self.current_run == None): 
