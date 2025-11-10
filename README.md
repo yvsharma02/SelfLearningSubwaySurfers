@@ -8,8 +8,9 @@ Things to have on host machine:
 2) VSCode
 3) DevContainer Extension for VSCode
 4) NVidia Drivers ALONG with Nvidia Container toolkit.
+5) An image of an android emulator needs to be located at data/avd/avd.zip. This needs to be frozen at a state where the game Subway surfers is already running, the tutorials are completed, and atleast one game is played after launch. (Esentially, the "Play" button should be on screen.). Positions are some settings might need to be changed depending on the emulator resolution. Contact me if you need the image I used. <br/> <br/>
 
-VSCode should automatically give a promt to open the project inside a devcontainer when all 3 steps are met.
+VSCode should automatically give a prompt to open the project inside a devcontainer when all 3 steps are met.
 If you want to use Git while being inside the container, the following things also need to be installed:
 
 4) Git
