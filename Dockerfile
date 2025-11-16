@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1.4
-# All heavy installs go to base so I don't have to manually download everything every single time. Might merge them later.
-FROM nvidia/cuda:12.9.1-base-ubuntu24.04 AS base_image
+FROM nvidia/cuda:12.9.1-base-ubuntu24.04
 
 ENV ROOT_DIR="/home/ubuntu/subwaysurfersai"
 ENV WORK_DIR=$ROOT_DIR/workspace
@@ -43,27 +42,16 @@ RUN --mount=type=cache,target=$ANDROID_SDK_ROOT/.android/cache \
         "platforms;android-34" \
         "system-images;android-34;google_apis;x86_64"
 
-# RUN echo "no" | avdmanager create avd -n default_avd -k "system-images;android-34;google_apis;x86_64" --device "Nexus S"
-
 COPY data/avd/avd.zip ${ROOT_DIR}/setup/avd.zip
 RUN unzip ${ROOT_DIR}/setup/avd.zip -d ~/.android/avd/
+
+COPY setup/ ${ROOT_DIR}/setup/
 
 RUN python3 -m venv $VIRTUAL_ENV
 RUN python3 -m pip install --upgrade pip
 
-COPY setup/ ${ROOT_DIR}/setup/
-# COPY data/apks/subway.apk ${ROOT_DIR}/setup/subway.apk
-
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r ${ROOT_DIR}/setup/requirements.txt
-RUN ${ROOT_DIR}/setup/setup_instance.sh
 
-# The above part does all the heavy lifiting (Most things which won't change regularly while developing would go up).
-
-FROM base_image AS dev_image
-
-COPY . .
-
-# RUN ${ROOT_DIR}/setup/setup_emulator.sh headless
-# RUN rm -rf ${ROOT_DIR}/setup/
-
-ENTRYPOINT [ "${ROOT_DIR}/setup/setup_emulator.sh" ]
+RUN rm -f ${ROOT_DIR}/setup/avd.zip
+RUN rm -rf tmp/downloads
+# setup folder (minus avd) will be deleted after running setup.sh which runs when container is run.

@@ -19,7 +19,7 @@
    "/dev/kvm",
     "--add-host=host.docker.internal:host-gateway"
   ],
-  "postStartCommand": "setsid bash \"$ROOT_DIR/setup/setup_emulator.sh\" > \"$WORK_DIR/generated/session_log.txt\" 2>&1",
+  "postStartCommand": "setsid bash \"$ROOT_DIR/setup/setup.sh\" > \"$WORK_DIR/generated/session_log.txt\" 2>&1",
   "customizations": {
     "vscode": {
       "extensions": [
