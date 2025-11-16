@@ -1,7 +1,7 @@
 HEADLESS_MODE=$1
 
 # What about -gpu host command?
-cmd="nohup emulator -avd default_avd -no-audio -no-boot-anim -grpc 8554 -idle-grpc-timeout 0"
+cmd="nohup emulator -avd default_avd -no-audio -no-boot-anim -grpc 8554 -idle-grpc-timeout 0 -no-snapshot-load"
 
 if [ "$HEADLESS_MODE" = "headless" ]; then
     echo "Running in headless mode..."
@@ -20,4 +20,6 @@ adb wait-for-device
 adb shell "while [[ \$(getprop sys.boot_completed) != 1 ]]; do sleep 1; done"
 echo "Boot Completed!"
 # adb install $ROOT_DIR/setup/subway.apk
-# adb shell am start -n com.kiloo.subwaysurf/com.sybogames.chili.multidex.ChiliMultidexSupportActivity
+adb shell am start -n com.kiloo.subwaysurf/com.sybogames.chili.multidex.ChiliMultidexSupportActivity
+
+# nohup python src/player.py > generated/player_log.txt &

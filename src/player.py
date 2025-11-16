@@ -89,6 +89,10 @@ class Player:
             self.controller.tap(400, 750)
             self.controller.tap(432, 105)
 
+            #TODO: Make a seperate script that handles getting the game to a playable state?
+            if self.run_no == 0:
+                self.controller.tap(259, 500)
+
         if (self.current_run == None and gamestate < constants.GAME_STATE_OVER):
             self.start()
 
@@ -140,13 +144,8 @@ def main():
     model, device = ssai_model.load("generated/models/test.pth") if os.path.exists("generated/models/test.pth") else (ssai_model.SSAIModel(), torch.device("cuda" if torch.cuda.is_available() else "cpu"))
     model = model.to(device)
     os.makedirs("generated", exist_ok=True)
-    logfile = open("generated/emu_log.txt", "w+")
-    adb_client = AdbClient(host="127.0.0.1", port=5037)
-    print("Launching Emulator. Please Wait. Should not take longer than 120s.")
-    emulator_utils.launch(adb_client, 120, stderror=logfile, stdout=logfile)
     player = Player(model, device)
     player.start_mainloop()
-    logfile.close()
     
 
 if __name__ == "__main__":
