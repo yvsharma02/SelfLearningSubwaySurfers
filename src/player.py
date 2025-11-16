@@ -15,6 +15,7 @@ import os
 import shutil
 from collections import deque
 from grpc._channel import _InactiveRpcError
+from collections import deque
 
 NOTHING_SAMPLING_RATE_ONE_IN_X = 30
 RETRAIN_AFTER_X_RUNS = 10
@@ -39,6 +40,9 @@ class Player:
         self.bgr_queue = deque([],maxlen=3)
         self.frame_number = 0
         self.last_frame_time = time.time()
+        self.frame_time_tracker = deque(maxlen=60)
+        self.total_time = 0
+        self.total_frames = 0
         # self.input_controller = MultiDeviceReader()
 
     def get_dataset_len(self):
@@ -106,7 +110,16 @@ class Player:
             self.frame_number += 1
 
         self.last_frame_time = now
-        # print(f"Frame Time: {time.time() - now}")
+        frame_time = time.time() - now
+        # self.frame_time_tracker.append(frame_time)
+        # frame_time_avg60 = sum(self.frame_time_tracker) / len(self.frame_time_tracker)
+        # print(f"Frame Time: {((time.time() - now) * 1000.0):.2f}; last_60_avg: {(frame_time_avg60 * 1000.0):0.2f}")
+        # print(f"FPS: {(1.0 / frame_time):.0f}, last_60_avg: {(1.0 / frame_time_avg60):.0f}")
+        self.total_time += frame_time
+        self.total_frames += 1
+        avg_frame_time = self.total_time / self.total_frames
+        if (self.total_frames % 1000 == 0):
+            print(f"Converged: {(1.0 / avg_frame_time):.0f} FPS")
         # time.sleep(0.075)
         return True
 

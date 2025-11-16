@@ -1,6 +1,0 @@
-matplotlib
-Xlib
-numpy
-inputs
-scikit-learn
-tqdm

@@ -20,10 +20,11 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     --mount=target=/var/cache/apt,type=cache,sharing=locked \
     rm -f /etc/apt/apt.conf.d/docker-clean && \
     apt-get update && apt-get install -y --no-install-recommends \
-    curl wget unzip git \
+    curl wget zip unzip git \
     python3 python3-pip python3-venv \
     openjdk-17-jdk-headless \
-    xvfb x11-utils mesa-utils libglvnd-dev libgl1-mesa-dev libgles2-mesa-dev
+    xvfb x11-utils mesa-utils libglvnd-dev libgl1-mesa-dev libgles2-mesa-dev \
+    libx11-6 libxrender1 libxext6 libxrandr2 libxi6 libgl1 libpulse0 libgl1-mesa-dri
 
 RUN --mount=type=cache,target=/tmp/downloads \
     [ -f /tmp/downloads/commandlinetools.zip ] || \
@@ -42,44 +43,27 @@ RUN --mount=type=cache,target=$ANDROID_SDK_ROOT/.android/cache \
         "platforms;android-34" \
         "system-images;android-34;google_apis;x86_64"
 
-# RUN echo "no" | avdmanager create avd -n default_avd -k "system-images;android-34;google_apis;x86_64" --device "Nexus S"
+RUN echo "no" | avdmanager create avd -n default_avd -k "system-images;android-34;google_apis;x86_64" --device "Nexus S"
 
-COPY data/avd/avd.zip ${ROOT_DIR}/buildtime/avd.zip
-RUN unzip ${ROOT_DIR}/buildtime/avd.zip -d ~/.android/avd/
+# COPY data/avd/avd.zip ${ROOT_DIR}/setup/avd.zip
+# RUN unzip ${ROOT_DIR}/setup/avd.zip -d ~/.android/avd/
 
 RUN python3 -m venv $VIRTUAL_ENV
 RUN python3 -m pip install --upgrade pip
 
-COPY setup/requirements_heavy.txt ${ROOT_DIR}/buildtime/requirements.txt
-RUN --mount=type=cache,target=/root/.cache/pip pip install -r ${ROOT_DIR}/buildtime/requirements.txt
+COPY setup/ ${ROOT_DIR}/setup/
+# COPY data/apks/subway.apk ${ROOT_DIR}/setup/subway.apk
 
-COPY setup/post_build_heavy.sh ${ROOT_DIR}/buildtime/post_build.sh
-RUN ${ROOT_DIR}/buildtime/post_build.sh
-RUN rm -rf ${ROOT_DIR}/buildtime/
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r ${ROOT_DIR}/setup/requirements.txt
+RUN ${ROOT_DIR}/setup/setup_instance.sh
 
 # The above part does all the heavy lifiting (Most things which won't change regularly while developing would go up).
 
 FROM base_image AS dev_image
 
 COPY . .
-COPY setup/requirements_light.txt ${ROOT_DIR}/buildtime/requirements.txt
-RUN --mount=type=cache,target=/root/.cache/pip pip install -r ${ROOT_DIR}/buildtime/requirements.txt
 
-# These are needed if I want to run the emulator without -no-window tag.
-RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
-    --mount=target=/var/cache/apt,type=cache,sharing=locked \
-    # rm -f /etc/apt/apt.conf.d/docker-clean && \
-    apt-get update && apt-get install -y --no-install-recommends \
-    libx11-6 \
-        libxrender1 \
-        libxext6 \
-        libxrandr2 \
-        libxi6 \
-        libgl1 \
-        libpulse0 \
-        libgl1-mesa-dri \
-        zip
+# RUN ${ROOT_DIR}/setup/setup_emulator.sh headless
+# RUN rm -rf ${ROOT_DIR}/setup/
 
-RUN echo "Built!"
-
-ENTRYPOINT [ "setup/entry.sh" ]
+ENTRYPOINT [ "${ROOT_DIR}/setup/setup_emulator.sh" ]
